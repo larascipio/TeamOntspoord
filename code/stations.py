@@ -11,10 +11,17 @@ class Station():
         self._name = station
         self._x = x_coordinate
         self._y = y_coordinate
+        self._passed = False
 
     def add_connection(self, connection):
         """Add a connection from this station to the next."""
         self._connections.append(connection)
+
+    def travel(self):
+        self._passed = True
+
+    def passed(self):
+        return self._passed
 
     def print_info(self):
         """Print the information of this station."""
@@ -30,9 +37,16 @@ class Connection():
         """Create a connection between station1 and station2."""
         self._stations = (station1, station2)
         self._distance = distance
+        self._passed = False
 
     def get_destination(self, station):
         """Return the destination from travelling this connection."""
         if station == self._stations[0]:
             return self._stations[1]
         return self._stations[0]
+
+    def travel(self):
+        self._passed = True
+    
+    def passed(self):
+        return self._passed
