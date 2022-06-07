@@ -17,6 +17,7 @@ class Station():
         self._connections.append(connection)
 
     def print_info(self):
+        """Print the information of this station."""
         print(self._name)
         print('Connections:')
         for connection in self._connections:
