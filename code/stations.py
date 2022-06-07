@@ -6,14 +6,14 @@ stations.py
 
 class Station():
     def __init__(self, station: str, x_coordinate: float, y_coordinate: float):
-        self._connections = {}
+        self._connections = []
         self._name = station
         self._x = x_coordinate
         self._y = y_coordinate
 
     def add_connection(self, station: str, connection):
         """Add a connection from this station to the next."""
-        self._connections[station] = connection
+        self._connections.append(connection)
 
 class Connection():
     def __init__(self, station1, station2, distance: int):
