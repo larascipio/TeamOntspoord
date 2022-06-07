@@ -11,7 +11,7 @@ class Station():
         self._x = x_coordinate
         self._y = y_coordinate
 
-    def add_connection(self, station: str, connection):
+    def add_connection(self, connection):
         """Add a connection from this station to the next."""
         self._connections.append(connection)
 
