@@ -6,14 +6,23 @@ stations.py
 
 class Station():
     def __init__(self, station: str, x_coordinate: float, y_coordinate: float):
+        """Create a station.s"""
         self._connections = []
         self._name = station
         self._x = x_coordinate
         self._y = y_coordinate
 
-    def add_connection(self, station: str, connection):
+    def add_connection(self, connection):
         """Add a connection from this station to the next."""
         self._connections.append(connection)
+
+    def print_info(self):
+        print(self._name)
+        print('Connections:')
+        for connection in self._connections:
+            print(connection.get_destionation(self)._name)
+        print(f'Location: ({self._x}, {self._y})')
+        print()
 
 class Connection():
     def __init__(self, station1, station2, distance: int):
