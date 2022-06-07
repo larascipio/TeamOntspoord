@@ -20,7 +20,7 @@ class Station():
         print(self._name)
         print('Connections:')
         for connection in self._connections:
-            print(connection.get_destionation(self)._name)
+            print(connection.get_destination(self)._name)
         print(f'Location: ({self._x}, {self._y})')
         print()
 
