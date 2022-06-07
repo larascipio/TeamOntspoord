@@ -2,12 +2,12 @@
 ## Week 1
 ### Dinsdag (07/06)
 - Hoorcollege (09:00 - 11:00)
-- Voorbereiding, datarepresentatie, 
+- Voorbereiding en planning maken 
 - Holland opdracht: data inladen, idee bespreken
 ### Woensdag (08/06)
-- Hoorcollege (15:00 - 17:00) 
 - Holland opdracht: de baseline
--  
+- Hoorcollege (15:00 - 17:00) 
+
 ### Donderdag (09/06)
 _Lara afwezig_ 
 - Holland opdracht: de baseline
