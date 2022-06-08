@@ -36,7 +36,7 @@ class Connection():
     def __init__(self, station1, station2, distance: int):
         """Create a connection between station1 and station2."""
         self._stations = (station1, station2)
-        self._distance = distance
+        self._distance = int(distance)
         self._passed = False
 
     def get_destination(self, station):
