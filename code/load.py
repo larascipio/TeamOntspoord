@@ -1,9 +1,12 @@
 from stations import *
 import csv
 
+stationdictionary = {}
+connectionlist = []
+
 def load(file_locations: str, file_connections: str):
     """Load the stations and its connections"""
-    stationdictionary = {}
+
 
     with open(file_locations, newline = '') as csvfile:
         reader = csv.DictReader(csvfile)
@@ -15,6 +18,7 @@ def load(file_locations: str, file_connections: str):
         reader = csv.DictReader(csvfile)
         for row in reader: 
             connection = Connection(stationdictionary[row['station1']], stationdictionary[row['station2']], row['distance'])
+            connectionlist.append(connection)
             stationdictionary[row['station1']].add_connection(connection)
             stationdictionary[row['station2']].add_connection(connection)
 
