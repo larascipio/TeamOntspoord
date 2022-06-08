@@ -1,3 +1,4 @@
+import random
 
 class Train():
     def __init__(self, starting_station):
@@ -11,6 +12,21 @@ class Train():
         for connection in self._current_station._connections:
             if not connection.passed() and self._distance + connection._distance <= 120:
                 return connection
+        self.running = False
+        return None
+
+    def choose_random_connection(self):
+        possible_connections = []
+        weights = []
+        for connection in self._current_station._connections:
+            if not connection.passed() and self._distance + connection._distance <= 120:
+                possible_connections.append(connection)
+                if connection.get_destination(self._current_station).passed():
+                    weights.append(1)
+                else:
+                    weights.append(2)
+        if possible_connections:
+            return random.choice(possible_connections)
         self.running = False
         return None
     
@@ -71,7 +87,8 @@ def make_bad_routes(stations: list):
 
         # keep going until the route is 2 hours
         while train.running:
-            connection = train.choose_connection()
+            # connection = train.choose_connection()
+            connection = train.choose_random_connection()
             if connection:
                 if not connection.passed():
                     num_connections_not_passed -= 1
@@ -81,13 +98,15 @@ def make_bad_routes(stations: list):
         trains.append(train)
         # print(num_stations_not_passed)
         # print(num_connections_not_passed)
-        print(train._route)
+        # print(train._route)
     
     quality = (28 - num_connections_not_passed)/28 * 10000
     for train in trains:
         quality -= 1
         quality -= train.get_distance()
     
-    print(f"The quality of these routes is {quality}")
+    # print(f"The quality of these routes is {quality}")
+
+    return (quality, trains)
 
         
