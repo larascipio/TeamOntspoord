@@ -9,6 +9,7 @@ sys.path.append(os.path.join(directory, 'code'))
 
 from load import *
 from bad_algorithm import *
+from output import *
 
 if __name__ == '__main__':
     file_stations = './data/StationsNationaal.csv'
@@ -21,7 +22,7 @@ if __name__ == '__main__':
         stationlist = list(stations.values())
         quality, route = make_bad_routes(stationlist, 20, 180)
         qualityroutes[quality] = route
-    
+
     # the best route
     highest = max(qualityroutes)
     print(max(qualityroutes.keys()))
@@ -30,3 +31,4 @@ if __name__ == '__main__':
     for train in best_route:
         print(train._route)
     print(f'with a quality of {highest}')
+    output(highest, best_route)
