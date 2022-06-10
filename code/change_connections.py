@@ -6,7 +6,8 @@ def station_failure(failed_station):
     for connection in stationdictionary[failed_station]._connections:
         connectionlist.remove(connection)
         for station in connection._stations:
-            station._connections.remove(connection)
+            if station is not stationdictionary[failed_station]:
+                station._connections.remove(connection)
     del stationdictionary[failed_station]
 
 def remove_random_connections():

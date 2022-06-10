@@ -20,9 +20,10 @@ if __name__ == '__main__':
 
     qualityroutes = {}
     x_values = []
+
     for _ in range(100):
         load(file_stations, file_connections)
-        station_failure('Utrecht Centraal')
+        #station_failure('Utrecht Centraal')
         quality, route = make_bad_routes(list(stationdictionary.values()), 20, 180)
         # TODO overwrite sommige dictionary entries
         qualityroutes[quality] = route
@@ -34,6 +35,7 @@ if __name__ == '__main__':
     plt.ylim(min(qualityroutes), max(qualityroutes))
     plt.bar(x_values, qualityroutes.keys(), color='g')
     plt.ylabel('Quality')
+    #plt.xticks(rotation=90)
     plt.savefig('lijnvoeringkwaliteit.png')
     # the best route
     highest = max(qualityroutes)
