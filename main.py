@@ -17,18 +17,10 @@ if __name__ == '__main__':
 
     qualityroutes = {}
     for _ in range(100):
-        stations = load(file_stations, file_connections)
-        # print_stationdictionary(stations)
-        stationlist = list(stations.values())
-        quality, route = make_bad_routes(stationlist, 20, 180)
+        load(file_stations, file_connections)
+        quality, route = make_bad_routes(list(stationdictionary.values()), 20, 180)
         qualityroutes[quality] = route
 
     # the best route
     highest = max(qualityroutes)
-    print(max(qualityroutes.keys()))
-    best_route = qualityroutes[highest]
-    print('The best route is:')
-    for train in best_route:
-        print(train._route)
-    print(f'with a quality of {highest}')
-    output(highest, best_route)
+    output(highest, qualityroutes[highest])
