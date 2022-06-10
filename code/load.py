@@ -17,7 +17,7 @@ def load(file_locations: str, file_connections: str):
     with open(file_connections, newline = '') as csvfile:
         reader = csv.DictReader(csvfile)
         for row in reader: 
-            connection = Connection(stationdictionary[row['station1']], stationdictionary[row['station2']], row['distance'])
+            connection = Connection(stationdictionary[row['station1']], stationdictionary[row['station2']], float(row['distance']))
             connectionlist.append(connection)
             stationdictionary[row['station1']].add_connection(connection)
             stationdictionary[row['station2']].add_connection(connection)

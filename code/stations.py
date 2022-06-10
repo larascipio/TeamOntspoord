@@ -9,8 +9,8 @@ class Station():
         """Create a station.s"""
         self._connections = []
         self._name = station
-        self._x = x_coordinate
-        self._y = y_coordinate
+        self._x = float(y_coordinate)
+        self._y = float(x_coordinate)
         self._passed = False
 
     def add_connection(self, connection):
