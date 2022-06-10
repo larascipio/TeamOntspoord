@@ -2,13 +2,14 @@ import plotly.graph_objects as go
 from load import *
 from bad_algorithm import *
 
-file_stations = '../data/StationsHolland.csv'
-file_connections = '../data/ConnectiesHolland.csv'
+file_stations = '../data/StationsNationaal.csv'
+file_connections = '../data/ConnectiesNationaal.csv'
 stationsdict = load(file_stations, file_connections)
 stations = list(stationsdict.values())
 
 # create the connections
 data = []
+distances = []
 for connection in connectionlist:
     x = []
     y = []
@@ -16,6 +17,10 @@ for connection in connectionlist:
         x.append(station._x)
         y.append(station._y)
     data.append(go.Scatter(x=x,y=y, marker=dict(color='blue', size=5), hoverinfo='skip'))
+
+    distances.append(connection._distance)
+
+print(sum(distances) / len(distances))
 
 # create the scatter and lines for the map
 x = []
@@ -29,7 +34,7 @@ for station in stations:
 data.append(go.Scatter(x=x, y=y, mode='markers', hovertext=name, hoverinfo='text'))
 
 # create the frames
-quality, route = make_bad_routes(stations)
+quality, route = make_bad_routes(stations, 20, 180)
 train = route[0]
 x_frames = []
 y_frames = []

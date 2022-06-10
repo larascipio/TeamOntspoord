@@ -76,7 +76,7 @@ def make_bad_routes(stations: list, num_trains: int, max_distance: int):
         # choose starting point
         while not start:
             if len(end_stations) > 0:
-            # choose one of the endstations
+            # choose one of the endstations TODO beginnen bij plekken met 3 connecties
                 end = end_stations.pop()
                 if not end.passed():
                     start = end
