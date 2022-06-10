@@ -2,6 +2,9 @@ import random
 
 class Train():
     def __init__(self, starting_station, max_distance):
+        """
+        Create a train at the given station.
+        """
         self._distance = 0
         self._current_station = starting_station
         self._route = [self._current_station._name] # TODO get name from station
@@ -11,6 +14,9 @@ class Train():
         self._max_dist = max_distance
 
     def choose_connection(self):
+        """
+        Choose the first of the connections that has not been passed yet.
+        """
         for connection in self._current_station._connections:
             if not connection.passed() and self._distance + connection._distance <= self._max_dist:
                 return connection
@@ -18,6 +24,9 @@ class Train():
         return None
 
     def choose_random_connection(self):
+        """
+        Choose a random connection that has not been passed yet.
+        """
         possible_connections = []
         weights = []
         for connection in self._current_station._connections:
@@ -33,6 +42,9 @@ class Train():
         return None
     
     def move(self, connection):
+        """
+        Move to a next station.
+        """
 
         # increase the distance of the route
         self._distance += connection._distance # TODO
@@ -56,6 +68,9 @@ class Train():
 
 
 def make_bad_routes(stations: list, num_trains: int, max_distance: int):
+    """
+    Use the given railroads to create connections that satisfy the contraints.
+    """
     end_stations = []
     for station in stations:
         if len(station._connections) < 2: # TODO nog veranderen in stations.py, misschien de hoeveelheid connecties in int opslaan?
@@ -76,7 +91,7 @@ def make_bad_routes(stations: list, num_trains: int, max_distance: int):
         # choose starting point
         while not start:
             if len(end_stations) > 0:
-            # choose one of the endstations TODO beginnen bij plekken met 3 connecties
+            # choose one of the endstations TODO beginnen bij plekken met 3 connecties/ oneven aantal connecties
                 end = end_stations.pop()
                 if not end.passed():
                     start = end
@@ -106,6 +121,7 @@ def make_bad_routes(stations: list, num_trains: int, max_distance: int):
         # print(num_connections_not_passed)
         # print(train._route)
     
+    # calculate the quality of this system of routes
     quality = (89 - num_connections_not_passed)/89 * 10000
     for train in trains:
         quality -= 1
