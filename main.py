@@ -26,8 +26,8 @@ if __name__ == '__main__':
     file_connections = './data/ConnectiesNationaal.csv'
 
     qualityroutes = {}
-
     load(file_stations, file_connections)
+
     #station_failure('Utrecht Centraal')
 
     for _ in range(100):
