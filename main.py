@@ -28,6 +28,8 @@ if __name__ == '__main__':
         # TODO overwrite sommige dictionary entries
         qualityroutes[quality] = route
 
+
+
     # TODO maak elegantere x-as voor tabel, zonder dubbele loop
     for i in range(len(qualityroutes)):
         x_values.append(i)
