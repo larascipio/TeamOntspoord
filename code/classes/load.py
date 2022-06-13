@@ -1,4 +1,4 @@
-from stations import Station, Connection
+from code.classes.stations import Station, Connection
 import csv
 
 
