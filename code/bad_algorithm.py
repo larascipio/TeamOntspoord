@@ -67,44 +67,53 @@ class Train():
         return self._route
 
 
-def make_bad_routes(stations: list, num_trains: int, max_distance: int):
+def make_bad_routes(stations: list, num_trains: int, max_distance: int, num_connections_not_passed: int):
     """
     Use the given railroads to create connections that satisfy the contraints.
     """
     end_stations = []
     for station in stations:
-        if len(station._connections) < 2: # TODO nog veranderen in stations.py, misschien de hoeveelheid connecties in int opslaan?
+        if len(station._connections) % 2 == 1: # TODO nog veranderen in stations.py, misschien de hoeveelheid connecties in int opslaan?
             end_stations.append(station)
-    
+    print(end_stations)
+
     num_stations_not_passed = len(stations)
-    num_connections_not_passed = 28 # TODO dit moet nog uit load.py of stations.py komen
+    # num_connections_not_passed = 89 # TODO dit moet nog uit load.py of stations.py komen
 
     trains = []
     # keep making trains until there are 8
-    while len(trains) < num_trains:
+    while len(trains) < num_trains and num_connections_not_passed > 0:
         
         # # check if all stations are passed
         # if num_stations_not_passed < 1:
         #     break
             
-        # check if all connections are passed
-        if num_connections_not_passed < 1:
-            break
+        # # check if all connections are passed
+        # if num_connections_not_passed < 1:
+        #     break
 
         start = None
         # choose starting point
         while not start:
             if len(end_stations) > 0:
-            # choose one of the endstations TODO beginnen bij plekken met 3 connecties/ oneven aantal connecties
-                end = end_stations.pop()
-                if not end.passed():
-                    start = end
+            # choose one of the endstations
+                start = end_stations.pop()
+                
+                # end = end_station.pop()
+                # if not end.passed():
+                #     start = end
             else:
                 # choose a random station that has not been travelled
                 for station in stations:
                     # print(station._name, station.passed())
-                    if not station.passed():
-                        start = station
+                    # if not station.passed():
+                    #     start = station
+                    
+                    # check if all connections are passed
+                    for connection in station._connections:
+                        if not connection.passed:
+                            start = station
+                            break
             
 
         # create the train with a distance of 0 and the starting station passed
@@ -120,6 +129,8 @@ def make_bad_routes(stations: list, num_trains: int, max_distance: int):
                 train.move(connection)
                 num_stations_not_passed -= 1
         
+        if train._current_station in end_stations:
+            end_stations.remove(train._current_station)
         trains.append(train)
         # print(num_stations_not_passed)
         # print(num_connections_not_passed)
