@@ -49,8 +49,6 @@ def create_animation(stations, connectionlist, routeclass):
 
         distances.append(connection._distance)
 
-    print(sum(distances) / len(distances))
-
     # create the scatter and lines for the map
     x_stations = []
     y_stations = []

@@ -22,7 +22,7 @@ if __name__ == '__main__':
         max_trains = 7
         max_time = 120
     else:
-        file_station = 'data/StationsNationaal.csv'
+        file_stations = 'data/StationsNationaal.csv'
         file_connections = 'data/ConnectiesNationaal.csv'
         max_trains = 20
         max_time = 180
