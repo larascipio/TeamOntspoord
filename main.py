@@ -1,7 +1,7 @@
 """
 main.py
 """
-from code.classes.load import *
+from code.classes.load import load, print_stationdictionary
 from code.algorithms.bad_algorithm import *
 from code.visualisation.output import *
 from code.classes.change_connections import *
@@ -19,7 +19,7 @@ if __name__ == '__main__':
     file_connections = './data/ConnectiesHolland.csv'
 
     qualityroutes = {}
-    load(file_stations, file_connections)
+    stationdictionary, connectionlist = load(file_stations, file_connections)
 
     #station_failure('Utrecht Centraal')
 
