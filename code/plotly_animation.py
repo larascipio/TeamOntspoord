@@ -34,7 +34,7 @@ for station in stations:
 data.append(go.Scatter(x=x, y=y, mode='markers', hovertext=name, hoverinfo='text'))
 
 # create the frames
-quality, route = make_bad_routes(stations, 20, 180)
+quality, route = make_bad_routes(stations, 20, 180, 89)
 train = route[0]
 x_frames = []
 y_frames = []
