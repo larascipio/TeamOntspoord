@@ -12,22 +12,31 @@ from load import *
 from bad_algorithm import *
 from output import *
 from change_connections import *
+from simple_visualization import *
 import matplotlib.pyplot as plt
+
+def reset_model():
+    for station in list(stationdictionary.values()):
+        station._passed = False
+    for connection in connectionlist:
+        connection._passed = False
 
 if __name__ == '__main__':
     file_stations = './data/StationsNationaal.csv'
     file_connections = './data/ConnectiesNationaal.csv'
 
     qualityroutes = {}
-    x_values = []
+    load(file_stations, file_connections)
+
+    #station_failure('Utrecht Centraal')
 
     for _ in range(100):
-        load(file_stations, file_connections)
-        #station_failure('Utrecht Centraal')
         quality, route = make_bad_routes(list(stationdictionary.values()), 20, 180)
         # TODO overwrite sommige dictionary entries
         qualityroutes[quality] = route
+        reset_model()
 
+<<<<<<< HEAD
 
 
     # TODO maak elegantere x-as voor tabel, zonder dubbele loop
@@ -36,9 +45,12 @@ if __name__ == '__main__':
 
     plt.ylim(min(qualityroutes), max(qualityroutes))
     plt.bar(x_values, qualityroutes.keys(), color='g')
+=======
+    plt.hist(qualityroutes.keys(), color='g')
+>>>>>>> ef6949a9a3ab73b093475b37211b4bf87e4c44e1
     plt.ylabel('Quality')
-    #plt.xticks(rotation=90)
     plt.savefig('lijnvoeringkwaliteit.png')
+
     # the best route
     highest = max(qualityroutes)
     output(highest, qualityroutes[highest])
