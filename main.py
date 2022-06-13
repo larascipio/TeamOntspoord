@@ -7,6 +7,7 @@ from code.visualisation.output import *
 from code.classes.change_connections import *
 from code.visualisation.simple_visualization import *
 import matplotlib.pyplot as plt
+import argparse
 
 def reset_model():
     for station in list(stationdictionary.values()):
@@ -15,12 +16,27 @@ def reset_model():
         connection._passed = False
 
 if __name__ == '__main__':
-    file_stations = './data/StationsHolland.csv'
-    file_connections = './data/ConnectiesHolland.csv'
 
+    # use commandline arguments to choose the railroad
+    parser = argparse.ArgumentParser(description='create routes')
+    parser.add_argument("type", choices=['holland','national'], help="Use the holland or national railroads")
+    args = parser.parse_args()
+
+    if args.type == 'holland':
+        file_stations = '../data/StationsHolland.csv'
+        file_connections = '../data/ConnectiesHolland.csv'
+        max_trains = 7
+        max_time = 120
+    else:
+        file_station = '../data/StationsNationaal.csv'
+        file_connections = '../data/ConnectiesNationaal.csv'
+        max_trains = 20
+        max_time = 180
+    
+    stations = load(file_stations, file_connections)
+    
     qualityroutes = {}
-    load(file_stations, file_connections)
-
+    
     #station_failure('Utrecht Centraal')
 
     for _ in range(1):
@@ -29,7 +45,7 @@ if __name__ == '__main__':
         qualityroutes[quality] = route
         for connection in connectionlist:
             print(connection._passed)
-
+    
         reset_model()
         
     best_qual = max(qualityroutes.keys())
@@ -38,13 +54,6 @@ if __name__ == '__main__':
     for train in best_route:
         print(train._route)
     
-
     output(best_qual, best_route)
 
-    # plt.hist(qualityroutes.keys(), color='g')
-    # plt.ylabel('Quality')
-    # plt.savefig('lijnvoeringkwaliteit.png')
 
-    # # the best route
-    # highest = max(qualityroutes)
-    # output(highest, qualityroutes[highest])
