@@ -36,7 +36,18 @@ if __name__ == '__main__':
         qualityroutes[quality] = route
         reset_model()
 
+<<<<<<< HEAD
+
+
+    # TODO maak elegantere x-as voor tabel, zonder dubbele loop
+    for i in range(len(qualityroutes)):
+        x_values.append(i)
+
+    plt.ylim(min(qualityroutes), max(qualityroutes))
+    plt.bar(x_values, qualityroutes.keys(), color='g')
+=======
     plt.hist(qualityroutes.keys(), color='g')
+>>>>>>> ef6949a9a3ab73b093475b37211b4bf87e4c44e1
     plt.ylabel('Quality')
     plt.savefig('lijnvoeringkwaliteit.png')
 
