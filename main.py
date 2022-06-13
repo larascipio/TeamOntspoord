@@ -4,11 +4,10 @@ main.py
 
 # add the 'code' directory to the path to use functions from load.py
 import os, sys
-from re import I
 directory = os.path.dirname(os.path.realpath(__file__))
 sys.path.append(os.path.join(directory, 'code'))
 
-from load import *
+from code.load import *
 from bad_algorithm import *
 from output import *
 from change_connections import *

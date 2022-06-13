@@ -8,6 +8,6 @@ def output(quality, trains):
         writer.writerow(["train", "stations"])
         x = 1
         for train in trains:
-            writer.writerow([f"train_{x}", train._route])
+            writer.writerow([f"train_{x}", f"[{str(i) + ',' for i in train._route}]"])
             x += 1
         writer.writerow(["score", quality])
