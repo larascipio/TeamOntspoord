@@ -3,10 +3,9 @@ main.py
 """
 from code.classes.load import load, print_stationdictionary
 from code.algorithms.bad_algorithm import make_bad_routes
-from code.visualisation.output import output
+from code.visualisation.quality_hist import quality_hist
 # from code.classes.change_connections import *
 # from code.visualisation.simple_visualization import *
-# import matplotlib.pyplot as plt
 import argparse
 
 def reset_model(stationdictionary, connectionlist):
@@ -46,14 +45,9 @@ if __name__ == '__main__':
         #     print(connection._passed)
 
         reset_model(stationdictionary, connectionlist)
-        
-    best_qual = max(qualityroutes.keys())
-    best_route = qualityroutes[best_qual]
     
-    # for train in best_route:
-    #     print(train._route)
-    
-    outputfile = './output/output.csv'
-    output(best_qual, best_route, outputfile)
+    # Create hist for best routes 
+    quality_hist(qualityroutes)
+
 
 
