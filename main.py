@@ -44,10 +44,12 @@ if __name__ == '__main__':
         # for connection in connectionlist:
         #     print(connection._passed)
 
-        reset_model(stationdictionary, connectionlist)
-    
     # Create hist for best routes 
     quality_hist(qualityroutes)
+        
+    reset_model(stationdictionary, connectionlist)
+    
+
 
 
 

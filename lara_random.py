@@ -48,6 +48,7 @@ def random_route(connections):
 
 def passed_connections(connections):
     pass
+
 def passed_station(self):
     pass
 

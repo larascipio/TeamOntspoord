@@ -9,15 +9,16 @@ def quality_hist(qualityroutes):
     plt.ylabel('Quality')
     plt.savefig('lijnvoeringkwaliteit.png')
 
-    # the best route
-    highest = max(qualityroutes)
-    output(highest, qualityroutes[highest])
-
     best_qual = max(qualityroutes.keys())
     best_route = qualityroutes[best_qual]
+   
+    # the best route
+    highest = max(qualityroutes)
+    highest_route = qualityroutes[highest]
+    #output(highest, highest_route)
 
     # for train in best_route:
     #     print(train._route)
     
-    outputfile = 'code/output/output.csv'
+    outputfile = 'output.csv'
     output(best_qual, best_route, outputfile)
