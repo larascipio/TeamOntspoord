@@ -83,8 +83,12 @@ def make_bad_routes(stations: list, num_trains: int, max_distance: int):
     # keep making trains until there are 8
     while len(trains) < num_trains:
         
-        # check if all stations are passed
-        if num_stations_not_passed < 1:
+        # # check if all stations are passed
+        # if num_stations_not_passed < 1:
+        #     break
+            
+        # check if all connections are passed
+        if num_connections_not_passed < 1:
             break
 
         start = None
