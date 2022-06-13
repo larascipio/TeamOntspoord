@@ -2,17 +2,12 @@
 main.py
 """
 from code.classes.load import load, print_stationdictionary
-from code.algorithms.bad_algorithm import make_bad_routes
-from code.visualisation.quality_hist import quality_hist
+from code.algorithms.bad_algorithm import Make_Bad_Routes
+from code.visualisation.plotly_animation import create_animation
+# from code.visualisation.quality_hist import quality_hist
 # from code.classes.change_connections import *
 # from code.visualisation.simple_visualization import *
 import argparse
-
-def reset_model(stationdictionary, connectionlist):
-    for station in list(stationdictionary.values()):
-        station._passed = False
-    for connection in connectionlist:
-        connection._passed = False
 
 if __name__ == '__main__':
 
@@ -32,22 +27,26 @@ if __name__ == '__main__':
         max_trains = 20
         max_time = 180
     
-    stations = load(file_stations, file_connections)
-    
     qualityroutes = {}
-    stationdictionary, connectionlist = load(file_stations, file_connections)
+    stationdict, connectionlist = load(file_stations, file_connections)
     
     for _ in range(1):
-        quality, route = make_bad_routes(list(stationdictionary.values()), 7, 120, 28)
-        # TODO overwrite sommige dictionary entries
-        qualityroutes[quality] = route
+        route = Make_Bad_Routes(list(stationdict.values()), connectionlist, max_trains, max_time)
+        route.run()
+        quality = route.quality()
+
+        print(route)
+
+        create_animation(list(stationdict.values()), connectionlist, route)
+
+        # quality, route = make_bad_routes(list(stationdictionary.values()), connectionlist, 7, 120)
+
+        # qualityroutes[quality] = route
         # for connection in connectionlist:
         #     print(connection._passed)
-
-        reset_model(stationdictionary, connectionlist)
     
-    # Create hist for best routes 
-    quality_hist(qualityroutes)
+    # # Create hist for best routes 
+    # quality_hist(qualityroutes)
 
 
 

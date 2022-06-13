@@ -2,9 +2,10 @@ import plotly.graph_objects as go
 import plotly.express as px
 import random
 
-def create_animation(stations, connectionlist, route):
+def create_animation(stations, connectionlist, routeclass):
 
     # create the colours for the trains
+    route = routeclass.get_trains()
     num_trains = len(route)
     colorlist = px.colors.qualitative.Plotly + px.colors.qualitative.D3
     color = random.choices(colorlist, k=num_trains)
