@@ -1,17 +1,11 @@
 """
 main.py
 """
-
-# add the 'code' directory to the path to use functions from load.py
-import os, sys
-directory = os.path.dirname(os.path.realpath(__file__))
-sys.path.append(os.path.join(directory, 'code'))
-
-from code.load import *
-from bad_algorithm import *
-from output import *
-from change_connections import *
-from simple_visualization import *
+from code.classes.load import *
+from code.algorithms.bad_algorithm import *
+from code.visualisation.output import *
+from code.classes.change_connections import *
+from code.visualisation.simple_visualization import *
 import matplotlib.pyplot as plt
 
 def reset_model():
