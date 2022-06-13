@@ -139,7 +139,7 @@ def make_bad_routes(stations: list, num_trains: int, max_distance: int, num_conn
     # calculate the quality of this system of routes
     quality = (89 - num_connections_not_passed)/89 * 10000
     for train in trains:
-        quality -= 1
+        quality -= 100
         quality -= train.get_distance()
     
     # print(f"The quality of these routes is {quality}")
