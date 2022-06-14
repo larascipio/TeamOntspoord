@@ -1,4 +1,4 @@
-from load import *
+from code.classes.load import load
 import random
 
 def station_failure(failed_station):

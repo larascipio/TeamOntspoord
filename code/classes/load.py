@@ -23,6 +23,9 @@ def load(file_locations: str, file_connections: str):
 
     return (stationdictionary, connectionlist)
 
+def reset():
+    pass
+
 def print_stationdictionary(stationdictionary):
     """Prints out all the information form the dictionary"""
     for station in stationdictionary:

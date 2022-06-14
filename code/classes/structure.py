@@ -20,8 +20,8 @@ class Railnet():
             for row in reader: 
                 connection = Connection(self._stations[row['station1']], self._stations[row['station2']], float(row['distance']))
                 self._connections[uid] = connection
-                self._stations[row['station1']].add_connection(connection)
-                self._stations[row['station2']].add_connection(connection)
+                self._stations[row['station1']].add_connection(uid, connection)
+                self._stations[row['station2']].add_connection(uid, connection)
                 uid += 1
 
     def get_stations(self):
