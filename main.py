@@ -1,45 +1,61 @@
 """
 main.py
 """
-
-# add the 'code' directory to the path to use functions from load.py
-import os, sys
-from re import I
-directory = os.path.dirname(os.path.realpath(__file__))
-sys.path.append(os.path.join(directory, 'code'))
-
-from load import *
-from bad_algorithm import *
-from output import *
-from change_connections import *
-from simple_visualization import *
-import matplotlib.pyplot as plt
-
-def reset_model():
-    for station in list(stationdictionary.values()):
-        station._passed = False
-    for connection in connectionlist:
-        connection._passed = False
+# from code.classes.load import load
+from code.algorithms.bad_algorithm import Make_Bad_Routes
+from code.visualisation.plotly_animation import create_animation
+from code.classes.structure import Railnet
+# from code.visualisation.quality_hist import quality_hist
+# from code.classes.change_connections import *
+# from code.visualisation.simple_visualization import *
+import argparse
 
 if __name__ == '__main__':
-    file_stations = './data/StationsNationaal.csv'
-    file_connections = './data/ConnectiesNationaal.csv'
 
-    qualityroutes = {}
+    # use commandline arguments to choose the railroad
+    parser = argparse.ArgumentParser(description='create routes')
+    parser.add_argument("type", choices=['holland','national'], help="Use the holland or national railroads")
+    args = parser.parse_args()
 
-    load(file_stations, file_connections)
-    #station_failure('Utrecht Centraal')
+    if args.type == 'holland':
+        file_stations = 'data/StationsHolland.csv'
+        file_connections = 'data/ConnectiesHolland.csv'
+        max_trains = 7
+        max_time = 120
+    else:
+        file_stations = 'data/StationsNationaal.csv'
+        file_connections = 'data/ConnectiesNationaal.csv'
+        max_trains = 20
+        max_time = 180
+    
+    # Run once -------------------------------
+    # qualityroutes = {}
+    # stationdict, connectionlist = load(file_stations, file_connections)
+    rails = Railnet()
+    rails.load(file_stations, file_connections)
 
-    for _ in range(100):
-        quality, route = make_bad_routes(list(stationdictionary.values()), 20, 180)
-        # TODO overwrite sommige dictionary entries
-        qualityroutes[quality] = route
-        reset_model()
+    route = Make_Bad_Routes(rails, max_trains, max_time)
+    route.run()
+    quality = route.quality()
 
-    plt.hist(qualityroutes.keys(), color='g')
-    plt.ylabel('Quality')
-    plt.savefig('lijnvoeringkwaliteit.png')
+    print(route)
 
-    # the best route
-    highest = max(qualityroutes)
-    output(highest, qualityroutes[highest])
+    create_animation(list(rails.get_stations().values()), list(rails.get_connections().values()), route)
+
+    # rails.reset()
+    # newroute = Make_Bad_Routes(rails, max_trains, max_time)
+    # newroute.run()
+    # print(newroute)
+
+
+        # quality, route = make_bad_routes(list(stationdictionary.values()), connectionlist, 7, 120)
+
+        # qualityroutes[quality] = route
+        # for connection in connectionlist:
+        #     print(connection._passed)
+    
+    # # Create hist for best routes 
+    # quality_hist(qualityroutes)
+
+
+

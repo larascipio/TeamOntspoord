@@ -1,0 +1,4 @@
+plotly==5.8.2
+argparse 
+random 
+csv
