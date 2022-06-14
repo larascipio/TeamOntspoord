@@ -39,6 +39,7 @@ _Eva afwezig (middag)_
 ### Maandag (20/06)
 - Ochtend: plan maken voor de week 
 ### Dinsdag (21/06)
+- 11:15: gesprek met Alwan en Bas 
 ### Woensdag (22/06)
 - __Tussenpresentatie__ 
 ### Donderdag (23/06)
