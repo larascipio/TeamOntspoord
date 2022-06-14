@@ -50,11 +50,32 @@ if __name__ == '__main__':
         route = make_random_routes(list(stationdict.values()), connectionlist, max_trains, max_time)
         route.run()
         quality = route.quality()
+=======
+    # Run once -------------------------------
+    # qualityroutes = {}
+    # stationdict, connectionlist = load(file_stations, file_connections)
+    rails = Railnet()
+    rails.load(file_stations, file_connections)
+
+    route = Make_Bad_Routes(rails, max_trains, max_time)
+    route.run()
+    quality = route.quality()
 
     print(route)
 
+    create_animation(rails, route)
+>>>>>>> 053e9ae139e3c0d3003e566f164c077682bba444
+
+    # rails.reset()
+    # newroute = Make_Bad_Routes(rails, max_trains, max_time)
+    # newroute.run()
+    # print(newroute)
+
+<<<<<<< HEAD
         # create_animation(list(stationdict.values()), connectionlist, route)
     
+=======
+>>>>>>> 053e9ae139e3c0d3003e566f164c077682bba444
 
         # quality, route = make_bad_routes(list(stationdictionary.values()), connectionlist, 7, 120)
 
