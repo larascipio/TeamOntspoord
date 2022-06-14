@@ -1,3 +1,10 @@
+"""
+bad_algorithm.py
+
+This algorithm creates routes for trains in which all connections of the provided railnetwork are passed.
+There will never be more trains than the number provided and the trains will never exceed the distance provided.
+"""
+
 import random
 
 class Make_Bad_Routes():
@@ -36,7 +43,7 @@ class Make_Bad_Routes():
             while train.is_running():
                 # connection = train.choose_connection()
                 connection = train.choose_random_connection()
-                
+
                 if not connection:
                     break
 
@@ -45,10 +52,10 @@ class Make_Bad_Routes():
                 else:
                     train.stop()
             
+            # remove the trains last station from the endstations
             if train._current_station in self._end_stations:
                 self._end_stations.remove(train._current_station)
             self._trains.append(train)
-            # print(train)
 
     def create_train(self):
         start = None
@@ -61,7 +68,7 @@ class Make_Bad_Routes():
                 
             else:
                 # choose a random station that has not been travelled
-                for station in self._railnet.get_stations():
+                for station in self._railnet.get_stations().values():
                     # check if all connections are passed
                     if set(station.get_connections()) - self._route.get_passed_connections():
                         start = station
@@ -237,7 +244,7 @@ def make_bad_routes(stations: list, connections: list, num_trains: int, max_dist
     # trains = []
     # # keep making trains until there are 8
     # while len(trains) < num_trains and num_connections_not_passed > 0:
-        
+
     #     # # check if all stations are passed
     #     # if num_stations_not_passed < 1:
     #     #     break
