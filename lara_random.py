@@ -2,15 +2,6 @@
 random algoritm (klad bestand)
 """
 
-# add the 'code' directory to the path to use functions from load.py
-import os, sys
-from re import I
-
-from matplotlib.pyplot import connect
-directory = os.path.dirname(os.path.realpath(__file__))
-sys.path.append(os.path.join(directory, 'code'))
-
-from load import *
 import random
 
 def get_available_connections(stations):
