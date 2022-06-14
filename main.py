@@ -40,7 +40,7 @@ if __name__ == '__main__':
 
     print(route)
 
-    create_animation(list(rails.get_stations().values()), list(rails.get_connections().values()), route)
+    create_animation(rails, route)
 
     # rails.reset()
     # newroute = Make_Bad_Routes(rails, max_trains, max_time)
