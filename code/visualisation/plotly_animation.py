@@ -12,7 +12,8 @@ def create_animation(railnet, routeclass):
     route = routeclass.get_trains()
     num_trains = len(route)
     colorlist = px.colors.qualitative.Plotly
-    color = random.choices(colorlist, k=num_trains)
+    # color = random.choices(colorlist, k=num_trains)
+    color = colorlist + colorlist
 
     # add the first stations for every train to the data (weird animation thing plotly)
     first_x = []
