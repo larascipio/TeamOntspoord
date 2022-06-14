@@ -1,179 +1,153 @@
-from code.classes.load import load
-import argparse
 import random
 
 class Train():
-    def __init__(self, route, starting_connection, max_time):
+    def __init__(self, starting_station, max_distance):
         """
-        Creates a route on the given connection.
+        Create a train at the given station.
         """
-        
-        # save the route that this train is a part of
-        self._all_trains = route
+        self._distance = 0
+        self._current_station = starting_station
+        self._route = [self._current_station._name] # TODO get name from station
+        self._stations_traveled = [self._current_station]
+        self._current_station.travel()
+        self.running = True
+        self._max_dist = max_distance
 
-        # initialize the starting route
-        self._begin = starting_connection._stations[0]
-        self._end = starting_connection._stations[1]
-        self._route = [self._begin, self._end]
-        self._connections = [starting_connection]
+    def choose_connection(self):
+        """
+        Choose the first of the connections that has not been passed yet.
+        """
+        for connection in self._current_station._connections:
+            if not connection.passed() and self._distance + connection._distance <= self._max_dist:
+                return connection
+        self.running = False
+        return None
 
-        # initialize the time and save the maximum allowed time
-        self._time = starting_connection._distance
-        self._max_time = max_time
+    def choose_random_connection(self):
+        """
+        Choose a random connection that has not been passed yet.
+        """
+        possible_connections = []
+        weights = []
+        for connection in self._current_station._connections:
+            if not connection.passed() and self._distance + connection._distance <= self._max_dist:
+                possible_connections.append(connection)
+                if connection.get_destination(self._current_station).passed():
+                    weights.append(1)
+                else:
+                    weights.append(2)
+        if possible_connections:
+            return random.choice(possible_connections)
+        self.running = False
+        return None
     
-    def add_connection(self, connection):
+    def move(self, connection):
         """
-        Adds the given connection to the end of the train, if it's connected to the last station.
+        Move to a next station.
         """
-        
-        # check if this connection is connected to the station
-        if not self._end in connection._stations:
-            return
-        
-        # add the connection
-        self._end = connection.get_destination(self._end)
-        self._route.append(self._end)
-        self._time += connection._distance
-        self._connections.append(connection)
 
-    def remove_last_connection(self):
-        """ 
-        Removes the last connection of the route at the end of the train.
-        Returns that connection.
-        """
-        
-        # change the route and endpoint
-        self._route.pop()
-        self._end = self._route[-1]
+        # increase the distance of the route
+        self._distance += connection._distance # TODO
 
-        # remove and return the connection
-        connection = self._connections.pop()
-        self._time -= connection._distance
-        return connection
+        # move the current station
+        self._current_station = connection.get_destination(self._current_station)
+
+        # set the connection and station to passed
+        connection.travel()
+        self._current_station.travel()
+
+        # add the station to the route
+        self._route.append(self._current_station._name)
+        self._stations_traveled.append(self._current_station)
     
-    def travel(self):
-        """
-        Pick the best next connection to include in the route.
-        If all connections lead to a worse score, don't change the route.
-        """
-
-        # figure out the quality for all possible connections
-        qual = []
-        for connection in self._end._connections:
-
-            # add that connection
-            self.add_connection(connection)
-
-            # check and save the quality
-            qual.append(self._all_trains.quality())
-
-            # go back to the starting point
-            self.remove_last_connection()
-
-        # add the quality without chances
-        qual.append(self._all_trains.quality())
-
-        # find the best quality and use that connection
-        indices = [index for index, item in enumerate(qual) if item == max(qual)]
-        # print(qual, indices)
-
-        # don't change anything if this already has the best score
-        if indices[0] == len(qual) - 1:
-            return
+    def get_distance(self):
+        return self._distance
     
-        self.add_connection(self._end._connections[indices[0]])
+    def get_route(self):
+        return self._route
 
 
-class Routes():
-    def __init__(self, stations, connections, max_trains, max_time):
-        """
-        Create a route containing trains on the given railroad.
-        """
+def make_random_routes(stations: list, num_trains: int, max_distance: int, num_connections_not_passed: int):
+    """
+    Use the given railroads to create connections that satisfy the contraints.
+    """
+    # Choose a random starting point 
+    start = random.choice(stations)
+    print(start)
+    # end_stations = []
+    # for station in stations:
+    #     if len(station._connections) % 2 == 1: # TODO nog veranderen in stations.py, misschien de hoeveelheid connecties in int opslaan?
+    #         end_stations.append(station)
+    # print(len(end_stations))
 
-        # choose random starting connections
-        starting_connections = random.choices(connections, k=max_trains)
-       
-        # create the trains
-        self._trains = []
-        for connection in starting_connections:
-            self._trains.append(Train(self, connection, max_time))
+    # num_connections_not_passed = len(connections)
+    # # num_connections_not_passed = 89 # TODO dit moet nog uit load.py of stations.py komen
+
+    # trains = []
+    # # keep making trains until there are 8
+    # while len(trains) < num_trains and num_connections_not_passed > 0:
         
-        # save the total amount of stations and connections in the railmap
-        self._tot_stations = len(stations)
-        self._tot_connections = len(connections)
+    #     # # check if all stations are passed
+    #     # if num_stations_not_passed < 1:
+    #     #     break
+            
+    #     # # check if all connections are passed
+    #     # if num_connections_not_passed < 1:
+    #     #     break
 
-    def num_trains(self) -> int:
-        return len(self._trains)
+    #     start = None
+    #     # choose starting point
+    #     while not start:
+    #         if len(end_stations) > 0:
+    #         # choose one of the endstations
+    #             start = end_stations.pop()
+                
+    #             # end = end_station.pop()
+    #             # if not end.passed():
+    #             #     start = end
+    #         else:
+    #             # choose a random station that has not been travelled
+    #             for station in stations:
+    #                 # print(station._name, station.passed())
+    #                 # if not station.passed():
+    #                 #     start = station
+                    
+    #                 # check if all connections are passed
+    #                 for connection in station._connections:
+    #                     if not connection.passed:
+    #                         start = station
+    #                         break
+            
+        # Choose a random starting point 
+        
+        # create the train with the max distance and the starting station passed
+    train = Train(start, max_distance)
 
-    def num_stations(self) -> int: # TODO uiteindelijk kan deze hetzelfde als num_connections
-        """
-        Calculate the number of stations where trains have passed.
-        """
-        sum = 0
-        for i in self._stations:
-            if self._stations[i]:
-                sum += 1
-        return sum
+    # keep going until the route is 2 hours
+    while train.running:
+        # connection = train.choose_connection()
+        connection = train.choose_random_connection()
+        if connection:
+            if not connection.passed():
+                num_connections_not_passed -= 1
+            train.move(connection)
+            num_stations_not_passed -= 1
     
-    def num_connections(self) -> int:
-        """
-        Calculate the number of connections that have been passed.
-        """
-        cons = set()
-        for train in self._trains:
-            for con in train._connections:
-                cons.add(con)
-        return len(cons)
+    if train._current_station in end_stations:
+        end_stations.remove(train._current_station)
+    trains.append(train)
+    # print(num_stations_not_passed)
+    # print(num_connections_not_passed)
+    # print(train._route)
 
-    def quality(self) -> float:
-        """
-        Calculate the quality of the current routes.
-        """
-        qual = (self.num_connections()/self._tot_connections)*10000
-        for train in self._trains:
-            qual -= 100
-            qual -= train._time
-        return qual
-    
-    def improve(self):
-        """
-        Change each train so the quality of the routes increases.
-        """
-        for train in self._trains:
-            train.travel()
+# calculate the quality of this system of routes
+    quality = (89 - num_connections_not_passed)/89 * 10000
+    for train in trains:
+        quality -= 100
+        quality -= train.get_distance()
 
-if __name__ == '__main__':
+    # print(f"The quality of these routes is {quality}")
 
-    # use commandline arguments to choose the railroad
-    parser = argparse.ArgumentParser(description='create routes')
-    parser.add_argument("type", choices=['holland','national'], help="Use the holland or national railroads")
-    args = parser.parse_args()
+    return (quality, trains)
 
-    if args.type == 'holland':
-        file_stations = '../data/StationsHolland.csv'
-        file_connections = '../data/ConnectiesHolland.csv'
-        max_trains = 7
-        max_time = 120
-    else:
-        file_station = '../data/StationsNationaal.csv'
-        file_connections = '../data/ConnectiesNationaal.csv'
-        max_trains = 20
-        max_time = 180
-
-    # create the stations from the file
-    stations = list(load(file_stations, file_connections).values())
-
-    # create the route
-    route = Routes(stations, connectionlist, max_trains, max_time)
-
-    # keep improving the route, until it doesn't change
-    old_qual = route.quality()
-    print(route.quality())
-    route.improve()
-    new_qual = route.quality()
-    while new_qual > old_qual:
-        print(new_qual)
-        route.improve()
-        old_qual = new_qual
-        new_qual = route.quality()
-    print(route.quality())
+        
