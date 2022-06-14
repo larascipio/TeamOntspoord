@@ -1,12 +1,14 @@
 from load import *
 import matplotlib.pyplot as plt
 
-def simple_visualization():
+# TODO OUTDATED - werkt niet zonder de global variables stationdictionary en connectionlist
+
+def simple_visualization(stationdictionary, connectionlist):
     """Visualizes all the tracks in a plot"""
     plt.figure(figsize=(25, 35))
 
     for station in list(stationdictionary.values()):
-        if station._passed is True:
+        if station.passed() is True:
             plt.plot(float(station._x), float(station._y), 'o', color='b')
         else:
             plt.plot(float(station._x), float(station._y), 'o', color='y')
@@ -15,7 +17,7 @@ def simple_visualization():
     for connection in connectionlist:
         begin = [float(connection._stations[0]._x), float(connection._stations[1]._x)]
         end = [float(connection._stations[0]._y), float(connection._stations[1]._y)]
-        if connection._passed is True:
+        if connection.passed() is True:
             plt.plot(begin, end, color='b')
         else:
             plt.plot(begin, end, color='y')
@@ -23,7 +25,7 @@ def simple_visualization():
     plt.title('Railway map of the Netherlands')
     plt.savefig('railway_map.png')
 
-def follow_track(route):
+def follow_track(route, stationdictionary):
     """Follow a track again"""
     for track in route:
         for i in range(len(track._route) - 1):
@@ -37,9 +39,8 @@ def follow_track(route):
         next_stop.travel()
 
 # Following two functions don't require the travel() function
-# Decided that stations do not need to change colour, can easily be changed back
 
-def follow_track_better(route):
+def follow_track_better(route, stationdictionary):
     """Follow a track again"""
     visualization_connection_set = set()
     for track in route:
@@ -52,7 +53,7 @@ def follow_track_better(route):
                     break
     return visualization_connection_set
 
-def simple_visualization_better(visualization_connection_set):
+def simple_visualization_better(visualization_connection_set, stationdictionary, connectionlist):
     """Visualizes all the tracks in a plot"""
     plt.figure(figsize=(25, 35))
 
