@@ -28,31 +28,7 @@ if __name__ == '__main__':
         file_connections = 'data/ConnectiesNationaal.csv'
         max_trains = 20
         max_time = 180
-    
-    # qualityroutes = {}
-    # stationdict, connectionlist = load(file_stations, file_connections)
-    
-    # for _ in range(1):
-    #     route = Make_Bad_Routes(list(stationdict.values()), connectionlist, max_trains, max_time)
-    #     route.run()
-    #     quality = route.quality()
 
-    #     print(route)
-
-    #     create_animation(list(stationdict.values()), connectionlist, route)
-
-    
-    qualityroutes = {}
-    stationdict, connectionlist = load(file_stations, file_connections)
-
-    for _ in range(1):
-        route = make_random_routes(list(stationdict.values()), connectionlist, max_trains, max_time)
-        route.run()
-        quality = route.quality()
-
-    # Run once -------------------------------
-    # qualityroutes = {}
-    # stationdict, connectionlist = load(file_stations, file_connections)
 
     # ----------------------------- Run once ----------------------------------
     rails = Railnet()
@@ -70,10 +46,7 @@ if __name__ == '__main__':
     # rails.reset()
     # newroute = Make_Bad_Routes(rails, max_trains, max_time)
     # newroute.run()
-    # print(newroute)
-
-        # create_animation(list(stationdict.values()), connectionlist, route)
-    
+    # print(newroute)  
 
     # ----------------------------- Create histogram --------------------------
 
