@@ -30,6 +30,13 @@ class Railnet():
     def get_connections(self):
         return self._connections
 
+    def get_passed_connections(self) -> set:
+        connections_passed = set()
+        for connection in self._connections.values():
+            if connection.passed():
+                connections_passed.add(connection)
+        return connections_passed
+
     def reset(self):
 
         # reset the stations

@@ -1,7 +1,7 @@
 """
 main.py
 """
-from code.classes.load import load
+# from code.classes.load import load
 from code.algorithms.bad_algorithm import Make_Bad_Routes
 from code.visualisation.plotly_animation import create_animation
 from code.classes.structure import Railnet
@@ -34,7 +34,7 @@ if __name__ == '__main__':
     rails = Railnet()
     rails.load(file_stations, file_connections)
 
-    route = Make_Bad_Routes(list(rails.get_stations().values()), list(rails.get_connections().values()), max_trains, max_time)
+    route = Make_Bad_Routes(rails, max_trains, max_time)
     route.run()
     quality = route.quality()
 
