@@ -42,6 +42,12 @@ if __name__ == '__main__':
 
     create_animation(list(rails.get_stations().values()), list(rails.get_connections().values()), route)
 
+    # rails.reset()
+    # newroute = Make_Bad_Routes(rails, max_trains, max_time)
+    # newroute.run()
+    # print(newroute)
+
+
         # quality, route = make_bad_routes(list(stationdictionary.values()), connectionlist, 7, 120)
 
         # qualityroutes[quality] = route
