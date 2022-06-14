@@ -37,6 +37,17 @@ class Railnet():
                 connections_passed.add(connection)
         return connections_passed
 
+    def station_failure(self, failed_station):
+        """Removes a failed stations from the dictionary, including all connections to it"""
+        for connection in self._stations[failed_station]._connections:
+            self.remove(connection)
+            for station in connection._stations:
+                if station is not stationdictionary[failed_station]:
+                    station._connections.remove(connection)
+                    if len(station._connections) == 0:
+                        del stationdictionary[station]
+        del self._stations[failed_station]
+
     def reset(self):
 
         # reset the stations

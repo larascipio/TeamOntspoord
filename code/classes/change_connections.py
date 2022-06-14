@@ -1,6 +1,9 @@
 from load import *
 import random
 
+# TODO OUTDATED - werkt niet zonder de global variables stationdictionary en connectionlist
+# zou nu beide variables weer moeten returnen
+
 def station_failure(failed_station):
     """Removes a failed stations from the dictionary, including all connections to it"""
     for connection in stationdictionary[failed_station]._connections:
