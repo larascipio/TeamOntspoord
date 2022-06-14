@@ -8,17 +8,18 @@ def station_failure(failed_station):
         for station in connection._stations:
             if station is not stationdictionary[failed_station]:
                 station._connections.remove(connection)
+                if len(station._connections) == 0:
+                    del stationdictionary[station]
     del stationdictionary[failed_station]
 
 def remove_random_connections():
     """Removes three random connections - if a stations has no more connections, remove it too"""
+    possible_removal_list = []
     for i in range(3):
         removed_connection = random.choice(connectionlist)
-        connectionlist.remove(removed_connection)
-        for station in removed_connection._stations:
-            station._connections.remove(removed_connection)
-            if len(station._connections) == 0:
-                del stationdictionary[station]
+        for station in removed_connection:
+            possible_removal_list.append(station)
+        remove_stations(possible_removal_list, removed_connection)
 
 # TODO Deze code is nog niet af, werkt als het goed is wel
 def change_random_connections():
@@ -28,9 +29,7 @@ def change_random_connections():
         changed_connection = random.choice(connectionlist)
         # TODO Hoe maak ik de distance correct, ivm de afstand
         new_distance = changed_connection._distance
-        connectionlist.remove(changed_connection)
-        for station in changed_connection._stations:
-            station._connections.remove(changed_connection)
+        for station in changed_connection:
             possible_removal_list.append(station)
         new_start_station = random.choice(changed_connection._stations)
         new_end_station = random.choice(list(stationdictionary.values()))
@@ -42,10 +41,16 @@ def change_random_connections():
         stationdictionary[new_start_station].add_connection(new_connection)
         stationdictionary[new_end_station].add_connection(new_connection)
         connectionlist.append(new_connection)
-    # Remove stations without a connection
+        # Remove stations without a connection
+        # TODO Stations that could get new connections get removed
+        remove_stations(possible_removal_list, changed_connection)
+
+def remove_stations(possible_removal_list, removed_connection):
+    connectionlist.remove(removed_connection)
     for station in possible_removal_list:
+        station._connections.remove(removed_connection)
         if len(station._connections) == 0:
-            del stationdictionary[station]
+                del stationdictionary[station]
 
 # TODO in plaats van stations te verwijderen uit de dictionary, ergens anders code stoppen zodat station daar niet begint?
 # Zou beter werken voor de visualiatie, dan heb je stations zonder verbindingen nog wel op de kaart
