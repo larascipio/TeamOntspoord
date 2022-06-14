@@ -2,14 +2,17 @@ import plotly.graph_objects as go
 import plotly.express as px
 import random
 
-def create_animation(stations, connectionlist, routeclass):
+def create_animation(railnet, routeclass):
+
+    # get the stations and connections
+    stations = list(railnet.get_stations().values())
+    connectionlist = list(railnet.get_connections().values())
 
     # create the colours for the trains
     route = routeclass.get_trains()
     num_trains = len(route)
-    colorlist = px.colors.qualitative.Plotly + px.colors.qualitative.D3
+    colorlist = px.colors.qualitative.Plotly
     color = random.choices(colorlist, k=num_trains)
-
 
     # add the first stations for every train to the data (weird animation thing plotly)
     first_x = []

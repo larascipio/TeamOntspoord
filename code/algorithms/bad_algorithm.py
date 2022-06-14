@@ -1,26 +1,27 @@
 import random
 
 class Make_Bad_Routes():
-    def __init__(self, stations: list, connections: list, num_trains: int, max_distance: int):
+    def __init__(self, railnet, num_trains: int, max_distance: int):
         """
         Create a network of routes.
         """
-        self._stations = stations
-        self._connections = connections
+        self._railnet = railnet
+        # self._stations = list(railnet.get_stations().values())
+        # self._connections = list(railnet.get_connections())
         self._max_trains = num_trains
         self._max_dist = max_distance
-        self._tot_connections = len(connections)
-        self._tot_stations = len(stations)
+        self._tot_stations = len(self._railnet.get_stations())
+        self._tot_connections = len(self._railnet.get_connections())
         self._trains = []
 
         # find the endstations
         self._end_stations = []
-        for station in stations:
+        for station in self._railnet.get_stations().values():
             if len(station.get_connections()) % 2 == 1:
                 self._end_stations.append(station)
 
     def run(self):
-        while len(self.all_connections_passed()) < self._tot_connections:
+        while len(self._railnet.get_passed_connections()) < self._tot_connections:
             
             # check if there can be another train
             if len(self._trains) == self._max_trains:
@@ -60,9 +61,9 @@ class Make_Bad_Routes():
                 
             else:
                 # choose a random station that has not been travelled
-                for station in self._stations:
+                for station in self._railnet.get_stations():
                     # check if all connections are passed
-                    if set(station.get_connections()) - self.all_connections_passed():
+                    if set(station.get_connections()) - self._route.get_passed_connections():
                         start = station
                         break
                 
@@ -75,18 +76,25 @@ class Make_Bad_Routes():
     def get_trains(self):
         return self._trains
 
-    def all_connections_passed(self) -> set:
-        connections = set()
-        for train in self._trains:
-            connections = connections | set(train.get_connections())
-        return connections
+    # def all_connections_passed(self) -> set:
+    #     connections = set()
+
+    #     # for train in self._trains:
+    #     #     connections = connections | set(train.get_connections())
+
+    #     for connection in self._route.get_connections.values():
+    #         if connection.passed():
+    #             connections.add(connection)
+        
+    #     return connections
+            
 
     def all_stations_passed(self) -> set:
         """
         Give a set of all stations passed.
         """
         stations = set()
-        for train in self._trains:
+        for train in self._route.get_trains.values():
             stations.add(train.get_stations())
         return stations
 
@@ -94,7 +102,7 @@ class Make_Bad_Routes():
         """
         Calculate the quality of the current routes.
         """
-        qual = (len(self.all_connections_passed())/self._tot_connections)*10000
+        qual = (len(self._railnet.get_passed_connections())/self._tot_connections)*10000
         for train in self._trains:
             qual -= 100
             qual -= train.get_distance()
@@ -151,8 +159,10 @@ class Train():
         Choose a random connection that has not been passed yet.
         """
         
-        possible_connections = set(self._current_station.get_connections()) - set(self.get_connections()) - self._routes.all_connections_passed()
-
+        possible_connections = []
+        for connection in self._current_station.get_connections():
+            if not connection.passed():
+                possible_connections.append(connection)
         if possible_connections:
             return random.choice(list(possible_connections))
 
@@ -192,6 +202,7 @@ class Train():
         self._route.append(self._current_station.get_name())
         self._stations_traveled.append(self._current_station)
         self._connections_traveled.append(connection)
+        connection.travel()
         # print(self.get_connections())
         # print(self._distance)
         # print()
@@ -203,7 +214,7 @@ class Train():
         return self._route
 
     def __repr__(self):
-        return f'{[station for station in self._stations_traveled]}'
+        return f'Train: {[station for station in self._stations_traveled]}'
 
 
 def make_bad_routes(stations: list, connections: list, num_trains: int, max_distance: int):

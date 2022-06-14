@@ -5,24 +5,27 @@ stations.py
 class Station():
     def __init__(self, station: str, x_coordinate: float, y_coordinate: float):
         """Create a station.s"""
-        self._connections = []
+        self._connections = {}
         self._name = station
         self._x = float(y_coordinate)
         self._y = float(x_coordinate)
-        # self._passed = False
+        self._passed = False
 
-    def add_connection(self, connection):
+    def add_connection(self, uid, connection):
         """Add a connection from this station to the next."""
-        self._connections.append(connection)
+        self._connections[uid] = connection
 
-    # def travel(self):
-    #     self._passed = True
+    def travel(self):
+        self._passed = True
+    
+    def passed(self):
+        return self._passed
 
-    # def passed(self):
-    #     return self._passed
+    def reset(self):
+        self._passed = False
 
     def get_connections(self):
-        return self._connections
+        return list(self._connections.values())
 
     def get_position(self):
         return (self._x, self._y)
@@ -34,7 +37,7 @@ class Station():
         """Print the information of this station."""
         print(self._name)
         print('Connections:')
-        for connection in self._connections:
+        for connection in self._connections.values():
             print(connection.get_destination(self)._name)
         print(f'Location: ({self._x}, {self._y})')
         print()
@@ -47,7 +50,7 @@ class Connection():
         """Create a connection between station1 and station2."""
         self._stations = (station1, station2)
         self._distance = int(distance)
-        # self._passed = False
+        self._passed = 0
 
     def get_destination(self, station):
         """Return the destination from travelling this connection."""
@@ -55,11 +58,22 @@ class Connection():
             return self._stations[1]
         return self._stations[0]
 
-    # def travel(self):
-    #     self._passed = True
+    def travel(self):
+        self._passed += 1
+
+    def passed(self):
+        if self._passed:
+            return True
+        return False
     
-    # def passed(self):
-    #     return self._passed
+    def remove(self):
+        if self._passed > 0:
+            self._passed -= 1
+        else:
+            raise Exception('You cannot remove this connection, as it is not passed.')
+        
+    def reset(self):
+        self._passed = 0
 
     def get_distance(self):
         return self._distance
