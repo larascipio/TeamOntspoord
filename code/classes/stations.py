@@ -5,15 +5,15 @@ stations.py
 class Station():
     def __init__(self, station: str, x_coordinate: float, y_coordinate: float):
         """Create a station.s"""
-        self._connections = []
+        self._connections = {}
         self._name = station
         self._x = float(y_coordinate)
         self._y = float(x_coordinate)
         self._passed = False
 
-    def add_connection(self, connection):
+    def add_connection(self, uid, connection):
         """Add a connection from this station to the next."""
-        self._connections.append(connection)
+        self._connections[uid] = connection
 
     def travel(self):
         self._passed = True
@@ -25,7 +25,7 @@ class Station():
         self._passed = False
 
     def get_connections(self):
-        return self._connections
+        return list(self._connections.values())
 
     def get_position(self):
         return (self._x, self._y)
@@ -37,7 +37,7 @@ class Station():
         """Print the information of this station."""
         print(self._name)
         print('Connections:')
-        for connection in self._connections:
+        for connection in self._connections.values():
             print(connection.get_destination(self)._name)
         print(f'Location: ({self._x}, {self._y})')
         print()

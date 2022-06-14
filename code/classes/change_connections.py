@@ -1,4 +1,4 @@
-from load import *
+from code.classes.load import load
 import random
 
 # TODO OUTDATED - werkt niet zonder de global variables stationdictionary en connectionlist
