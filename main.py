@@ -28,28 +28,28 @@ if __name__ == '__main__':
         max_trains = 20
         max_time = 180
     
-    qualityroutes = {}
-    stationdict, connectionlist = load(file_stations, file_connections)
-    
-    for _ in range(1):
-        route = Make_Bad_Routes(list(stationdict.values()), connectionlist, max_trains, max_time)
-        route.run()
-        quality = route.quality()
-
-        print(route)
-
-        create_animation(list(stationdict.values()), connectionlist, route)
-
-    
     # qualityroutes = {}
     # stationdict, connectionlist = load(file_stations, file_connections)
     
     # for _ in range(1):
-    #     route = make_random_routes(list(stationdict.values()), connectionlist, max_trains, max_time)
+    #     route = Make_Bad_Routes(list(stationdict.values()), connectionlist, max_trains, max_time)
     #     route.run()
     #     quality = route.quality()
 
     #     print(route)
+
+    #     create_animation(list(stationdict.values()), connectionlist, route)
+
+    
+    qualityroutes = {}
+    stationdict, connectionlist = load(file_stations, file_connections)
+
+    for _ in range(1):
+        route = make_random_routes(list(stationdict.values()), connectionlist, max_trains, max_time)
+        route.run()
+        quality = route.quality()
+
+        print(route)
 
         # create_animation(list(stationdict.values()), connectionlist, route)
     
