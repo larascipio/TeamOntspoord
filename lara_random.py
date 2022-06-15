@@ -1,10 +1,11 @@
 """
 main.py
 """
-from code.classes.load import load, print_stationdictionary
-from code.algorithms.random_algorithm import make_random_routes
+from code.algorithms.bad_algorithm import Make_Bad_Routes
+from code.algorithms.random_algorithm import Make_Random_Routes 
 from code.visualisation.plotly_animation import create_animation
-
+from code.classes.structure import Railnet
+from code.visualisation.quality_hist import quality_hist
 import argparse
 
 if __name__ == '__main__':
@@ -26,16 +27,16 @@ if __name__ == '__main__':
         max_time = 180
 
     
-    qualityroutes = {}
-    stationdict, connectionlist = load(file_stations, file_connections)
-    print(connectionlist)
+    rails = Railnet()
+    rails.load(file_stations, file_connections)
 
-    for _ in range(1):
-        route = make_random_routes(list(stationdict.values()), connectionlist, max_trains, max_time)
-        route.run()
-        quality = route.quality()
+    route = Make_Random_Routes(rails, max_trains, max_time)
+    route.run()
+    quality = route.quality()
 
-        print(route)
+    print(route)
+
+    create_animation(rails, route)
 
         # create_animation(list(stationdict.values()), connectionlist, route)
     
