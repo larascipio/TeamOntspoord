@@ -1,14 +1,12 @@
 """
 main.py
 """
-# from code.classes.load import load
 from code.algorithms.bad_algorithm import Make_Bad_Routes
 from code.algorithms.random_algorithm import Make_Random_Routes
 from code.visualisation.plotly_animation import create_animation
 from code.classes.structure import Railnet
 from code.visualisation.quality_hist import quality_hist
-# from code.classes.change_connections import *
-# from code.visualisation.simple_visualization import *
+# from code.visualisation.simple_visualization import simple_visualization
 import argparse
 
 if __name__ == '__main__':
@@ -54,7 +52,7 @@ if __name__ == '__main__':
     # best_quality = 0
     # rails = Railnet()
     # rails.load(file_stations, file_connections)
-    # for i in range(100):
+    # for _ in range(100):
     #     route = Make_Bad_Routes(rails, max_trains, max_time) # TODO dit moet het random-algoritme worden
     #     route.run()
     #     route_quality = route.quality()
@@ -67,6 +65,3 @@ if __name__ == '__main__':
     
     # # Create hist for best routes 
     # quality_hist(qualityroutes, best_quality, best_route)
-
-
-
