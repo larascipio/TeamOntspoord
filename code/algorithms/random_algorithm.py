@@ -13,17 +13,19 @@ class Make_Random_Routes():
         self._trains = []
     
     def run(self):
+        """
+        Run the algorithm.
+        """
+        amount_of_trains = 0
         # check whether not all connections have been passed 
         while len(self._railnet.get_passed_connections()) < self._tot_connections:
+    
             
-            # check if there can be another train
-            if len(self._trains) == self._max_trains:
-                raise Exception('Too many trains made.')
-            
-            # create a train
-            train = self.create_train()
-            if not train:
-                return
+            for _ in range(self._max_trains):
+                # create a train
+                train = self.create_train()
+                if not train:
+                    return
 
             # keep going until the route is 2 hours
             while train.is_running():
@@ -37,6 +39,9 @@ class Make_Random_Routes():
                     train.move(connection)
                 else:
                     train.stop()
+
+            # save the train
+            self._trains.append(train)
     
     def create_train(self):
         """
