@@ -30,12 +30,10 @@ if __name__ == '__main__':
     rails = Railnet()
     rails.load(file_stations, file_connections)
 
-    for _ in range(100):
+    for _ in range(200):
         route = Make_Random_Routes(rails, max_trains, max_time)
         route.run()
         quality = route.quality()
-        print(route)
-        print(quality)
         qualityroutes[quality] = route
         rails.reset() 
 

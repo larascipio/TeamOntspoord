@@ -126,6 +126,7 @@ class Train():
         connection_weight = (1 - stop_weight) / counter
         for _ in range(counter):
             weights.append(connection_weight)
+        print(weights)
         if possible_connections:
             choice = np.random.choice(possible_connections, 1, p=weights)
             if choice[0] == "stop":
