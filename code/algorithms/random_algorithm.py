@@ -16,18 +16,19 @@ class Make_Random_Routes():
         """
         Run the algorithm.
         """
-        amount_of_trains = 0
-        # check whether not all connections have been passed 
-        while len(self._railnet.get_passed_connections()) < self._tot_connections:
-    
-            
-            for _ in range(self._max_trains):
-                # create a train
-                train = self.create_train()
-                if not train:
-                    return
+        # Create a random max distance (BIAS: not higher than input max distance)
+        # self._random_distance = random.randint(1, self._max_dist)
 
-            # keep going until the route is 2 hours
+        # Create a random amount of trains within the constraint (BIAS: 0 = eruit )
+        self._random_amount = random.randint(1, self._max_trains)
+        for _ in range(self._random_amount):
+            # create a train
+            train = self.create_train()
+
+            if not train:
+                return
+
+        # keep going until the route is 2 hours
             while train.is_running():
                 # connection = train.choose_connection()
                 connection = train.choose_random_connection()
@@ -40,7 +41,7 @@ class Make_Random_Routes():
                 else:
                     train.stop()
 
-            # save the train
+        # save the train
             self._trains.append(train)
     
     def create_train(self):
@@ -60,20 +61,6 @@ class Make_Random_Routes():
     
     def get_trains(self):
         return self._trains
-    
-    def choose_random_connection(self):
-        """
-        Choose a random connection.
-        """
-        possible_connections = []
-        for connection in self._current_station.get_connections():
-                possible_connections.append(connection)
-        if possible_connections:
-            return random.choice(list(possible_connections))
-
-        # no more possible connections
-        self.stop()
-        return None
     
     def quality(self) -> float:
         """
@@ -124,19 +111,23 @@ class Train():
         return self._stations_traveled
 
     def choose_random_connection(self):
-            """
-            Choose a random connection.
-            """
-            
-            possible_connections = []
-            for connection in self._current_station.get_connections():
+        """
+        Choose a random connection.
+        """
+        possible_connections = ["stop"]
+        for connection in self._current_station.get_connections():
                 possible_connections.append(connection)
-            if possible_connections:
-                return random.choice(list(possible_connections))
+        if possible_connections:
+            choice = random.choice(list(possible_connections))
+            print(choice)
+            if choice == "stop":
+                self.is_running = False 
+                return None
+            return choice 
 
-            # no more possible connections
-            self.stop()
-            return None
+        # no more possible connections
+        self.stop()
+        return None
 
     def move(self, connection):
         """

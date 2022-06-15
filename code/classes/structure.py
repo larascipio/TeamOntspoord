@@ -47,7 +47,7 @@ class Railnet():
         """Removes a failed station from the dictionary, including all connections to it"""
         for unique_id in self._stations[failed_station]._connections:
 
-            for station in self._connections[unique_id]:
+            for station in self._connections[unique_id]._stations:
 
                 # Remove the connection to the failed station in the station objects
                 if station is not self._stations[failed_station]:
@@ -64,24 +64,39 @@ class Railnet():
     def remove_random_connections(self):
         """Removes three random connections"""
         for i in range(3):
-            removed_connection = random.choice(list(self._connections.values()))
-            self.remove_connection(removed_connection)
+            uid = random.choice(list(self._connections.keys()))
+            self.remove_connection(uid)
 
-    def remove_connection(self, removed_connection):
+    def remove_connection(self, uid):
         """Removes connection"""
-        for station in removed_connection._stations:
-                station.remove_connection(removed_connection)
-        del self._connections[removed_connection]
+        for station in self._connections[uid]._stations:
+                station.remove_connection(uid)
+        del self._connections[uid]
 
     def add_connection(self, start, end):
         "Adds new connection"
         new_uid = max(self._connections) + 1
-        # TODO pas distance aan
-        distance = 20
+
+        # Create new distance from the coordinates
+        if start._x > end._x:
+            a = start._x - end._x
+        else:
+            a = end._x - start._x
+
+        if start._y > end._y:
+            b = start._y - end._y
+        else:
+            b = end._y - start._y
+
+        c = a**2 + b**2
+        distance = int(c**(1/2) * 100)
+
         connection = Connection(start, end, distance)
         start.add_connection(new_uid, connection)
         end.add_connection(new_uid, connection)
         self._connections[new_uid] = connection
+
+        print(connection, distance)
 
     def change_connection(self):
         """Change connection from random start point to random end point"""
@@ -100,7 +115,7 @@ class Railnet():
             end = random.choice(list(self._stations.values()))
 
         # Remove an old connection and add the new connection
-        removed_connection = random.choice(start._connections)
+        removed_connection = random.choice(list(start._connections.keys()))
         self.remove_connection(removed_connection)
         self.add_connection(start, end)
 
@@ -116,8 +131,8 @@ class Railnet():
 
                 # Makes sure the connection is passed
                 for connection in current_stop._connections:
-                    if connection.get_destination(current_stop) == next_stop:
-                        connection.travel()
+                    if current_stop._connections[connection].get_destination(current_stop) == next_stop:
+                        current_stop._connections[connection].travel()
                         break
 
             # Makes sure the final stop of the track is passed
