@@ -56,11 +56,10 @@ class Railnet():
         # Remove the failed station from the dictionary
         del self._stations[failed_station]
 
-    def remove_random_connections(self):
-        """Removes three random connections"""
-        for i in range(3):
-            uid = random.choice(list(self._connections.keys()))
-            self.remove_connection(uid)
+    def remove_random_connection(self):
+        """Removes random connections"""
+        uid = random.choice(list(self._connections.keys()))
+        self.remove_connection(uid)
 
     def remove_connection(self, uid):
         """Removes connection"""
