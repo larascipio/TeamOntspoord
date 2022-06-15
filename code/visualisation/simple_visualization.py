@@ -1,4 +1,4 @@
-from load import *
+
 import matplotlib.pyplot as plt
 
 # TODO OUTDATED - werkt niet zonder de global variables stationdictionary en connectionlist
@@ -8,10 +8,7 @@ def simple_visualization(stationdictionary, connectionlist):
     plt.figure(figsize=(25, 35))
 
     for station in list(stationdictionary.values()):
-        if station.passed() is True:
-            plt.plot(float(station._x), float(station._y), 'o', color='b')
-        else:
-            plt.plot(float(station._x), float(station._y), 'o', color='y')
+        plt.plot(float(station._x), float(station._y), 'o', color='b')
         plt.annotate(station._name, (float(station._x), float(station._y)))
 
     for connection in connectionlist:

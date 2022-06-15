@@ -54,8 +54,8 @@ if __name__ == '__main__':
     # rails = Railnet()
     # rails.load(file_stations, file_connections)
     # for _ in range(100):
-    #     route = Make_Bad_Routes(rails, max_trains, max_trains) # TODO dit moet het random-algoritme worden
-
+    #     route = Make_Bad_Routes(rails, max_trains, max_time) # TODO dit moet het random-algoritme worden
+    #     route.run()
     #     qualityroutes[quality] = route
     #     rails.reset()
     
