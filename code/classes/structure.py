@@ -95,8 +95,6 @@ class Railnet():
         end.add_connection(new_uid, connection)
         self._connections[new_uid] = connection
 
-        print(connection, distance)
-
     def change_connection(self):
         """Change connection from random start point to random end point"""
 
