@@ -1,4 +1,5 @@
 import random
+import numpy as np
 
 class Make_Random_Routes():
     def __init__(self, railnet, num_trains: int, max_distance: int):
@@ -114,16 +115,23 @@ class Train():
         """
         Choose a random connection.
         """
+        
+        stop_weight = 0.1
+        weights = [stop_weight]
+        counter = 0
         possible_connections = ["stop"]
         for connection in self._current_station.get_connections():
+                counter += 1
                 possible_connections.append(connection)
+        connection_weight = (1 - stop_weight) / counter
+        for _ in range(counter):
+            weights.append(connection_weight)
         if possible_connections:
-            choice = random.choice(list(possible_connections))
-            print(choice)
-            if choice == "stop":
+            choice = np.random.choice(possible_connections, 1, p=weights)
+            if choice[0] == "stop":
                 self.is_running = False 
                 return None
-            return choice 
+            return choice[0] 
 
         # no more possible connections
         self.stop()

@@ -25,18 +25,32 @@ if __name__ == '__main__':
         file_connections = 'data/ConnectiesNationaal.csv'
         max_trains = 20
         max_time = 180
-
     
+    qualityroutes = {}
     rails = Railnet()
     rails.load(file_stations, file_connections)
 
-    route = Make_Random_Routes(rails, max_trains, max_time)
-    route.run()
-    quality = route.quality()
-
-    print(route)
+    for _ in range(100):
+        route = Make_Random_Routes(rails, max_trains, max_time)
+        route.run()
+        quality = route.quality()
+        print(route)
+        print(quality)
+        qualityroutes[quality] = route
+        rails.reset() 
 
     create_animation(rails, route)
+
+    quality_hist(qualityroutes)
+
+    # for _ in range(100):
+    #     route = Make_Bad_Routes(rails, max_trains, max_time) # TODO dit moet het random-algoritme worden
+    #     route.run()
+    #     qualityroutes[quality] = route
+    #     rails.reset()
+    
+    # # Create hist for best routes 
+    # quality_hist(qualityroutes)
 
         # create_animation(list(stationdict.values()), connectionlist, route)
     
