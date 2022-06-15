@@ -216,7 +216,7 @@ class Train():
 
     def move(self, connection):
         """
-        Move to a next station.
+        Move to a next station from the front of the train.
         """
         # print(self._current_station)
 
@@ -234,6 +234,37 @@ class Train():
         # print(self.get_connections())
         # print(self._distance)
         # print()
+
+    def remove_last_connection(self):
+        last_connection = self._connections_traveled.pop()
+        self._distance -= last_connection.get_distance()
+        last_connection.remove()
+        
+
+        self._stations_traveled.pop()
+        self._current_station = self._stations_traveled[-1]
+        self._route.pop()
+
+    def movestart(self, connection):
+        """
+        Move to a next station from the end of the train.
+        """
+        self._distance += connection.get_distance()
+
+        new_station = connection.get_destination(self._route[0])
+
+        self._route.insert(0, new_station.get_name())
+        self._stations_traveled.insert(0, new_station)
+        self._connections_traveled.insert(0, connection)
+        connection.travel()
+    
+    def remove_first_connection(self):
+        first_connection = self._connections_traveled.pop(0)
+        self._distance -= first_connection.get_distance()
+        first_connection.remove()
+        
+        self._stations_traveled.pop(0)
+        self._route.pop(0)
     
     def get_distance(self):
         return self._distance

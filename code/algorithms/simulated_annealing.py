@@ -23,7 +23,7 @@ class Hillclimber():
         return qual
     
     def get_random_routes(self, max_trains, max_time):
-        route = Make_Bad_Routes(self._rails, max_trains, max_time)
+        route = Make_Bad_Routes(self._railnet, max_trains, max_time)
         route.run()
         return route.get_trains()
 
@@ -43,20 +43,47 @@ class Hillclimber():
             else:
                 change(train_to_change)
 
-            # get the new score
-
-            # move back if the score is now lower
+            print()
     
     def extend_train(self, train):
         print(f'Extend {train}')
         qual_before = self.quality()
         index = random.choice([0,-1])
-        station = train.get_route()[index]
+        station = train.get_stations()[index]
         next_connection = random.choice(station.get_connections())
-        
+        if index == 0:
+            train.movestart(next_connection)
+        else:
+            train.move(next_connection)
+            
+        qual_now = self.quality()
+
+        if qual_now < qual_before:
+            if index == 0:
+                train.remove_first_connection()
+            else:
+                train.remove_last_connection()
+        print(f'Now its {train}')
 
     def decrease_train(self, train):
         print(f'Decrease {train}')
+        qual_before = self.quality()
+        index = random.choice([0,-1])
+        connection = train.get_connections()[index]
+        if index == 0:
+            train.remove_first_connection()
+        else:
+            train.remove_last_connection()
+        
+        qual_now = self.quality()
+
+        if qual_now < qual_before:
+            if index == 0:
+                train.movestart(connection)
+            else:
+                train.move(connection)
+        print(f'Now its {train}')
+
 
     def make_new_train(self):
         print('Make new train')
