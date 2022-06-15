@@ -3,7 +3,7 @@ main.py
 """
 # from code.classes.load import load
 from code.algorithms.bad_algorithm import Make_Bad_Routes
-from code.algorithms.random_algorithm import make_random_routes
+from code.algorithms.random_algorithm import Make_Random_Routes
 from code.visualisation.plotly_animation import create_animation
 from code.classes.structure import Railnet
 from code.visualisation.quality_hist import quality_hist
