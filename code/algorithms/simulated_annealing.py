@@ -1,10 +1,11 @@
+from code.algorithms.bad_algorithm import Train
 import random
 
 class Hillclimber():
     def __init__(self, railnet):
         self._rails = railnet
         self._trains = self.get_random_routes()
-        self._changes = []
+        self._changes = [] # TODO list of function for changes
     
     def get_random_routes(self):
         return []
@@ -26,7 +27,7 @@ class Hillclimber():
             # splitting a train in two
 
             # removing a train that is only one station (al bij decreasing?)
-            
+
             # get the score
 
             train_to_change.change()
@@ -37,4 +38,8 @@ class Hillclimber():
             
 
     def transformation(self):
+        pass
+
+class Climbing_Train(Train):
+    def __init__(self, train):
         pass
