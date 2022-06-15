@@ -6,6 +6,7 @@ class Railnet():
     def __init__(self):
         self._stations = {}
         self._connections = {}
+        self._total_connections = 0
 
     def load(self, file_locations: str, file_connections: str):
         """Load the stations and its connections"""
@@ -24,12 +25,16 @@ class Railnet():
                 self._stations[row['station1']].add_connection(uid, connection)
                 self._stations[row['station2']].add_connection(uid, connection)
                 uid += 1
+                self._total_connections += 1
 
     def get_stations(self):
         return self._stations
 
     def get_connections(self):
         return self._connections
+    
+    def get_total_connections(self) -> int:
+        return self._total_connections
 
     def get_passed_connections(self) -> set:
         connections_passed = set()
@@ -56,11 +61,10 @@ class Railnet():
         # Remove the failed station from the dictionary
         del self._stations[failed_station]
 
-    def remove_random_connections(self):
-        """Removes three random connections"""
-        for i in range(3):
-            uid = random.choice(list(self._connections.keys()))
-            self.remove_connection(uid)
+    def remove_random_connection(self):
+        """Removes random connections"""
+        uid = random.choice(list(self._connections.keys()))
+        self.remove_connection(uid)
 
     def remove_connection(self, uid):
         """Removes connection"""
