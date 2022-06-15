@@ -50,17 +50,23 @@ if __name__ == '__main__':
 
     # ----------------------------- Create histogram --------------------------
 
-    # qualityroutes = {}
+    # qualityroutes = []
+    # best_quality = 0
     # rails = Railnet()
     # rails.load(file_stations, file_connections)
-    # for _ in range(100):
+    # for i in range(100):
     #     route = Make_Bad_Routes(rails, max_trains, max_time) # TODO dit moet het random-algoritme worden
     #     route.run()
-    #     qualityroutes[quality] = route
+    #     route_quality = route.quality()
+    #     if route_quality > best_quality:
+    #        best_quality = route_quality
+    #        best_route = route
+
+    #     qualityroutes.append(route_quality)
     #     rails.reset()
     
     # # Create hist for best routes 
-    # quality_hist(qualityroutes)
+    # quality_hist(qualityroutes, best_quality, best_route)
 
 
 
