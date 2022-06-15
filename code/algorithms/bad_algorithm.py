@@ -60,6 +60,8 @@ class Make_Bad_Routes():
             # remove the trains last station from the endstations
             if train._current_station in self._end_stations:
                 self._end_stations.remove(train._current_station)
+            
+            # save the train in the route
             self._trains.append(train)
 
     def create_train(self):
