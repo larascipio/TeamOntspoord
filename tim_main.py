@@ -47,7 +47,7 @@ if __name__ == '__main__':
     for _ in range(args.changeconnection):
         rails.change_connection()
 
-    # Actually runs the algorithm of choice - put the if-statements outside the loop so the code runs faster
+    # Actually runs the algorithm of choice - put the if-statement outside the loop so the code runs faster
     if args.algorithm == 'random':
         for _ in range(args.runs):
 
@@ -90,10 +90,13 @@ if __name__ == '__main__':
             qualityroutes.append(route_quality)
             rails.reset()
     
-    # quality_hist(qualityroutes)
+    quality_hist(qualityroutes)
     output(best_quality, best_route.get_trains(), 'output.csv')
     rails.follow_track(best_route.get_trains())
-    simple_visualization(rails._stations, list(rails._connections.values()))
-    # create_animation(rails, best_route)
 
-    
+    choose_plot = input('Do you want a detailed visualisation of the route? (y/n) ')
+
+    if choose_plot == "y":
+        create_animation(rails, best_route)
+    else:
+        simple_visualization(rails._stations, list(rails._connections.values()))
