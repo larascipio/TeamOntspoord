@@ -1,5 +1,6 @@
 import random
 import numpy as np
+from code.classes.train import Train
 
 class Make_Random_Routes():
     def __init__(self, railnet, num_trains: int, max_distance: int):
@@ -81,87 +82,88 @@ class Make_Random_Routes():
         return representation
     
     
-class Train():
-    def __init__(self, routes, starting_station, max_distance):
-        """
-        Create a train at the given station.
-        """
-        self._routes = routes
-        self._distance = 0
-        self._current_station = starting_station
-        self._route = [self._current_station.get_name()]
-        self._stations_traveled = [self._current_station]
-        self._connections_traveled = []
-        self._running = True
-        self._max_dist = max_distance
+# class Train():
+#     def __init__(self, routes, starting_station, max_distance):
+#         """
+#         Create a train at the given station.
+#         """
+#         self._routes = routes
+#         self._distance = 0
+#         self._current_station = starting_station
+#         self._route = [self._current_station.get_name()]
+#         self._stations_traveled = [self._current_station]
+#         self._connections_traveled = []
+#         self._running = True
+#         self._max_dist = max_distance
     
-    def is_running(self):
-        """ Check if this train is still running. """
-        return self._running
+#     def is_running(self):
+#         """ Check if this train is still running. """
+#         return self._running
 
-    def stop(self):
-        """ Stop the train. """
-        self._running = False
+#     def stop(self):
+#         """ Stop the train. """
+#         self._running = False
 
-    def get_connections(self):
-        """ Get all the connections that this train has in its route. """
-        return self._connections_traveled
+#     def get_connections(self):
+#         """ Get all the connections that this train has in its route. """
+#         return self._connections_traveled
 
-    def get_stations(self):
-        """ Get all the stations in this trains route. """
-        return self._stations_traveled
+#     def get_stations(self):
+#         """ Get all the stations in this trains route. """
+#         return self._stations_traveled
 
-    def choose_random_connection(self):
-        """
-        Choose a random connection.
-        """
-        
-        stop_weight = 0.1
-        weights = [stop_weight]
-        counter = 0
-        possible_connections = ["stop"]
-        for connection in self._current_station.get_connections():
-                counter += 1
-                possible_connections.append(connection)
-        connection_weight = (1 - stop_weight) / counter
-        for _ in range(counter):
-            weights.append(connection_weight)
-        if possible_connections:
-            choice = np.random.choice(possible_connections, 1, p=weights)
-            if choice[0] == "stop":
-                self.is_running = False 
-                return None
-            return choice[0] 
+#     def choose_random_connection(self):
+#         """
+#         Choose a random connection.
+#         """
 
-        # no more possible connections
-        self.stop()
-        return None
+#         stop_weight = 0.1
+#         weights = [stop_weight]
+#         counter = 0
+#         possible_connections = ["stop"]
+#         for connection in self._current_station.get_connections():
+#                 counter += 1
+#                 possible_connections.append(connection)
+#         connection_weight = (1 - stop_weight) / counter
+#         for _ in range(counter):
+#             weights.append(connection_weight)
+#         print(weights)
+#         if possible_connections:
+#             choice = np.random.choice(possible_connections, 1, p=weights)
+#             if choice[0] == "stop":
+#                 self.is_running = False 
+#                 return None
+#             return choice[0] 
 
-    def move(self, connection):
-        """
-        Move to a next station.
-        """
+#         # no more possible connections
+#         self.stop()
+#         return None
 
-    # increase the distance of the route
-        self._distance += connection.get_distance()
+#     def move(self, connection):
+#         """
+#         Move to a next station.
+#         """
 
-        # move the current station
-        self._current_station = connection.get_destination(self._current_station)
+#     # increase the distance of the route
+#         self._distance += connection.get_distance()
 
-        # add the station and connection to the route
-        self._route.append(self._current_station.get_name())
-        self._stations_traveled.append(self._current_station)
-        self._connections_traveled.append(connection)
-        connection.travel()
+#         # move the current station
+#         self._current_station = connection.get_destination(self._current_station)
+
+#         # add the station and connection to the route
+#         self._route.append(self._current_station.get_name())
+#         self._stations_traveled.append(self._current_station)
+#         self._connections_traveled.append(connection)
+#         connection.travel()
     
-    def get_distance(self):
-        return self._distance
+#     def get_distance(self):
+#         return self._distance
     
-    def get_route(self):
-        return self._route
+#     def get_route(self):
+#         return self._route
 
-    def __repr__(self):
-        return f'Train: {[station for station in self._stations_traveled]}'
+#     def __repr__(self):
+#         return f'Train: {[station for station in self._stations_traveled]}'
 
 
 # def Make_Random_Routes(stations: list, connections: list, max_trains:int, max_distance: int):
