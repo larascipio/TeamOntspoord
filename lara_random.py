@@ -6,6 +6,7 @@ from code.algorithms.random_algorithm import Make_Random_Routes
 from code.visualisation.plotly_animation import create_animation
 from code.classes.structure import Railnet
 from code.visualisation.quality_hist import quality_hist
+from code.visualisation.output import output
 import argparse
 
 if __name__ == '__main__':
@@ -30,14 +31,18 @@ if __name__ == '__main__':
     rails = Railnet()
     rails.load(file_stations, file_connections)
 
-    for _ in range(200):
+    for _ in range(1):
         route = Make_Random_Routes(rails, max_trains, max_time)
         route.run()
         quality = route.quality()
         qualityroutes[quality] = route
         rails.reset() 
 
-    create_animation(rails, route)
+    print(route)
+
+    output(route.quality(),route.get_trains(),outputfile='code/output/output.csv')
+
+    # create_animation(rails, route)
 
     quality_hist(qualityroutes)
 
