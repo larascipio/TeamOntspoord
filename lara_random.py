@@ -31,7 +31,7 @@ if __name__ == '__main__':
     rails = Railnet()
     rails.load(file_stations, file_connections)
 
-    for _ in range(1):
+    for _ in range(100):
         route = Make_Random_Routes(rails, max_trains, max_time)
         route.run()
         quality = route.quality()
@@ -40,7 +40,7 @@ if __name__ == '__main__':
 
     print(route)
 
-    output(route.quality(),route.get_trains(),outputfile='code/output/output.csv')
+    output(quality,route.get_trains(),outputfile='code/output/output.csv')
 
     # create_animation(rails, route)
 
