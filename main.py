@@ -14,6 +14,7 @@ if __name__ == '__main__':
     # use commandline arguments to choose the railroad
     parser = argparse.ArgumentParser(description='create routes')
     parser.add_argument("type", choices=['holland','national'], help="Use the holland or national railroads")
+    
     args = parser.parse_args()
 
     if args.type == 'holland':
@@ -27,11 +28,13 @@ if __name__ == '__main__':
         max_trains = 20
         max_time = 180
 
+    # ----------------------------- Load in rails -----------------------------
 
-    # ----------------------------- Run once ----------------------------------
     rails = Railnet()
     rails.load(file_stations, file_connections)
 
+    # ----------------------------- Run once ----------------------------------
+    
     route = Make_Bad_Routes(rails, max_trains, max_time)
     route.run()
     quality = route.quality()
@@ -46,22 +49,15 @@ if __name__ == '__main__':
     # newroute.run()
     # print(newroute)  
 
-    # ----------------------------- Create histogram --------------------------
+    # ----------------------------- Create histogram of random ----------------
 
-    # qualityroutes = []
-    # best_quality = 0
-    # rails = Railnet()
-    # rails.load(file_stations, file_connections)
-    # for _ in range(100):
-    #     route = Make_Bad_Routes(rails, max_trains, max_time) # TODO dit moet het random-algoritme worden
-    #     route.run()
-    #     route_quality = route.quality()
-    #     if route_quality > best_quality:
-    #        best_quality = route_quality
-    #        best_route = route
-
-    #     qualityroutes.append(route_quality)
-    #     rails.reset()
+    random_qualities = []
+    for _ in range(100):
+        route = Make_Random_Routes(rails, max_trains, max_time)
+        route.run()
+        route_quality = route.quality()
+        random_qualities.append(route_quality)
+        rails.reset()
     
-    # # Create hist for best routes 
-    # quality_hist(qualityroutes, best_quality, best_route)
+    # Create hist for best routes 
+    quality_hist(random_qualities)
