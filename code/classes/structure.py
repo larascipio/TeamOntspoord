@@ -45,6 +45,8 @@ class Railnet():
 
     def station_failure(self, failed_station):
         """Removes a failed station from the dictionary, including all connections to it"""
+        if failed_station not in self._stations:
+            return
         for unique_id in self._stations[failed_station]._connections:
 
             for station in self._connections[unique_id]._stations:
@@ -133,7 +135,8 @@ class Railnet():
                         break
 
             # Makes sure the final stop of the track is passed
-            next_stop.travel()
+            if len(track._route) > 1:
+                next_stop.travel()
 
     def reset(self):
 
