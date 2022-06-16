@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 from code.visualisation.output import output
 
+# def quality_hist(qualityroutes, best_quality, best_route):
 def quality_hist(qualityroutes):
     """
         Create a hist for the best quality routes 
