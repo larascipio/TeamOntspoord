@@ -6,11 +6,11 @@ def quality_hist(qualityroutes):
     """
         Create a hist for the best quality routes 
     """
-    plt.hist(qualityroutes, color='g')
+    plt.hist(qualityroutes, color='g', bins=100)
     plt.xlabel('Quality')
     plt.ylabel('Number of runs')
     plt.title(f'Quality for {len(qualityroutes)} runs')
-    plt.savefig('lijnvoeringkwaliteit.png')
+    plt.savefig('./code/output/lijnvoeringkwaliteit.png')
 
     # best_qual = max(qualityroutes.keys())
     # best_route = qualityroutes[best_qual]

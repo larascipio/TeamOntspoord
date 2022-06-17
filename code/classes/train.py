@@ -119,7 +119,6 @@ class Train():
         last_connection = self._connections_traveled.pop()
         self._distance -= last_connection.get_distance()
         last_connection.remove()
-        
 
         self._stations_traveled.pop()
         self._current_station = self._stations_traveled[-1]
@@ -131,7 +130,7 @@ class Train():
         """
         self._distance += connection.get_distance()
 
-        new_station = connection.get_destination(self._route[0])
+        new_station = connection.get_destination(self._stations_traveled[0])
 
         self._route.insert(0, new_station.get_name())
         self._stations_traveled.insert(0, new_station)

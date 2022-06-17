@@ -13,8 +13,18 @@ if __name__ == '__main__':
 
     # use commandline arguments to choose the railroad
     parser = argparse.ArgumentParser(description='create routes')
-    parser.add_argument("type", choices=['holland','national'], help="Use the holland or national railroads")
-    
+    parser.add_argument(
+        "type", 
+        choices=['holland','national'],
+        help="Use the holland or national railroads"
+        )
+    parser.add_argument(
+        "algorithm", 
+        choices=['random','bad'], 
+        default='random', 
+        help="The algorithm that will be used."
+        )
+
     args = parser.parse_args()
 
     if args.type == 'holland':
@@ -34,14 +44,27 @@ if __name__ == '__main__':
     rails.load(file_stations, file_connections)
 
     # ----------------------------- Run once ----------------------------------
-    
-    route = Make_Bad_Routes(rails, max_trains, max_time)
-    route.run()
-    quality = route.quality()
+    if args.algorithm == 'bad':
 
-    print(route)
+        random_qualities = []
+        for _ in range(1):
+            rails.reset()
+            route = Make_Bad_Routes(rails, max_trains, max_time)
+            route.run()
+            route_quality = route.quality()
+            random_qualities.append(route_quality)
+            
+        
+        # Create hist for best routes 
+        quality_hist(random_qualities)
 
-    create_animation(rails, route)
+        # route = Make_Bad_Routes(rails, max_trains, max_time)
+        # route.run()
+        # quality = route.quality()
+
+        # print(route)
+
+        create_animation(rails, route)
 
 
     # rails.reset()
@@ -51,13 +74,17 @@ if __name__ == '__main__':
 
     # ----------------------------- Create histogram of random ----------------
 
-    random_qualities = []
-    for _ in range(100):
-        route = Make_Random_Routes(rails, max_trains, max_time)
-        route.run()
-        route_quality = route.quality()
-        random_qualities.append(route_quality)
-        rails.reset()
-    
-    # Create hist for best routes 
-    quality_hist(random_qualities)
+    elif args.algorithm == 'random':
+        random_qualities = []
+        for _ in range(1):
+            rails.reset()
+            route = Make_Random_Routes(rails, max_trains, max_time)
+            route.run()
+            route_quality = route.quality()
+            random_qualities.append(route_quality)
+            
+        
+        # Create hist for best routes 
+        quality_hist(random_qualities)
+
+        create_animation(rails, route)

@@ -1,6 +1,6 @@
 import csv
 
-def output(quality, trains, outputfile):
+def output(quality: float, trains: list, outputfile: str):
     """Put output in a csv file called output.csv"""
     with open(outputfile, 'w', newline='') as file:
 
