@@ -8,8 +8,9 @@
 #     # print(pow(c,i)*s/2)
 #     sum += pow(c,i)*s
 # print('{:e}'.format(sum))
-from code.algorithms.bad_algorithm import make_bad_routes
-from code.classes.load import load
+# from code.algorithms.bad_algorithm import make_bad_routes
+from code.algorithms.simulated_annealing import Hillclimber
+from code.classes.structure import Railnet
 from code.visualisation.plotly_animation import create_animation
 import argparse
 
@@ -30,10 +31,12 @@ if __name__ == '__main__':
         max_trains = 20
         max_time = 180
 
-    # create the stations from the file
-    stationsdict, connections = load(file_stations, file_connections)
-    stations = list(stationsdict.values())
+# ----------------------------- Run once ----------------------------------
+    rails = Railnet()
+    rails.load(file_stations, file_connections)
 
-    quality, route = make_bad_routes(stations, max_trains, max_time, len(connections))
+    algorithm = Hillclimber(rails, max_trains, max_time)
+    algorithm.run(10000)
 
-    create_animation(stations, connections, route)
+
+    # create_animation(rails, route)
