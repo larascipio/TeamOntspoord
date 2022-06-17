@@ -11,15 +11,23 @@ class Hillclimber():
             self.extend_train, 
             self.decrease_train, 
             self.make_new_train, 
-            self.split_train
+            self.split_train,
+            self.remove_train
         ]
+        self._max_trains = max_trains
         self._max_dist = max_time
+    
+    def get_trains(self) -> list:
+        return self._trains
 
     def quality(self) -> float:
         """
         Calculate the quality of the current routes.
         """
-        qual = (len(self._railnet.get_passed_connections())/self._railnet.get_total_connections())*10000
+        qual = (
+            len(self._railnet.get_passed_connections())
+            /self._railnet.get_total_connections()
+            )*10000
         for train in self._trains:
             qual -= 100
             qual -= train.get_distance()
@@ -58,6 +66,10 @@ class Hillclimber():
         index = random.choice([0,-1])
         station = train.get_stations()[index]
         next_connection = random.choice(station.get_connections())
+        if train.get_distance() + next_connection.get_distance() > self._max_dist:
+            # print('The train is too long.')
+            return
+
         if index == 0:
             train.movestart(next_connection)
         else:
@@ -106,6 +118,10 @@ class Hillclimber():
     def make_new_train(self):
         # print('Make new train')
 
+        if len(self._trains) == self._max_trains:
+            # print('Too many trains.')
+            return
+
         qual_before = self.quality()
 
         # choose a random connection to put a train on
@@ -119,7 +135,10 @@ class Hillclimber():
             # print('Not worth it.')
             return
 
-        new_train = Train(self._railnet, connection.get_destination(None), self._max_dist)
+        new_train = Train(
+            self._railnet, 
+            connection.get_destination(None), 
+            self._max_dist)
         new_train.move(connection)
         self._trains.append(new_train)
         # print(f'The new train is {new_train}')
@@ -127,6 +146,10 @@ class Hillclimber():
 
     def split_train(self, train):
         # print(f'Split {train}')
+
+        if len(self._trains) == self._max_trains:
+            # print('Too many trains.')
+            return
 
         # determine the quality
         qual_before = self.quality()
@@ -178,6 +201,22 @@ class Hillclimber():
 
         # print(f'This is now: {new_train}\nand {train}')
 
+    def remove_train(self, train):
+        # print(f'Remove {train}')
+        qual_before = self.quality()
+
+        for connection in train.get_connections():
+            connection.remove()
+        
+        qual_now = self.quality() + train.get_distance() + 100
+
+        if qual_now > qual_before:
+            self.delete_train(train)
+            # print('Removed!')
+        else:
+            for connection in train.get_connections():
+                connection.travel()
+            # print('Not worth it.')
 
     def delete_train(self, train):
         if train in self._trains:
