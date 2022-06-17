@@ -12,15 +12,17 @@ from code.visualisation.output import output
 from code.visualisation.simple_visualization import simple_visualization
 import argparse
 
+
 if __name__ == '__main__':
 
-    # use commandline arguments to choose the railroad, algorithm, amount of runs and changed connections and a failed station
+    # Use commandline arguments to choose the railroad, algorithm, amount of runs/changed connections and a failed station
+    # Changing connections or having a failed station is optional
     parser = argparse.ArgumentParser(description='create routes')
     parser.add_argument("type", choices=['holland','national'], default='holland', help="Use the holland or national railroads")
     parser.add_argument("algorithm", choices=['random','bad','hillclimber'], default='random', help="Random, bad or hillclimber algrorithm")
-    parser.add_argument("runs", type=int, default=1, help="Amount of runs")
-    parser.add_argument("changeconnection", nargs="?", type=int, default=1, help="Amount of changed connections")
-    parser.add_argument("stationfailure", nargs="?", help="give failed station")
+    parser.add_argument("runs", type=int, nargs="?", default=1, help="Amount of runs")
+    parser.add_argument("changeconnection", type=int, nargs="?", default=0, help="Amount of changed connections")
+    parser.add_argument("stationfailure", nargs="?", help="Give failed station")
     args = parser.parse_args()
 
     if args.type == 'holland':
@@ -34,31 +36,67 @@ if __name__ == '__main__':
         max_trains = 20
         max_time = 180
 
-    # runs = int(input('How many times do you want to run this? '))
-    # failed_station = input('Which station should fail? If not valid, none will fail. ')
-    # changed_connection = input('Change a connection? y/n ')
+    # Loads the objects and variables used for visualisation. 
     qualityroutes = []
     best_quality = 0
     rails = Railnet()
     rails.load(file_stations, file_connections)
     rails.station_failure(args.stationfailure)
+
+    # Change a number of random connections of choice
     for _ in range(args.changeconnection):
         rails.change_connection()
 
-    for _ in range(args.runs):
-        route = Make_Random_Routes(rails, max_trains, max_time)
-        route.run()
-        route_quality = route.quality()
-        if route_quality > best_quality:
-           best_quality = route_quality
-           best_route = route
+    # Actually runs the algorithm of choice - put the if-statement outside the loop so the code runs faster
+    if args.algorithm == 'random':
+        for _ in range(args.runs):
 
-        qualityroutes.append(route_quality)
-        rails.reset()
+            route = Make_Random_Routes(rails, max_trains, max_time)
+            route.run()
+            route_quality = route.quality()
+
+            if route_quality > best_quality:
+                best_quality = route_quality
+                best_route = route
+
+            qualityroutes.append(route_quality)
+            rails.reset()
+
+    elif args.algorithm == "bad":
+        for _ in range(args.runs):
+
+            route = Make_Bad_Routes(rails, max_trains, max_time)
+            route.run()
+            route_quality = route.quality()
+
+            if route_quality > best_quality:
+                best_quality = route_quality
+                best_route = route
+
+            qualityroutes.append(route_quality)
+            rails.reset()
+
+    elif args.algorithm == "hillclimber":
+        for _ in range(args.runs):
+
+            route = Hillclimber(rails, max_trains, max_time)
+            route.run()
+            route_quality = route.quality()
+
+            if route_quality > best_quality:
+                best_quality = route_quality
+                best_route = route
+
+            qualityroutes.append(route_quality)
+            rails.reset()
     
-    quality_hist(qualityroutes, best_quality, best_route)
+    quality_hist(qualityroutes)
+    output(best_quality, best_route.get_trains(), 'output.csv')
     rails.follow_track(best_route.get_trains())
-    simple_visualization(rails._stations, list(rails._connections.values()))
-    create_animation(rails, best_route)
 
-    
+    choose_plot = input('Do you want a detailed visualisation of the route? (y/n) ')
+
+    if choose_plot == "y":
+        create_animation(rails, best_route)
+    else:
+        simple_visualization(rails._stations, list(rails._connections.values()))
