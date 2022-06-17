@@ -103,6 +103,8 @@ class Railnet():
         # Get one of the stations from which connection will be changed
         start_connections = []
         start = random.choice(list(self._stations.values()))
+        while len(start._connections) < 1:
+            start = random.choice(list(self._stations.values()))
 
         # Get list of existing connecting stations
         for connection in start.get_connections():
@@ -118,25 +120,52 @@ class Railnet():
         self.remove_connection(removed_connection)
         self.add_connection(start, end)
 
-    def follow_track(self, route):
-        """Follow all tracks again"""
-        for track in route:
+    # def follow_track(self, route):
+    #     """Follow all tracks again"""
+    #     for track in route:
             
-            # Makes sure the current stop is passed
-            for i in range(len(track._route) - 1):
-                current_stop = self._stations[track._route[i]]
-                current_stop.travel()
-                next_stop = self._stations[track._route[i + 1]]
+    #         # Makes sure the current stop is passed
+    #         for i in range(len(track._route) - 1):
+    #             current_stop = self._stations[track._route[i]]
+    #             current_stop.travel()
+    #             next_stop = self._stations[track._route[i + 1]]
 
-                # Makes sure the connection is passed
-                for connection in current_stop._connections:
-                    if current_stop._connections[connection].get_destination(current_stop) == next_stop:
-                        current_stop._connections[connection].travel()
-                        break
+    #             # Makes sure the connection is passed
+    #             for connection in current_stop._connections:
+    #                 if current_stop._connections[connection].get_destination(current_stop) == next_stop:
+    #                     current_stop._connections[connection].travel()
+    #                     break
 
-            # Makes sure the final stop of the track is passed
-            if len(track._route) > 1:
-                next_stop.travel()
+    #         # Makes sure the final stop of the track is passed
+    #         if len(track._route) > 1:
+    #             next_stop.travel()
+    
+    def follow_track(self, route):
+        for train in route:
+            self.follow_train(train)
+
+    def follow_train(self, train):
+        # pass the stations
+        for station in train.get_stations():
+            station.travel()
+
+        # pass the connections
+        for connection in train.get_connections():
+            connection.travel()
+
+    def reset_track(self, route):
+        for train in route:
+            self.reset_train(train)
+
+    def reset_train(self, train):
+
+        # reset the stations
+        for station in train.get_stations():
+            station.reset()
+
+        # reset the connections
+        for connection in train.get_connections():
+            connection.reset()
 
     def reset(self):
 
