@@ -8,15 +8,21 @@
 #     # print(pow(c,i)*s/2)
 #     sum += pow(c,i)*s
 # print('{:e}'.format(sum))
-from code.algorithms.bad_algorithm import make_bad_routes
-from code.classes.load import load
+# from code.algorithms.bad_algorithm import make_bad_routes
+from code.algorithms.simulated_annealing import Hillclimber
+from code.classes.structure import Railnet
 from code.visualisation.plotly_animation import create_animation
+from code.visualisation.quality_hist import quality_hist
 import argparse
 
 if __name__ == '__main__':
     # use commandline arguments to choose the railroad
     parser = argparse.ArgumentParser(description='create routes')
-    parser.add_argument("type", choices=['holland','national'], help="Use the holland or national railroads")
+    parser.add_argument(
+        "type", 
+        choices=['holland','national'], 
+        help="Use the holland or national railroads"
+    )
     args = parser.parse_args()
 
     if args.type == 'holland':
@@ -24,16 +30,38 @@ if __name__ == '__main__':
         file_connections = './data/ConnectiesHolland.csv'
         max_trains = 7
         max_time = 120
+        iterations = 10000
     else:
-        file_station = './data/StationsNationaal.csv'
+        file_stations = './data/StationsNationaal.csv'
         file_connections = './data/ConnectiesNationaal.csv'
         max_trains = 20
         max_time = 180
+        iterations = 10000
 
-    # create the stations from the file
-    stationsdict, connections = load(file_stations, file_connections)
-    stations = list(stationsdict.values())
+    # ----------------------------- Run once ----------------------------------
+    
+    rails = Railnet()
+    rails.load(file_stations, file_connections)
 
-    quality, route = make_bad_routes(stations, max_trains, max_time, len(connections))
+    algorithm = Hillclimber(rails, max_trains, max_time)
+    algorithm.run(iterations)
 
-    create_animation(stations, connections, route)
+    trains = algorithm.get_trains()
+    print(len(trains))
+    print([train.get_distance() for train in trains])
+
+
+    # create_animation(rails, algorithm)
+
+    # ----------------------------- Create hist -------------------------------
+    hillclimber_qualities = []
+    for _ in range(100):
+        rails.reset()
+        route = Hillclimber(rails, max_trains, max_time)
+        route.run(iterations)
+        route_quality = route.quality()
+        hillclimber_qualities.append(route_quality)
+        
+    
+    # Create hist for best routes 
+    quality_hist(hillclimber_qualities)
