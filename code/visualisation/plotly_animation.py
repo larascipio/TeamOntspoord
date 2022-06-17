@@ -72,7 +72,7 @@ def create_animation(railnet, routeclass):
             lon=x,
             lat=y, 
             mode = 'markers+lines', 
-            marker=dict(color='blue', size=1), 
+            marker=dict(color='black', size=1), 
             hoverinfo='skip'
         ))
 
@@ -131,7 +131,7 @@ def create_animation(railnet, routeclass):
                 lat=y_frames[k],
                 # color = color,
                 mode='markers',
-                marker=dict(color=color, size=20),
+                marker=dict(color=[color[i%len(color)] for i in range(len(x_frames))], size=20),
                 hoverinfo='skip'
             )])
             for k in range(len(x_frames))]
@@ -154,14 +154,12 @@ def create_animation(railnet, routeclass):
             lat=y_routes,
             # color = color[i],
             mode = 'markers+lines',
-            marker=dict(color=color[i]),
+            marker=dict(color=color[i%len(color)]),
             hoverinfo='skip'
         )]
         i += 1
 
-
-
-        # ------------------------- Create the figure -------------------------
+    # ----------------------------- Create the figure -------------------------
     if moving:
         # make the figure
         fig = go.Figure(

@@ -35,6 +35,7 @@ class Make_Bad_Routes():
             
             # check if there can be another train
             if len(self._trains) == self._max_trains:
+                return
                 raise Exception('Too many trains made.')
             
             # create a train
@@ -45,7 +46,7 @@ class Make_Bad_Routes():
             # keep going until the route is 2 hours
             while train.is_running():
                 # connection = train.choose_connection()
-                connection = train.choose_random_connection()
+                connection = train.choose_next_connection()
 
                 # stop this train if there are no more connections
                 if not connection:
@@ -89,6 +90,7 @@ class Make_Bad_Routes():
                         break
                 
                 # there are no stations left for new trains.
+                return None
                 raise Exception('Cannot create a new train.')
 
         # create the train
@@ -181,7 +183,7 @@ class Train():
     #     self._running = False
     #     return None
 
-    def choose_random_connection(self):
+    def choose_next_connection(self):
         """
         Choose a random connection that has not been passed yet.
         """

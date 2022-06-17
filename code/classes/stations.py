@@ -62,7 +62,7 @@ class Connection():
         self._passed += 1
 
     def passed(self):
-        if self._passed:
+        if self._passed > 0:
             return True
         return False
     

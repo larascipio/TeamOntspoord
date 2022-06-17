@@ -11,7 +11,7 @@ def plot_analysis(temps, mean: list, std: list, colors: tuple, name: str):
     y_low = [y_mean[i] - std[i] for i in range(len(y_mean))]
     y_low = y_low[::-1]
 
-    fig = go.Figure
+    fig = go.Figure()
 
     # add the standard deviation to the figure
     fig.add_trace(go.Scatter(
@@ -30,5 +30,7 @@ def plot_analysis(temps, mean: list, std: list, colors: tuple, name: str):
         line_color=f'rgb({colors[0]}, {colors[1]}, {colors[2]})',
         name=name
     ))
+
+    fig.update_xaxes(type='log')
 
     fig.show()
