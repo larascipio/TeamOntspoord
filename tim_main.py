@@ -6,11 +6,12 @@ from code.algorithms.bad_algorithm import Make_Bad_Routes
 from code.algorithms.random_algorithm import Make_Random_Routes
 from code.algorithms.simulated_annealing import Hillclimber
 from code.algorithms.self_choosing import Make_Iterated_Routes
-from code.visualisation.plotly_animation import create_animation
 from code.classes.structure import Railnet
 from code.visualisation.quality_hist import quality_hist
 from code.visualisation.output import output
 from code.visualisation.simple_visualization import simple_visualization
+from code.visualisation.plotly_animation import create_animation
+from math import ceil
 import argparse
 
 
@@ -47,6 +48,15 @@ if __name__ == '__main__':
     # Change a number of random connections of choice
     for _ in range(args.changeconnection):
         rails.change_connection()
+    
+    # Get the theoretical maximum quality for the railroad
+    # total_distance = 0
+    # for connection in rails._connections.values():
+    #     total_distance += connection._distance
+    # minus_trains = ceil(total_distance / max_time) * 100
+    # theoretical_quality = 10000 - minus_trains - total_distance
+    # print(f'Theoretical maximum quality is {theoretical_quality}')
+
 
     # Actually runs the algorithm of choice - put the if-statement outside the loop so the code runs faster
     if args.algorithm == 'random':
@@ -77,9 +87,8 @@ if __name__ == '__main__':
             qualityroutes.append(route_quality)
             rails.reset()
 
-    # TODO Hillclimber werkt nog niet - moet iterations toevoegen aan run
     elif args.algorithm == "hillclimber":
-        iterations = int(input('How many iterations?'))
+        iterations = int(input('How many iterations? '))
         for _ in range(args.runs):
 
             route = Hillclimber(rails, max_trains, max_time)
@@ -94,9 +103,9 @@ if __name__ == '__main__':
             rails.reset()
 
     elif args.algorithm == "iteration":
-        iterations = int(input('How many iterations?'))
+        iterations = int(input('How many iterations? '))
         for _ in range(args.runs):
-            
+
             route = Make_Iterated_Routes(rails, max_trains, max_time)
             route.run(iterations)
             route_quality = route.quality()
@@ -108,7 +117,6 @@ if __name__ == '__main__':
             qualityroutes.append(route_quality)
             rails.reset()
 
-    
     quality_hist(qualityroutes)
     output(best_quality, best_route.get_trains(), 'output.csv')
     rails.follow_track(best_route.get_trains())

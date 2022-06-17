@@ -1,7 +1,11 @@
 import random
-import numpy as np
 from code.classes.train import Train
-from copy import copy
+
+# IDEEËN: check steeds de slechtste route en vervang die steeds
+# Ga aan het eind langs de routes en verwijder de nutteloze
+# Doe er wat restrictions bij, zodat de trein niet zomaar terugkeert langs dezelfde connecties en dezelfde stations
+# BUGS: Follow Track voor structure.py werkt niet - lijkt uit zichzelf al deels te resetten
+# In de train.py een set maken met connecties - sneller dan steeds langs de passed statement te loopen
 
 class Make_Iterated_Routes():
     def __init__(self, railnet, num_trains: int, max_distance: int):
@@ -14,6 +18,9 @@ class Make_Iterated_Routes():
         self._tot_stations = len(self._railnet.get_stations())
         self._tot_connections = len(self._railnet.get_connections())
         self._trains = []
+        self._possible_stations = []
+        for station in self._railnet.get_stations().values():
+            self._possible_stations.append(station)
     
     def run(self, iterations):
         """
@@ -55,11 +62,7 @@ class Make_Iterated_Routes():
         start = None
         # choose random starting point
         while not start:
-            # choose a random start station 
-            possible_stations = []
-            for station in self._railnet.get_stations().values():
-                possible_stations.append(station)
-            start = random.choice(possible_stations)
+            start = random.choice(self._possible_stations)
 
         return Train(self, start, self._max_dist)
     
@@ -162,16 +165,23 @@ class Make_Iterated_Routes():
         the_very_first_quality = self.quality()
 
         for _ in range(self._max_trains):
+            self._railnet.follow_track(self.get_trains())
             start_quality = self.quality()
+
             removed_train = self._trains[0]
+            self._railnet.reset_train(removed_train)
             self.remove_train(removed_train)
+            self._railnet.follow_track(self.get_trains())
             removed_quality = self.quality()
+
             worst_train_dict = {}
+
             for _ in range(iterations):
-                self.run_one_train()
                 self._railnet.follow_track(self.get_trains())
+                self.run_one_train()
                 new_quality = self.quality()
                 new_train = self._trains.pop()
+                
                 if new_quality > start_quality and new_quality > removed_quality:
                     worst_train_dict[new_quality] = new_train
                 self._railnet.reset_train(new_train)
@@ -183,11 +193,10 @@ class Make_Iterated_Routes():
                 self._railnet.follow_train(removed_train)
                 self._trains.append(removed_train)
 
-        print('Quality, comparison!')
-        print(the_very_first_quality)
-        print(best_replacement)
+        # print(f'From {the_very_first_quality} to {best_replacement}')
 
         self._railnet.follow_track(self.get_trains())
+        # print(f'{len(self._railnet.get_passed_connections())} connections passed out of {self._tot_connections}')
 
 
     def remove_train(self, train):
@@ -200,5 +209,3 @@ class Make_Iterated_Routes():
             representation += f'{train}' + '\n'
         representation += f'quality = {self.quality()}'
         return representation
-
-        
