@@ -1,7 +1,9 @@
 import random
+from code.algorithms.random_algorithm import Make_Random_Routes
 from code.classes.train import Train
+import random
 
-class Make_Random_Routes():
+class Make_New_Routes():
     def __init__(self, railnet, num_trains: int, max_distance: int):
         """
         Create a train at the given station.
@@ -12,14 +14,19 @@ class Make_Random_Routes():
         self._tot_connections = len(self._railnet.get_connections())
         self._trains = []
     
+    def run_with_n_trains(self):
+        for n in range(self._max_trains):
+            self.n_of_trains = n
+            print(self.n_of_trains)
+            self.run()
+
     def run(self):
         """
         Run the random algorithm.
         """
 
-        # Create a random amount of trains within the constraint (BIAS: 0 = eruit )
-        self._random_amount = random.randint(1, self._max_trains)
-        for _ in range(self._random_amount):
+        # Create a random amount of trains within the constraint
+        for _ in range(self.n_of_trains):
             # create a train
             train = self.create_train()
 
@@ -54,7 +61,7 @@ class Make_Random_Routes():
                 possible_stations.append(station)
             start = random.choice(possible_stations)
 
-        return Train(self._railnet, start, self._max_dist)
+        return Train(self, start, self._max_dist)
     
     def get_trains(self):
         return self._trains
