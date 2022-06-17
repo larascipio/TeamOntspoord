@@ -5,6 +5,7 @@ tim_main.py
 from code.algorithms.bad_algorithm import Make_Bad_Routes
 from code.algorithms.random_algorithm import Make_Random_Routes
 from code.algorithms.simulated_annealing import Hillclimber
+from code.algorithms.self_choosing import Make_Iterated_Routes
 from code.visualisation.plotly_animation import create_animation
 from code.classes.structure import Railnet
 from code.visualisation.quality_hist import quality_hist
@@ -16,10 +17,10 @@ import argparse
 if __name__ == '__main__':
 
     # Use commandline arguments to choose the railroad, algorithm, amount of runs/changed connections and a failed station
-    # Changing connections or having a failed station is optional
+    # Amount of runs, changing connections or having a failed station is optional
     parser = argparse.ArgumentParser(description='create routes')
     parser.add_argument("type", choices=['holland','national'], default='holland', help="Use the holland or national railroads")
-    parser.add_argument("algorithm", choices=['random','bad','hillclimber'], default='random', help="Random, bad or hillclimber algrorithm")
+    parser.add_argument("algorithm", choices=['random','bad','hillclimber', 'iteration'], default='random', help="Random, bad or hillclimber algrorithm")
     parser.add_argument("runs", type=int, nargs="?", default=1, help="Amount of runs")
     parser.add_argument("changeconnection", type=int, nargs="?", default=0, help="Amount of changed connections")
     parser.add_argument("stationfailure", nargs="?", help="Give failed station")
@@ -76,11 +77,13 @@ if __name__ == '__main__':
             qualityroutes.append(route_quality)
             rails.reset()
 
+    # TODO Hillclimber werkt nog niet - moet iterations toevoegen aan run
     elif args.algorithm == "hillclimber":
+        iterations = int(input('How many iterations?'))
         for _ in range(args.runs):
 
             route = Hillclimber(rails, max_trains, max_time)
-            route.run()
+            route.run(iterations)
             route_quality = route.quality()
 
             if route_quality > best_quality:
@@ -89,10 +92,27 @@ if __name__ == '__main__':
 
             qualityroutes.append(route_quality)
             rails.reset()
+
+    elif args.algorithm == "iteration":
+        iterations = int(input('How many iterations?'))
+        for _ in range(args.runs):
+            
+            route = Make_Iterated_Routes(rails, max_trains, max_time)
+            route.run(iterations)
+            route_quality = route.quality()
+
+            if route_quality > best_quality:
+                best_quality = route_quality
+                best_route = route
+
+            qualityroutes.append(route_quality)
+            rails.reset()
+
     
     quality_hist(qualityroutes)
     output(best_quality, best_route.get_trains(), 'output.csv')
     rails.follow_track(best_route.get_trains())
+    print(route.quality())
 
     choose_plot = input('Do you want a detailed visualisation of the route? (y/n) ')
 

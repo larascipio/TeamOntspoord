@@ -1,8 +1,9 @@
 """
 main.py
 """
-from code.algorithms.bad_algorithm import Make_Bad_Routes
-from code.algorithms.random_algorithm import Make_Random_Routes 
+from code.algorithms.random_algorithm import Make_Random_Routes
+from code.algorithms.lara_algorithm import Make_New_Routes
+from code.algorithms.simulated_annealing import Hillclimber
 from code.visualisation.plotly_animation import create_animation
 from code.classes.structure import Railnet
 from code.visualisation.quality_hist import quality_hist
@@ -14,6 +15,9 @@ if __name__ == '__main__':
     # use commandline arguments to choose the railroad
     parser = argparse.ArgumentParser(description='create routes')
     parser.add_argument("type", choices=['holland','national'], help="Use the holland or national railroads")
+    parser.add_argument("runs", type=int, nargs="?", default=100, help="Amount of runs")
+    parser.add_argument("algorithm", choices=['random','new'], default='random', help="Random, bad or hillclimber algrorithm")
+
     args = parser.parse_args()
 
     if args.type == 'holland':
@@ -27,24 +31,43 @@ if __name__ == '__main__':
         max_trains = 20
         max_time = 180
     
-    qualityroutes = {}
+    qualityroutes = []
+    best_quality = 0
     rails = Railnet()
     rails.load(file_stations, file_connections)
 
-    for _ in range(100):
-        route = Make_Random_Routes(rails, max_trains, max_time)
-        route.run()
-        quality = route.quality()
-        qualityroutes[quality] = route
-        rails.reset() 
+    if args.algorithm == 'random':
+        for _ in range(args.runs):
+            route = Make_Random_Routes(rails, max_trains, max_time)
+            route.run()
+            quality = route.quality()
 
-    print(route)
+            if quality > best_quality:
+                    best_quality = quality
+                    best_route = route
 
-    output(quality,route.get_trains(),outputfile='code/output/output.csv')
+            qualityroutes.append(quality)
+            rails.reset()
 
-    # create_animation(rails, route)
+    if args.algorithm == 'new':
+        for _ in range(args.runs):
+            route = Make_New_Routes(rails, max_trains, max_time)
+            route.run_with_n_trains()
+            quality = route.quality()
+
+            if quality > best_quality:
+                    best_quality = quality
+                    best_route = route
+
+            qualityroutes.append(quality)
+            rails.reset()
 
     quality_hist(qualityroutes)
+    output(best_quality, best_route.get_trains(), 'output.csv')
+    rails.follow_track(best_route.get_trains())
+
+    choose_plot = input('Do you want a detailed visualisation of the route? (y/n) ')
+
 
     # for _ in range(100):
     #     route = Make_Bad_Routes(rails, max_trains, max_time) # TODO dit moet het random-algoritme worden
