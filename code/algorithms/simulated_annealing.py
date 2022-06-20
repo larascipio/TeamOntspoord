@@ -10,16 +10,6 @@ class Hillclimber():
         """
         self._railnet = railnet
         self._trains = self.get_random_routes(max_trains, max_time)
-
-        # # check
-        # for train in self._trains:
-        #     for connection in train.get_connections():
-        #         if not connection.passed():
-        #             print('get_random_routes')
-        #             print(connection)
-        #             print(train)
-        #             raise Exception('it was get_random_routes')
-
         self._changes = [
             self.extend_train, 
             self.decrease_train, 
