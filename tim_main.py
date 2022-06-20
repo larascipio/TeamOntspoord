@@ -30,7 +30,7 @@ if __name__ == '__main__':
     if args.type == 'holland':
         file_stations = 'data/StationsHolland.csv'
         file_connections = 'data/ConnectiesHolland.csv'
-        max_trains = 7
+        max_trains = 5
         max_time = 120
     else:
         file_stations = 'data/StationsNationaal.csv'

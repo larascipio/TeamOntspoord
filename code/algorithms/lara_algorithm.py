@@ -10,16 +10,20 @@ class Make_Greedy_Routes(Make_Random_Routes):
     we use that as a parent class.
     """
 
-    def change_amount_of_trains(self, self._max_trains):
+    def change_amount_of_trains(self):
+        for i in range(self._max_trains):
+            print(i)
 
+    def change_amount_of_connections(self):
+        pass
 
 # Less random amount of trains 
     def run(self):
         """
         Run the algorithm.
         """
-        # Create a random amount of trains within the constraint (BIAS: 0 = eruit )
-        for _ in range(self._amount_of_trains):
+        # Create the input amount of trains 
+        for _ in range(self._max_trains):
             # create a train
             train = self.create_train()
 
@@ -42,6 +46,7 @@ class Make_Greedy_Routes(Make_Random_Routes):
             self._trains.append(train)    
 
 # Less connections (fractie veranderd)
+
 
 # Less connections (amount of connections)
 
