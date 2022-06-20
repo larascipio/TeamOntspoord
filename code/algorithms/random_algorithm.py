@@ -2,9 +2,13 @@ import random
 from all_code.classes.train import Train
 
 class Make_Random_Routes():
+    """
+    The random algorithm creates random connections with a random amount of trains, 
+    in which the end of a connection is depending on weights and random choice.
+    """
     def __init__(self, railnet, num_trains: int, max_distance: int):
         """
-        Create a train at the given station.
+        Use network of routes to initialize the algorithm.
         """
         self._railnet = railnet
         self._max_trains = num_trains
@@ -14,7 +18,7 @@ class Make_Random_Routes():
     
     def run(self):
         """
-        Run the random algorithm.
+        Run thealgorithm.
         """
 
         # Create a random amount of trains within the constraint (BIAS: 0 = eruit )

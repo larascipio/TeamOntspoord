@@ -59,6 +59,7 @@ class Railnet():
 
             # Remove the connection to the failed station from the dictionary
             del self._connections[unique_id]
+            self._total_connections -= 1
 
         # Remove the failed station from the dictionary
         del self._stations[failed_station]
@@ -73,6 +74,7 @@ class Railnet():
         for station in self._connections[uid]._stations:
                 station.remove_connection(uid)
         del self._connections[uid]
+        self._total_connections -= 1
 
     def add_connection(self, start, end):
         "Adds new connection"
@@ -96,6 +98,7 @@ class Railnet():
         start.add_connection(new_uid, connection)
         end.add_connection(new_uid, connection)
         self._connections[new_uid] = connection
+        self._total_connections += 1
 
     def change_connection(self):
         """Change connection from random start point to random end point"""
@@ -176,3 +179,4 @@ class Railnet():
         # reset the connections
         for connection in self._connections.values():
             connection.reset()
+

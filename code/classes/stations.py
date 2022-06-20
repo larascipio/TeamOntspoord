@@ -27,6 +27,9 @@ class Station():
     def get_connections(self):
         return list(self._connections.values())
 
+    def remove_connection(self, unique_id):
+        del self._connections[unique_id]
+
     def get_position(self):
         return (self._x, self._y)
     
