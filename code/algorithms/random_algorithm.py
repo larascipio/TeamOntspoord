@@ -1,5 +1,5 @@
 import random
-from all_code.classes.train import Train
+from code.classes.train import Train
 
 class Make_Random_Routes():
     """
