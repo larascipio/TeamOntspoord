@@ -1,6 +1,6 @@
 import random
-from code.algorithms.random_algorithm import Make_Random_Routes
-from code.classes.train import Train
+from all_code.algorithms.random_algorithm import Make_Random_Routes
+from all_code.classes.train import Train
 import random
 
 class Make_New_Routes():

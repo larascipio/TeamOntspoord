@@ -1,5 +1,5 @@
 import random
-from code.classes.train import Train
+from all_code.classes.train import Train
 
 class Make_Random_Routes():
     def __init__(self, railnet, num_trains: int, max_distance: int):

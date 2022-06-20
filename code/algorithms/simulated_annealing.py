@@ -1,5 +1,5 @@
-from code.algorithms.random_algorithm import Make_Random_Routes
-from code.classes.train import Train
+from all_code.algorithms.random_algorithm import Make_Random_Routes
+from all_code.classes.train import Train
 import random
 import sys
 
@@ -10,6 +10,16 @@ class Hillclimber():
         """
         self._railnet = railnet
         self._trains = self.get_random_routes(max_trains, max_time)
+
+        # # check
+        # for train in self._trains:
+        #     for connection in train.get_connections():
+        #         if not connection.passed():
+        #             print('get_random_routes')
+        #             print(connection)
+        #             print(train)
+        #             raise Exception('it was get_random_routes')
+
         self._changes = [
             self.extend_train, 
             self.decrease_train, 
@@ -49,6 +59,10 @@ class Hillclimber():
     def get_random_routes(self, max_trains, max_time):
         route = Make_Random_Routes(self._railnet, max_trains, max_time)
         route.run()
+        # # check
+        # for train in route.get_trains():
+            # if not len(train.get_stations()) == len(train.get_connections()) + 1:
+            #     print('RANDOM ROUTES')
         return route.get_trains()
 
     def run(self, iterations: int):
@@ -79,9 +93,11 @@ class Hillclimber():
     def extend_train(self, train):
         # print(f'Extend {train}')
         qual_before = self.quality()
+
         index = random.choice([0,-1])
         station = train.get_stations()[index]
         next_connection = random.choice(station.get_connections())
+
         if train.get_distance() + next_connection.get_distance() > self._max_dist:
             # print('The train is too long.')
             return
@@ -103,12 +119,12 @@ class Hillclimber():
         # print(f'Now its {train}')
 
         # # check
-        # last_station = None
-        # for new_station in train.get_stations():
-        #     if last_station == new_station:
+        # for connection in train.get_connections():
+        #     if not connection.passed():
+        #         print('extend_train')
+        #         print(connection)
         #         print(train)
         #         raise Exception('it was extend_train')
-        #     last_station = new_station
 
     def decrease_train(self, train):
         # print(f'Decrease {train}')
@@ -118,7 +134,7 @@ class Hillclimber():
 
         # decrease the train at one of the ends
         index = random.choice([0,-1])
-        connection = train.get_connections()[index]
+        connection_to_remove = train.get_connections()[index]
         if index == 0:
             train.remove_first_connection()
         else:
@@ -130,9 +146,9 @@ class Hillclimber():
         # if the quality is better, keep the change
         if not self.keep_change(qual_before=qual_before, qual_now=qual_now):
             if index == 0:
-                train.movestart(connection)
+                train.movestart(connection_to_remove)
             else:
-                train.move(connection)
+                train.move(connection_to_remove)
 
         # remove trains with only one station
         if len(train.get_stations()) == 1:
@@ -141,12 +157,14 @@ class Hillclimber():
         # print(f'Now its {train}')
 
         # # check
-        # last_station = None
-        # for new_station in train.get_stations():
-        #     if last_station == new_station:
+        # for connection in train.get_connections():
+        #     if not connection.passed():
+        #         print('decrease_train')
+        #         print(f'removed (or not) {connection_to_remove} at {index}')
+        #         print()
+        #         print(connection)
         #         print(train)
         #         raise Exception('it was decrease_train')
-        #     last_station = new_station
 
     def make_new_train(self,p=0):
         # print('Make new train')
@@ -179,11 +197,10 @@ class Hillclimber():
 
 
         # # check
-        # last_station = None
-        # for new_station in new_train.get_stations():
-        #     if last_station == new_station:
+        # for connection in new_train.get_connections():
+        #     if not connection.passed():
+        #         print(new_train)
         #         raise Exception('it was make_new_train')
-        #     last_station = new_station
 
     def split_train(self, train):
         # print(f'Split {train}')
@@ -200,12 +217,12 @@ class Hillclimber():
             # print('The train is too short.')
             return
         
-        possible_connections = train.get_connections()[1:-1]
+        connections = train.get_connections()[1:-1]
 
-        if not possible_connections:
+        if not connections:
             return
 
-        connection = random.choice(possible_connections)
+        connection = random.choice(connections)
         connection.remove()
 
         # the quality without this connection, but with an extra train
@@ -218,7 +235,6 @@ class Hillclimber():
             return
 
         # split the train
-        connections = train.get_connections()
 
         # create a new train to replace the other one
         new_train = Train(self._railnet, train.get_stations()[0], self._max_dist)
@@ -246,11 +262,13 @@ class Hillclimber():
         # print(f'This is now: {new_train}\nand {train}')
 
         # # check
-        # last_station = None
-        # for new_station in train.get_stations():
-        #     if last_station == new_station:
+        # for connection in train.get_connections():
+        #     if not connection.passed():
+        #         print('split_train')
+        #         print(connection)
+        #         print(train)
         #         raise Exception('it was split_train')
-        #     last_station = new_station
+
 
     def remove_train(self, train):
         # print(f'Remove {train}')
@@ -270,11 +288,12 @@ class Hillclimber():
             # print('Not worth it.')
 
         # # check
-        # last_station = None
-        # for new_station in train.get_stations():
-        #     if last_station == new_station:
-        #         raise Exception('it was remove_train')
-        #     last_station = new_station        
+        # for connection in train.get_connections():
+        #     if not connection.passed():
+        #         print('remove_train')
+        #         print(connection)
+        #         print(train)
+        #         raise Exception('it was remove_train')     
 
     def delete_train(self, train):
         if train in self._trains:
@@ -286,9 +305,11 @@ class Hillclimber():
 class Simulated_Annealing(Hillclimber):
     def keep_change(self, qual_before, qual_now):
 
+        self._starttemp = 1
+
         # check if a starting temperature is provided
         if self._starttemp == 0:
-            raise Exception('Please provide a starting temperature.')
+            raise Exception('Please provide a starting temperature if you\'re using simulated annealing.')
 
         # determine the temperature for this iteration
         # temp = 1

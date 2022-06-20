@@ -1,6 +1,6 @@
 import random
 import numpy as np
-from code.classes.train import Train
+from all_code.classes.train import Train
 from copy import copy
 
 class Make_Iterated_Routes():

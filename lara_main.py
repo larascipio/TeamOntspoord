@@ -1,13 +1,13 @@
 """
 main.py
 """
-from code.algorithms.random_algorithm import Make_Random_Routes
-from code.algorithms.lara_algorithm import Make_New_Routes
-from code.algorithms.simulated_annealing import Hillclimber
-from code.visualisation.plotly_animation import create_animation
-from code.classes.structure import Railnet
-from code.visualisation.quality_hist import quality_hist
-from code.visualisation.output import output
+from all_code.algorithms.random_algorithm import Make_Random_Routes
+from all_code.algorithms.lara_algorithm import Make_New_Routes
+from all_code.algorithms.simulated_annealing import Hillclimber
+from all_code.visualisation.plotly_animation import create_animation
+from all_code.classes.structure import Railnet
+from all_code.visualisation.quality_hist import quality_hist
+from all_code.visualisation.output import output
 import argparse
 
 if __name__ == '__main__':

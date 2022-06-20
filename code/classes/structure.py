@@ -1,4 +1,4 @@
-from code.classes.stations import Station, Connection
+from all_code.classes.stations import Station, Connection
 import csv
 import random
 

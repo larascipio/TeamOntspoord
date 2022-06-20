@@ -2,15 +2,15 @@
 tim_main.py
 """
 
-from code.algorithms.bad_algorithm import Make_Bad_Routes
-from code.algorithms.random_algorithm import Make_Random_Routes
-from code.algorithms.simulated_annealing import Hillclimber
-from code.algorithms.self_choosing import Make_Iterated_Routes
-from code.visualisation.plotly_animation import create_animation
-from code.classes.structure import Railnet
-from code.visualisation.quality_hist import quality_hist
-from code.visualisation.output import output
-from code.visualisation.simple_visualization import simple_visualization
+from all_code.algorithms.bad_algorithm import Make_Bad_Routes
+from all_code.algorithms.random_algorithm import Make_Random_Routes
+from all_code.algorithms.simulated_annealing import Hillclimber
+from all_code.algorithms.self_choosing import Make_Iterated_Routes
+from all_code.visualisation.plotly_animation import create_animation
+from all_code.classes.structure import Railnet
+from all_code.visualisation.quality_hist import quality_hist
+from all_code.visualisation.output import output
+from all_code.visualisation.simple_visualization import simple_visualization
 import argparse
 
 

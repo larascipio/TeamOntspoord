@@ -8,9 +8,9 @@
 #     # print(pow(c,i)*s/2)
 #     sum += pow(c,i)*s
 # print('{:e}'.format(sum))
-from code.algorithms.bad_algorithm import make_bad_routes
+from all_code.algorithms.bad_algorithm import make_bad_routes
 from code.classes.load import load
-from code.visualisation.plotly_animation import create_animation
+from all_code.visualisation.plotly_animation import create_animation
 
 file_stations = '../data/StationsHolland.csv'
 file_connections = '../data/ConnectiesHolland.csv'

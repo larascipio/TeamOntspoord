@@ -104,11 +104,12 @@ class Train():
         self._distance += connection.get_distance()
 
         # move the current station
-        self._current_station = connection.get_destination(self._current_station)
+        next_station = connection.get_destination(self._stations_traveled[-1])
+        self._current_station = next_station
 
         # add the station and connection to the route
-        self._route.append(self._current_station.get_name())
-        self._stations_traveled.append(self._current_station)
+        self._route.append(next_station.get_name())
+        self._stations_traveled.append(next_station)
         self._connections_traveled.append(connection)
         connection.travel()
         # print(self.get_connections())

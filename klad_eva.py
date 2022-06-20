@@ -9,12 +9,13 @@
 #     sum += pow(c,i)*s
 # print('{:e}'.format(sum))
 # from code.algorithms.bad_algorithm import make_bad_routes
-from code.algorithms.simulated_annealing import Hillclimber, Simulated_Annealing
-from code.classes.structure import Railnet
-from code.visualisation.plotly_animation import create_animation
-from code.visualisation.quality_hist import quality_hist
-from code.visualisation.mean_plot import plot_analysis
-from code.visualisation.output import output
+from all_code.algorithms.simulated_annealing import Hillclimber, Simulated_Annealing
+from all_code.classes.structure import Railnet
+from all_code.visualisation.plotly_animation import create_animation
+from all_code.visualisation.plotly_live import Run_Algorithms_Live, Live_Plot
+from all_code.visualisation.quality_hist import quality_hist
+from all_code.visualisation.mean_plot import plot_analysis
+from all_code.visualisation.output import output
 import argparse
 import statistics
 
@@ -52,8 +53,12 @@ if __name__ == '__main__':
     # algorithm.run(iterations)
 
     # trains = algorithm.get_trains()
+    # for train in trains:
+    #     for connection in train.get_connections():
+    #         print(connection)
     # print(len(trains))
     # print([train.get_distance() for train in trains])
+    # create_animation(rails, algorithm)
 
 
     # rails.reset()
@@ -61,11 +66,14 @@ if __name__ == '__main__':
     # annealing.run(iterations)
 
     # trains = annealing.get_trains()
+    # for train in trains:
+    #     for connection in train.get_connections():
+    #         print(connection)
     # print(len(trains))
     # print([train.get_distance() for train in trains])
 
 
-    # create_animation(rails, algorithm)
+    # create_animation(rails, annealing, True)
 
     # ----------------------------- Create hist -------------------------------
     # hillclimber_qualities = []
@@ -123,19 +131,54 @@ if __name__ == '__main__':
 
     # plot_analysis(temps, avg, std, (151, 127, 215), 'linear temps')
 
+    # ----------------------------- number of iterations ----------------------
+
+    # # loop the number of iterations from 100 to 1,000,000
+    # iterations = 100
+    # avg = []
+    # std = []
+    # temps = []
+    # for iterations in range(10000, 100001, 10000):
+    #     qual = []
+
+    #     # run the algorithm 50 times
+    #     for _ in range(50):
+    #         rails.reset()
+    #         annealing = Simulated_Annealing(rails, max_trains, max_time, start_temp=1)
+    #         annealing.run(iterations)
+    #         qual.append(annealing.quality())
+        
+    #     avg.append(statistics.mean(qual))
+    #     std.append(statistics.stdev(qual))
+    #     temps.append(iterations)
+
+    #     iterations *= 10
+
+        
+    # print(avg)
+    # print(std)
+
+    # plot_analysis(temps, avg, std, (151, 127, 215), 'number of iterations')
+
     # ----------------------------- Find best ---------------------------------
     
     best_qual = 0
     best_route = None
+    plot = Live_Plot(rails)
     
-    for _ in range(1000):
+    for _ in range(10000):
         rails.reset()
         route = Simulated_Annealing(rails, max_trains, max_time, 1)
         route.run(iterations)
-        if route.quality() > best_qual:
+        if route.quality() >= best_qual:
             best_qual = route.quality()
             best_route = route
+            print(best_qual)
+            plot.update_fig(best_route)
 
     print(best_qual)
     output(best_qual, best_route.get_trains(), './code/output/output.csv')
-    create_animation(rails, best_route)
+    # create_animation(rails, best_route)
+
+
+    # display = Run_Algorithms_Live(Simulated_Annealing, rails, iterations, max_trains, max_time)
