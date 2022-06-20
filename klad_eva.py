@@ -12,7 +12,7 @@
 from code.algorithms.simulated_annealing import Hillclimber, Simulated_Annealing
 from code.classes.structure import Railnet
 from code.visualisation.plotly_animation import create_animation
-from code.visualisation.plotly_live import Run_Algorithms_Live, Live_Plot
+from code.visualisation.plotly_live import Live_Plot
 from code.visualisation.quality_hist import quality_hist
 from code.visualisation.mean_plot import plot_analysis
 from code.visualisation.output import output

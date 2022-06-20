@@ -1,5 +1,5 @@
 import matplotlib.pyplot as plt
-from all_code.visualisation.output import output
+from code.visualisation.output import output
 
 # def quality_hist(qualityroutes, best_quality, best_route):
 def quality_hist(qualityroutes):
