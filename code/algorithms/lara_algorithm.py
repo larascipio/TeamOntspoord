@@ -1,39 +1,32 @@
 import random
-from code.algorithms.random_algorithm import Make_Random_Routes
+from .random_algorithm import Make_Random_Routes
 from code.classes.train import Train
 import random
 
-class Make_New_Routes():
-    def __init__(self, railnet, num_trains: int, max_distance: int):
-        """
-        Create a train at the given station.
-        """
-        self._railnet = railnet
-        self._max_trains = num_trains
-        self._max_dist = max_distance
-        self._tot_connections = len(self._railnet.get_connections())
-        self._trains = []
-    
-    def run_with_n_trains(self):
-        for n in range(self._max_trains):
-            self.n_of_trains = n
-            print(self.n_of_trains)
-            self.run()
+class Make_Greedy_Routes(Make_Random_Routes):
+    """
+    A more greedy random algorithm that creates connections based on randomness and heuristics.
+    Almost all of the functions are eqal to those of the Make_Random_Routes class, which is why
+    we use that as a parent class.
+    """
 
+    def change_amount_of_trains(self, self._max_trains):
+
+
+# Less random amount of trains 
     def run(self):
         """
-        Run the random algorithm.
+        Run the algorithm.
         """
-
-        # Create a random amount of trains within the constraint
-        for _ in range(self.n_of_trains):
+        # Create a random amount of trains within the constraint (BIAS: 0 = eruit )
+        for _ in range(self._amount_of_trains):
             # create a train
             train = self.create_train()
 
             if not train:
                 return
 
-        # keep going until the route is 2 hours
+        # Keep going until the route is 2 hours
             while train.is_running():
                 connection = train.choose_random_connection()
 
@@ -45,41 +38,11 @@ class Make_New_Routes():
                 else:
                     train.stop()
 
-        # save the train
-            self._trains.append(train)
-    
-    def create_train(self):
-        """
-        Create a new train at a random start station.
-        """
-        start = None
-        # choose random starting point
-        while not start:
-            # choose a random start station 
-            possible_stations = []
-            for station in self._railnet.get_stations().values():
-                possible_stations.append(station)
-            start = random.choice(possible_stations)
+        # Save the train
+            self._trains.append(train)    
 
-        return Train(self, start, self._max_dist)
-    
-    def get_trains(self):
-        return self._trains
-    
-    def quality(self) -> float:
-        """
-        Calculate the quality of the current routes.
-        """
-        qual = (len(self._railnet.get_passed_connections())/self._tot_connections)*10000
-        for train in self._trains:
-            qual -= 100
-            qual -= train.get_distance()
-        return qual
+# Less connections (fractie veranderd)
 
-    def __repr__(self):
-        representation = 'Route:\n'
-        for train in self._trains:
-            representation += f'{train}' + '\n'
-        representation += f'quality = {self.quality()}'
-        return representation
-    
+# Less connections (amount of connections)
+
+# Less or more time 
