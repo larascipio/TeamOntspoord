@@ -76,31 +76,31 @@ if __name__ == '__main__':
     # create_animation(rails, annealing, True)
 
     # ----------------------------- Create hist -------------------------------
-    hillclimber_qualities = []
-    for _ in range(1000):
-        rails.reset()
-        route = Hillclimber(rails, max_trains, max_time)
-        route.run(iterations)
-        route_quality = route.quality()
-        hillclimber_qualities.append(route_quality)
-        
-    
-    # Create hist for best routes 
-    quality_hist(hillclimber_qualities)
-
-
-
-    # annealing_qualities = []
-    # for _ in range(100):
+    # hillclimber_qualities = []
+    # for _ in range(1000):
     #     rails.reset()
-    #     route = Simulated_Annealing(rails, max_trains, max_time, 1)
+    #     route = Hillclimber(rails, max_trains, max_time)
     #     route.run(iterations)
     #     route_quality = route.quality()
-    #     annealing_qualities.append(route_quality)
+    #     hillclimber_qualities.append(route_quality)
         
     
     # # Create hist for best routes 
-    # quality_hist(annealing_qualities)
+    # quality_hist(hillclimber_qualities)
+
+
+
+    annealing_qualities = []
+    for _ in range(1000):
+        rails.reset()
+        route = Simulated_Annealing(rails, max_trains, max_time, 1)
+        route.run(iterations)
+        route_quality = route.quality()
+        annealing_qualities.append(route_quality)
+        
+    
+    # Create hist for best routes 
+    quality_hist(annealing_qualities)
 
     # ----------------------------- Different starting temps ------------------
 
@@ -162,23 +162,24 @@ if __name__ == '__main__':
 
     # ----------------------------- Find best ---------------------------------
     
-    # best_qual = 0
-    # best_route = None
-    # plot = Live_Plot(rails)
+    best_qual = 0
+    best_route = None
+    plot = Live_Plot(rails)
     
-    # for _ in range(10000):
-    #     rails.reset()
-    #     route = Simulated_Annealing(rails, max_trains, max_time, 1)
-    #     route.run(iterations)
-    #     if route.quality() >= best_qual:
-    #         best_qual = route.quality()
-    #         best_route = route
-    #         print(best_qual)
-    #         plot.update_fig(best_route)
+    for _ in range(10000):
+        rails.reset()
+        route = Simulated_Annealing(rails, max_trains, max_time, 1)
+        route.run(iterations)
+        if route.quality() >= best_qual:
+            best_qual = route.quality()
+            best_route = route
+            print(best_qual)
+            plot.update_fig(best_route)
 
-    # print(best_qual)
-    # output(best_qual, best_route.get_trains(), './code/output/output.csv')
-    # create_animation(rails, best_route)
+    print(best_route)
+    print(best_qual)
+    output(best_qual, best_route.get_trains(), './code/output/output.csv')
+    create_animation(rails, best_route)
 
 
     # display = Run_Algorithms_Live(Simulated_Annealing, rails, iterations, max_trains, max_time)

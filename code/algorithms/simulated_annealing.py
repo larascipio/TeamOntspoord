@@ -22,7 +22,7 @@ class Hillclimber():
 
         # needed for annealing
         self._iter = 0
-        self._max_iter = 0
+        self._max_iter = 10000
         self._starttemp = start_temp
 
     def keep_change(self, qual_before, qual_now) -> bool:
@@ -55,11 +55,10 @@ class Hillclimber():
             #     print('RANDOM ROUTES')
         return route.get_trains()
 
-    def run(self, iterations: int):
-        self._max_iter = iterations
+    def run(self):
 
         # keep trying a random change and see if the score increases
-        for self._iter in range(iterations):
+        for self._iter in range(self._max_iter):
 
             # sys.stdout.write(f'\rThe quality is {self.quality()}')
             # sys.stdout.flush()
