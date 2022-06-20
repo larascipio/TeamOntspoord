@@ -1,5 +1,5 @@
-from all_code.algorithms.random_algorithm import Make_Random_Routes
-from all_code.classes.train import Train
+from code.algorithms.random_algorithm import Make_Random_Routes
+from code.classes.train import Train
 import random
 import sys
 
