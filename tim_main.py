@@ -4,7 +4,7 @@ tim_main.py
 
 from code.algorithms.bad_algorithm import Make_Bad_Routes
 from code.algorithms.random_algorithm import Make_Random_Routes
-from code.algorithms.simulated_annealing import Hillclimber
+from code.algorithms.simulated_annealing import Hillclimber, Simulated_Annealing
 from code.algorithms.self_choosing import Make_Iterated_Routes
 from code.classes.structure import Railnet
 from code.visualisation.quality_hist import quality_hist
@@ -107,6 +107,20 @@ if __name__ == '__main__':
         for _ in range(args.runs):
 
             route = Make_Iterated_Routes(rails, max_trains, max_time)
+            route.run(iterations)
+            route_quality = route.quality()
+
+            if route_quality > best_quality:
+                best_quality = route_quality
+                best_route = route
+
+            qualityroutes.append(route_quality)
+            rails.reset()
+
+    elif args.algorithm == "sim_annealing":
+        for _ in range(args.runs):
+
+            route = Simulated_Annealing(rails, max_trains, max_time, 1)
             route.run(iterations)
             route_quality = route.quality()
 
