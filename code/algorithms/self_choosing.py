@@ -1,9 +1,4 @@
 import random
-<<<<<<< HEAD
-import numpy as np
-from all_code.classes.train import Train
-from copy import copy
-=======
 from code.classes.train import Train
 
 # IDEEËN: check steeds de slechtste route en vervang die steeds
@@ -11,7 +6,6 @@ from code.classes.train import Train
 # Doe er wat restrictions bij, zodat de trein niet zomaar terugkeert langs dezelfde connecties en dezelfde stations
 # BUGS: Follow Track voor structure.py werkt niet - lijkt uit zichzelf al deels te resetten
 # In de train.py een set maken met connecties - sneller dan steeds langs de passed statement te loopen
->>>>>>> 97cd6a500997dc46a034fbaca08233dbfd6c8633
 
 class Make_Iterated_Routes():
     def __init__(self, railnet, num_trains: int, max_distance: int):

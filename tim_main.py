@@ -2,17 +2,6 @@
 tim_main.py
 """
 
-<<<<<<< HEAD
-from all_code.algorithms.bad_algorithm import Make_Bad_Routes
-from all_code.algorithms.random_algorithm import Make_Random_Routes
-from all_code.algorithms.simulated_annealing import Hillclimber
-from all_code.algorithms.self_choosing import Make_Iterated_Routes
-from all_code.visualisation.plotly_animation import create_animation
-from all_code.classes.structure import Railnet
-from all_code.visualisation.quality_hist import quality_hist
-from all_code.visualisation.output import output
-from all_code.visualisation.simple_visualization import simple_visualization
-=======
 from code.algorithms.bad_algorithm import Make_Bad_Routes
 from code.algorithms.random_algorithm import Make_Random_Routes
 from code.algorithms.simulated_annealing import Hillclimber, Simulated_Annealing
@@ -23,7 +12,6 @@ from code.visualisation.output import output
 from code.visualisation.simple_visualization import simple_visualization
 from code.visualisation.plotly_animation import create_animation
 from math import ceil
->>>>>>> 97cd6a500997dc46a034fbaca08233dbfd6c8633
 import argparse
 
 

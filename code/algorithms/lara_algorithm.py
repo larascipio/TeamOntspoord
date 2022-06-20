@@ -1,11 +1,6 @@
 import random
-<<<<<<< HEAD
-from all_code.algorithms.random_algorithm import Make_Random_Routes
-from all_code.classes.train import Train
-=======
 from .random_algorithm import Make_Random_Routes
 from code.classes.train import Train
->>>>>>> 97cd6a500997dc46a034fbaca08233dbfd6c8633
 import random
 
 class Make_Greedy_Routes(Make_Random_Routes):
