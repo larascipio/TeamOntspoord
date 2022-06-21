@@ -64,7 +64,7 @@ if __name__ == '__main__':
     if args.make == 'once':
 
         route = Algorithm(rails, max_trains, max_time)
-        route.run()
+        route.run(100000)
         route_quality = route.quality()
 
         print(route)
@@ -102,6 +102,7 @@ if __name__ == '__main__':
                 best_route = route
                 print(best_qual)
                 plot.update_fig(best_route)
+                output(best_qual, best_route.get_trains(), './code/output/output.csv')
 
         print(best_route)
         print(best_qual)

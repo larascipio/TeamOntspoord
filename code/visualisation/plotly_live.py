@@ -1,8 +1,13 @@
 import plotly.graph_objects as go
 import plotly.express as px
+import os
+
 
 class Live_Plot():
     def __init__(self, rails):
+        print('see the plot at:')
+        path = os.getcwd()
+        print(f'{path}\code\output\live_plot.html')
 
         # ----------------------------- Create the connections --------------------
         self._railsdata = []

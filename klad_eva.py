@@ -14,10 +14,11 @@ from code.classes.structure import Railnet
 from code.visualisation.plotly_animation import create_animation
 from code.visualisation.plotly_live import Live_Plot
 from code.visualisation.quality_hist import quality_hist
-from code.visualisation.mean_plot import plot_analysis
+from code.visualisation.mean_plot import plot_analysis, simple_plot
 from code.visualisation.output import output
 import argparse
 import statistics
+import math
 
 if __name__ == '__main__':
     # use commandline arguments to choose the railroad
@@ -90,26 +91,29 @@ if __name__ == '__main__':
 
 
 
-    annealing_qualities = []
-    for _ in range(1000):
-        rails.reset()
-        route = Simulated_Annealing(rails, max_trains, max_time, 1)
-        route.run(iterations)
-        route_quality = route.quality()
-        annealing_qualities.append(route_quality)
+    # annealing_qualities = []
+    # for _ in range(1000):
+    #     rails.reset()
+    #     route = Simulated_Annealing(rails, max_trains, max_time, 1)
+    #     route.run(iterations)
+    #     route_quality = route.quality()
+    #     annealing_qualities.append(route_quality)
         
     
-    # Create hist for best routes 
-    quality_hist(annealing_qualities)
+    # # Create hist for best routes 
+    # quality_hist(annealing_qualities)
 
     # ----------------------------- Different starting temps ------------------
 
     # # loop the starting temp from 0.000001 to 1,000,000
-    # starting_temp = 0.0001
+    # starting_temp = 0.001
     # avg = []
     # std = []
     # temps = []
-    # while starting_temp < 100:
+    # multiplyby = math.sqrt(10)
+    # # while starting_temp < 1000001:
+    # for starting_temp in range(10,101,5):
+    #     print(starting_temp)
     #     qual = []
 
     #     # run the algorithm 50 times
@@ -118,68 +122,89 @@ if __name__ == '__main__':
     #         annealing = Simulated_Annealing(rails, max_trains, max_time, starting_temp)
     #         annealing.run(iterations)
     #         qual.append(annealing.quality())
+    #         # simple_plot(annealing.temps)
         
     #     avg.append(statistics.mean(qual))
     #     std.append(statistics.stdev(qual))
     #     temps.append(starting_temp)
 
-    #     starting_temp *= 2
+    #     # starting_temp *= multiplyby
 
         
     # print(avg)
     # print(std)
 
-    # plot_analysis(temps, avg, std, (151, 127, 215), 'linear temps')
+    # plot_analysis(
+    #     temps=temps, 
+    #     mean=avg, 
+    #     std=std, 
+    #     colors=(151, 127, 215), 
+    #     name=f'average quality at {iterations} iterations', 
+    #     xaxis='starting temperature',
+    #     yaxis='quality'
+    # )
 
     # ----------------------------- number of iterations ----------------------
 
-    # # loop the number of iterations from 100 to 1,000,000
-    # iterations = 100
-    # avg = []
-    # std = []
-    # temps = []
-    # for iterations in range(10000, 100001, 10000):
-    #     qual = []
+    # loop the number of iterations from 100 to 1,000,000
+    iterations = 1
+    avg = []
+    std = []
+    temps = []
+    while iterations < 100001:
+    # for iterations in range(1, 100001, 1):
+        qual = []
+        print(iterations)
 
-    #     # run the algorithm 50 times
-    #     for _ in range(50):
-    #         rails.reset()
-    #         annealing = Simulated_Annealing(rails, max_trains, max_time, start_temp=1)
-    #         annealing.run(iterations)
-    #         qual.append(annealing.quality())
+        # run the algorithm 50 times
+        for _ in range(50):
+            rails.reset()
+            annealing = Simulated_Annealing(rails, max_trains, max_time, start_temp=20)
+            annealing.run(iterations)
+            qual.append(annealing.quality())
         
-    #     avg.append(statistics.mean(qual))
-    #     std.append(statistics.stdev(qual))
-    #     temps.append(iterations)
+        avg.append(statistics.mean(qual))
+        std.append(statistics.stdev(qual))
+        temps.append(iterations)
 
-    #     iterations *= 10
+        iterations *= 10
 
         
-    # print(avg)
-    # print(std)
+    print(avg)
+    print(std)
 
-    # plot_analysis(temps, avg, std, (151, 127, 215), 'number of iterations')
+    plot_analysis(
+        temps=temps, 
+        mean=avg, 
+        std=std, 
+        colors=(151, 127, 215), 
+        name='average quality for a linear starting temperature of 20', 
+        xaxis='number of iterations',
+        yaxis='quality',
+        title='Analysis of the number of iterations'
+    )
 
     # ----------------------------- Find best ---------------------------------
     
-    best_qual = 0
-    best_route = None
-    plot = Live_Plot(rails)
+    # best_qual = 0
+    # best_route = None
+    # plot = Live_Plot(rails)
     
-    for _ in range(10000):
-        rails.reset()
-        route = Simulated_Annealing(rails, max_trains, max_time, 1)
-        route.run(iterations)
-        if route.quality() >= best_qual:
-            best_qual = route.quality()
-            best_route = route
-            print(best_qual)
-            plot.update_fig(best_route)
+    # for _ in range(10000):
+    #     rails.reset()
+    #     route = Simulated_Annealing(rails, max_trains, max_time, 1)
+    #     route.run(iterations)
+    #     if route.quality() >= best_qual:
+    #         best_qual = route.quality()
+    #         best_route = route
+    #         print(best_qual)
+    #         plot.update_fig(best_route)
+    #         output(best_qual, best_route.get_trains(), './code/output/output.csv')
 
-    print(best_route)
-    print(best_qual)
-    output(best_qual, best_route.get_trains(), './code/output/output.csv')
-    create_animation(rails, best_route)
+    # print(best_route)
+    # print(best_qual)
+    # output(best_qual, best_route.get_trains(), './code/output/output.csv')
+    # create_animation(rails, best_route)
 
 
     # display = Run_Algorithms_Live(Simulated_Annealing, rails, iterations, max_trains, max_time)

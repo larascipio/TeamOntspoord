@@ -1,6 +1,6 @@
 import plotly.graph_objects as go
 
-def plot_analysis(temps, mean: list, std: list, colors: tuple, name: str):
+def plot_analysis(temps, mean: list, std: list, colors: tuple, name: str, xaxis: str, yaxis: str, title: str):
     """Plot the mean with the standard deviation."""
     
     # create the data for the plots
@@ -21,7 +21,7 @@ def plot_analysis(temps, mean: list, std: list, colors: tuple, name: str):
         fillcolor=f'rgba({colors[0]}, {colors[1]}, {colors[2]}, 0.2)',
         line_color='rgba(255,255,255,0)',
         showlegend=False,
-        name=name
+        name=name,
     ))
 
     # add the mean to the figure
@@ -33,4 +33,18 @@ def plot_analysis(temps, mean: list, std: list, colors: tuple, name: str):
 
     fig.update_xaxes(type='log')
 
+    fig.update_layout(
+        title=title,
+        xaxis_title=xaxis,
+        yaxis_title=yaxis
+        )
+
+    fig.show()
+
+def simple_plot(y):
+    x = [i for i in range(len(y))]
+    fig = go.Figure()
+    fig.add_trace(go.Scatter(
+        x=x, y=y
+    ))
     fig.show()

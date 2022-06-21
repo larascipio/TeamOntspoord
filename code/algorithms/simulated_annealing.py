@@ -4,7 +4,7 @@ import random
 import sys
 
 class Hillclimber():
-    def __init__(self, railnet, max_trains, max_time, start_temp=0):
+    def __init__(self, railnet, max_trains, max_time):
         """
         Initialize the hillclimber algorithm.
         """
@@ -23,7 +23,6 @@ class Hillclimber():
         # needed for annealing
         self._iter = 0
         self._max_iter = 10000
-        self._starttemp = start_temp
 
     def keep_change(self, qual_before, qual_now) -> bool:
         if qual_now < qual_before:
@@ -55,8 +54,8 @@ class Hillclimber():
             #     print('RANDOM ROUTES')
         return route.get_trains()
 
-    def run(self):
-
+    def run(self, iterations=100000):
+        self._max_iter=iterations
         # keep trying a random change and see if the score increases
         for self._iter in range(self._max_iter):
 
@@ -292,9 +291,12 @@ class Hillclimber():
 
 
 class Simulated_Annealing(Hillclimber):
-    def keep_change(self, qual_before, qual_now):
+    def __init__(self, railnet, max_trains, max_time, start_temp = 20):
+        super().__init__(railnet, max_trains, max_time)
+        self._starttemp = start_temp
+        self.temps = []
 
-        self._starttemp = 1
+    def keep_change(self, qual_before, qual_now):
 
         # check if a starting temperature is provided
         if self._starttemp == 0:
@@ -302,13 +304,19 @@ class Simulated_Annealing(Hillclimber):
 
         # determine the temperature for this iteration
         # temp = 1
-        # temp = self._starttemp - (self._starttemp/self._max_iter) * self._iter
-        temp = self._starttemp * pow(0.997, self._iter)
+        temp = self._starttemp - (self._starttemp/self._max_iter) * self._iter
+        # temp = self._starttemp * pow(0.997, self._iter)
+
+        # print(temp)        
 
         # determine whether this change is kept
         qual_change = qual_now - qual_before
+        # print(pow(2, qual_change)/temp)
+        # print()
         if qual_change > 0:
             return True
-        if pow(2, qual_change)/temp > random.random():
+        if temp == 0:
+            return False
+        elif pow(2, qual_change/temp) > random.random():
             return True
         return False
