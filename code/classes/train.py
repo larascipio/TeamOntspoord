@@ -74,6 +74,18 @@ class Train():
         
         # this train cannot go further
 
+    def weighted_connection(self):
+        possible_connections = []
+        for connection in self._current_station.get_connections():
+            if not connection.passed():
+                possible_connections.append(connection)
+        if possible_connections:
+            return random.choice(list(possible_connections))
+
+        # no more possible connections
+        self.stop()
+        return None
+
     def choose_random_connection(self):
         """
         Choose a random connection.

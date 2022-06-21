@@ -5,15 +5,15 @@ stations.py
 class Station():
     def __init__(self, station: str, x_coordinate: float, y_coordinate: float):
         """Create a station.s"""
-        self._connections = {}
+        self._connections = []
         self._name = station
         self._x = float(y_coordinate)
         self._y = float(x_coordinate)
         self._passed = False
 
-    def add_connection(self, uid, connection):
+    def add_connection(self, connection):
         """Add a connection from this station to the next."""
-        self._connections[uid] = connection
+        self._connections.append(connection)
 
     def travel(self):
         self._passed = True
@@ -24,11 +24,28 @@ class Station():
     def reset(self):
         self._passed = False
 
-    def get_connections(self):
-        return list(self._connections.values())
+    # def travel(self):
+    #     self._passed += 1
 
-    def remove_connection(self, unique_id):
-        del self._connections[unique_id]
+    # def passed(self):
+    #     if self._passed > 0:
+    #         return True
+    #     return False
+    
+    # def remove(self):
+    #     if self._passed > 0:
+    #         self._passed -= 1
+    #     else:
+    #         raise Exception('You cannot remove this connection, as it is not passed.')
+        
+    # def reset(self):
+    #     self._passed = 0
+
+    def get_connections(self):
+        return self._connections
+
+    def remove_connection(self, connection):
+        self._connections.remove(connection)
 
     def get_position(self):
         return (self._x, self._y)
@@ -40,7 +57,7 @@ class Station():
         """Print the information of this station."""
         print(self._name)
         print('Connections:')
-        for connection in self._connections.values():
+        for connection in self._connections:
             print(connection.get_destination(self)._name)
         print(f'Location: ({self._x}, {self._y})')
         print()
@@ -60,6 +77,9 @@ class Connection():
         if station == self._stations[0]:
             return self._stations[1]
         return self._stations[0]
+
+    def get_stations(self):
+        return self._stations
 
     def travel(self):
         self._passed += 1

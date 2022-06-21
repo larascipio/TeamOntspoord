@@ -2,7 +2,7 @@ import plotly.graph_objects as go
 import plotly.express as px
 import random
 
-def create_animation(railnet, routeclass):
+def create_animation(railnet):
 
     # ask if you want moving trains
     if input('Do you want moving trains? (y/n) ') == 'y':
@@ -12,10 +12,11 @@ def create_animation(railnet, routeclass):
 
     # get the stations and connections
     stations = list(railnet.get_stations().values())
-    connectionlist = list(railnet.get_connections().values())
+    connectionlist = list(railnet.get_connections())
 
     # create the colours for the trains
-    route = routeclass.get_trains()
+    # route = routeclass.get_trains()
+    route = railnet.get_trains()
     num_trains = len(route)
     colorlist = px.colors.qualitative.Plotly
     # color = random.choices(colorlist, k=num_trains)
@@ -141,11 +142,25 @@ def create_animation(railnet, routeclass):
     # loop for the max length of a train = 30
 
     i = 0
+    # b = set()
     for train in route:
         x_routes = []
         y_routes = []
+        # a = set(train.get_connections())
+        # passed_connections = a - b
+        # print(passed_connections)
+        # for connection in passed_connections:
+        #     for station in connection._stations:
+        #         station_x, station_y = station.get_position()
+        #         b.add((station_x, station_y))
+        #         pass
+
+        
         for station in train.get_stations():
             station_x, station_y = station.get_position()
+            # if (station_x, station_y) not in b:
+            #     station_x -= 0.001
+            #     station_y -= 0.001
             x_routes.append(station_x)
             y_routes.append(station_y)
 
@@ -155,6 +170,7 @@ def create_animation(railnet, routeclass):
             # color = color[i],
             mode = 'markers+lines',
             marker=dict(color=color[i%len(color)]),
+            # width=i,
             hoverinfo='skip'
         )]
         i += 1

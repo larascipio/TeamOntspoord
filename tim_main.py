@@ -5,12 +5,14 @@ tim_main.py
 from code.algorithms.bad_algorithm import Make_Bad_Routes
 from code.algorithms.random_algorithm import Make_Random_Routes
 from code.algorithms.simulated_annealing import Hillclimber, Simulated_Annealing
-from code.algorithms.self_choosing import Make_Iterated_Routes
+from code.algorithms.random_iteration import Make_Iterated_Routes
+from code.algorithms.biased_iteration import Make_Biased_Routes
 from code.classes.structure import Railnet
-from code.visualisation.quality_hist import quality_hist
+# from code.visualisation.quality_hist import quality_hist
 from code.visualisation.output import output
 from code.visualisation.simple_visualization import simple_visualization
 from code.visualisation.plotly_animation import create_animation
+from tim_quality_hist import quality_hist
 from math import ceil
 import argparse
 
@@ -21,7 +23,7 @@ if __name__ == '__main__':
     # Amount of runs, changing connections or having a failed station is optional
     parser = argparse.ArgumentParser(description='create routes')
     parser.add_argument("type", choices=['holland','national'], default='holland', help="Use the holland or national railroads")
-    parser.add_argument("algorithm", choices=['random','bad','hillclimber', 'iteration'], default='random', help="Random, bad or hillclimber algrorithm")
+    parser.add_argument("algorithm", choices=['random','bad','hillclimber', 'iteration', 'sim_annealing', 'bias'], default='random', help="Choose algrorithm")
     parser.add_argument("runs", type=int, nargs="?", default=1, help="Amount of runs")
     parser.add_argument("changeconnection", type=int, nargs="?", default=0, help="Amount of changed connections")
     parser.add_argument("stationfailure", nargs="?", help="Give failed station")
@@ -41,7 +43,7 @@ if __name__ == '__main__':
     # Loads the objects and variables used for visualisation. 
     qualityroutes = []
     best_quality = 0
-    rails = Railnet()
+    rails = Railnet(max_trains, max_time)
     rails.load(file_stations, file_connections)
     rails.station_failure(args.stationfailure)
 
@@ -51,7 +53,7 @@ if __name__ == '__main__':
     
     # Get the theoretical maximum quality for the railroad
     # total_distance = 0
-    # for connection in rails._connections.values():
+    # for connection in rails.get_connections():
     #     total_distance += connection._distance
     # minus_trains = ceil(total_distance / max_time) * 100
     # theoretical_quality = 10000 - minus_trains - total_distance
@@ -106,18 +108,19 @@ if __name__ == '__main__':
         iterations = int(input('How many iterations? '))
         for _ in range(args.runs):
 
-            route = Make_Iterated_Routes(rails, max_trains, max_time)
+            route = Make_Iterated_Routes(rails)
             route.run(iterations)
-            route_quality = route.quality()
+            route_quality = rails.quality()
 
             if route_quality > best_quality:
                 best_quality = route_quality
-                best_route = route
+                best_route = rails.get_trains()
 
             qualityroutes.append(route_quality)
             rails.reset()
 
     elif args.algorithm == "sim_annealing":
+        iterations = int(input('How many iterations? '))
         for _ in range(args.runs):
 
             route = Simulated_Annealing(rails, max_trains, max_time, 1)
@@ -128,17 +131,34 @@ if __name__ == '__main__':
                 best_quality = route_quality
                 best_route = route
 
+
             qualityroutes.append(route_quality)
             rails.reset()
+    elif args.algorithm == "bias":
+        iterations = int(input('How many iterations? '))
+        for _ in range(args.runs):
 
+            route = Make_Biased_Routes(rails, max_trains, max_time)
+            route.run(iterations)
+            route_quality = route.quality()
+
+            if route_quality > best_quality:
+                best_quality = route_quality
+                best_route = route
+
+            qualityroutes.append(route_quality)
+            rails.reset()
+    
     quality_hist(qualityroutes)
-    output(best_quality, best_route.get_trains(), 'output.csv')
-    rails.follow_track(best_route.get_trains())
-    print(route.quality())
+
+    rails.add_route(best_route)
+    # print(rails)
+    output(best_quality, rails.get_trains(), 'output.csv')
 
     choose_plot = input('Do you want a detailed visualisation of the route? (y/n) ')
 
     if choose_plot == "y":
-        create_animation(rails, best_route)
+        create_animation(rails)
     else:
-        simple_visualization(rails._stations, list(rails._connections.values()))
+        simple_visualization(rails)
+
