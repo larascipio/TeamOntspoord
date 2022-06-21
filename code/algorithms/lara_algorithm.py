@@ -6,15 +6,11 @@ import random
 class Make_Greedy_Routes(Make_Random_Routes):
     """
     A more greedy random algorithm that creates connections based on randomness and heuristics.
-    Almost all of the functions are eqal to those of the Make_Random_Routes class, which is why
+    Almost all of the functions are equal to those of the Make_Random_Routes class, which is why
     we use that as a parent class.
     """
 
-    def change_amount_of_trains(self):
-        for i in range(self._max_trains):
-            print(i)
-
-    def change_amount_of_connections(self):
+    def choose_path(self):
         pass
 
 # Less random amount of trains 
@@ -32,7 +28,7 @@ class Make_Greedy_Routes(Make_Random_Routes):
 
         # Keep going until the route is 2 hours
             while train.is_running():
-                connection = train.choose_random_connection()
+                connection = train.choose_shortest_connection()
 
                 if not connection:
                     break

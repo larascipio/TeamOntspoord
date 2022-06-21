@@ -30,23 +30,11 @@ class Train():
     def get_stations(self):
         """ Get all the stations in this trains route. """
         return self._stations_traveled
-
-    # def choose_connection(self):
-    #     """
-    #     Choose the first of the connections that has not been passed yet.
-    #     """
-    #     print(self._current_station, self._current_station.get_connections() - self._routes.all_connections_passed())
-    #     for connection in self._current_station.get_connections() - self._routes.all_connections_passed():
-    #         if self._distance + connection.get_distance() <= self._max_dist:
-    #             return connection
-    #     self._running = False
-    #     return None
-
+    
     def choose_next_connection(self):
         """
         Choose a random connection that has not been passed yet.
         """
-        
         possible_connections = []
         for connection in self._current_station.get_connections():
             if not connection.passed():
@@ -69,10 +57,37 @@ class Train():
         #             weights.append(1)
         #         else:
         #             weights.append(2)
+    def choose_shortest_connection(self):
+        """
+        Choose the shortest connection that has not been passed yet.
+        """
+        distance = 100
+        for connection in self._current_station.get_connections():
+            if not connection.passed():
+                if connection._distance < distance:
+                    distance = connection._distance 
+                    chosen_connection = connection
+                return chosen_connection
 
+        # no more possible connections
+        self.stop()
+        return None
 
-        
-        # this train cannot go further
+    def choose_longest_connection(self):
+        """
+        Choose if possible the inbetween connection that has not been passed yet.
+        """
+        distance = 0
+        for connection in self._current_station.get_connections():
+            if not connection.passed():
+                if connection._distance > distance:
+                    distance = connection._distance 
+                    chosen_connection = connection
+                return chosen_connection
+
+        # no more possible connections
+        self.stop()
+        return None
 
     def choose_random_connection(self):
         """

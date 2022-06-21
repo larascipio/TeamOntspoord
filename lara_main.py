@@ -28,7 +28,7 @@ if __name__ == '__main__':
     else:
         file_stations = 'data/StationsNationaal.csv'
         file_connections = 'data/ConnectiesNationaal.csv'
-        max_trains = 19
+        max_trains = 20
         max_time = 180
     
     qualityroutes = []
