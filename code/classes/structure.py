@@ -50,8 +50,9 @@ class Railnet():
         return train
 
     def remove_train(self, train):
-        self._trains.remove(train)
-        self.reset_train(train)
+        if train in self._trains:
+            self._trains.remove(train)
+            self.reset_train(train)
 
     def add_route(self, route):
         self._trains = route

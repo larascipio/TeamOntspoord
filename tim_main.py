@@ -158,7 +158,7 @@ if __name__ == '__main__':
     choose_plot = input('Do you want a detailed visualisation of the route? (y/n) ')
 
     if choose_plot == "y":
-        create_animation(rails)
+        create_animation(rails, rails.get_trains())
     else:
         simple_visualization(rails)
 
