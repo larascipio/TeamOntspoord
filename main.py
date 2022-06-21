@@ -60,7 +60,7 @@ if __name__ == '__main__':
 
     # ----------------------------- Load in rails -----------------------------
 
-    rails = Railnet()
+    rails = Railnet(max_trains, max_time)
     rails.load(file_stations, file_connections)
 
     # ----------------------------- Run once ----------------------------------
