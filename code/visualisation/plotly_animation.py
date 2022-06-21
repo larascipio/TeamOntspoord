@@ -17,7 +17,7 @@ def create_animation(railnet, routeclass, live=False):
 
     # get the stations and connections
     stations = list(railnet.get_stations().values())
-    connectionlist = list(railnet.get_connections().values())
+    connectionlist = list(railnet.get_connections())
 
     # create the colours for the trains
     route = routeclass.get_trains()
@@ -119,11 +119,25 @@ def create_animation(railnet, routeclass, live=False):
     # ----------------------------- Create the lines --------------------------
 
     i = 0
+    # b = set()
     for train in route:
         x_routes = []
         y_routes = []
+        # a = set(train.get_connections())
+        # passed_connections = a - b
+        # print(passed_connections)
+        # for connection in passed_connections:
+        #     for station in connection._stations:
+        #         station_x, station_y = station.get_position()
+        #         b.add((station_x, station_y))
+        #         pass
+
+        
         for station in train.get_stations():
             station_x, station_y = station.get_position()
+            # if (station_x, station_y) not in b:
+            #     station_x -= 0.001
+            #     station_y -= 0.001
             x_routes.append(station_x)
             y_routes.append(station_y)
 
@@ -132,6 +146,7 @@ def create_animation(railnet, routeclass, live=False):
             lat=y_routes,
             mode = 'markers+lines',
             marker=dict(color=color[i%len(color)]),
+            # width=i,
             hoverinfo='skip'
         )]
         i += 1

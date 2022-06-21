@@ -1,12 +1,15 @@
 from code.classes.stations import Station, Connection
+from code.classes.train import Train
 import csv
 import random
 
 class Railnet():
-    def __init__(self):
+    def __init__(self, num_trains: int, max_distance: int):
         self._stations = {}
-        self._connections = {}
-        self._total_connections = 0
+        self._connections = []
+        self._trains = []
+        self._max_trains = num_trains
+        self._max_dist = max_distance
 
     def load(self, file_locations: str, file_connections: str):
         """Load the stations and its connections"""
@@ -18,67 +21,132 @@ class Railnet():
 
         with open(file_connections, newline = '') as csvfile:
             reader = csv.DictReader(csvfile)
-            uid = 0
             for row in reader: 
                 connection = Connection(self._stations[row['station1']], self._stations[row['station2']], float(row['distance']))
-                self._connections[uid] = connection
-                self._stations[row['station1']].add_connection(uid, connection)
-                self._stations[row['station2']].add_connection(uid, connection)
-                uid += 1
-                self._total_connections += 1
+                self._connections.append(connection)
+                self._stations[row['station1']].add_connection(connection)
+                self._stations[row['station2']].add_connection(connection)
+                # uid += 1
+                # self._total_connections += 1
+
+    def create_train(self, start):
+        train = Train(self, start, self._max_dist)
+        self._trains.append(train)
+        return train
+
+    def add_train(self, train):
+        """Add existing train to the railnet"""
+        self.follow_train(train)
+        self._trains.append(train)
+
+    def remove_last_train(self):
+        train = self._trains.pop()
+        self.reset_train(train)
+        return train
+
+    def remove_first_train(self):
+        train = self._trains.pop(0)
+        self.reset_train(train)
+        return train
+
+    def remove_train(self, train):
+        self._trains.remove(train)
+        self.reset_train(train)
+
+    def add_route(self, route):
+        self._trains = route
+        self.follow_track()
 
     def get_stations(self):
         return self._stations
 
     def get_connections(self):
         return self._connections
+
+    def get_trains(self):
+        return self._trains
     
     def get_total_connections(self) -> int:
-        return self._total_connections
+        return len(self._connections)
 
     def get_passed_connections(self) -> set:
         connections_passed = set()
-        for connection in self._connections.values():
+        for connection in self._connections:
             if connection.passed():
                 connections_passed.add(connection)
         return connections_passed
+
+    def get_max_trains(self):
+        return self._max_trains
+
+    def get_max_distance(self):
+        return self._max_dist
+
+    def quality(self) -> float:
+        """
+        Calculate the quality of the current routes.
+        """
+        qual = (len(self.get_passed_connections())/self.get_total_connections())*10000
+        for train in self._trains:
+            qual -= 100
+            qual -= train.get_distance()
+        
+        return qual
+
+    def check_trains_quality(self):
+        """
+        Check how each train affects the quality. 
+        Store in two lists so duplicate scores aren't overwritten.
+        The higher the quality difference, the more negatively the train affects the quality
+        """
+        self.overall_quality = self.quality()
+        iterated_train_list = []
+        quality_list = []
+
+        for train in self._trains:
+            self.remove_train(train)
+
+            quality_difference = self.quality() - self.overall_quality
+            iterated_train_list.append(train)
+            quality_list.append(quality_difference)
+
+            self.add_train(train)
+
+        return iterated_train_list, quality_list
 
     def station_failure(self, failed_station):
         """Removes a failed station from the dictionary, including all connections to it"""
         if failed_station not in self._stations:
             return
-        for unique_id in self._stations[failed_station]._connections:
 
-            for station in self._connections[unique_id]._stations:
+        for connection in self._stations[failed_station].get_connections():
 
-                # Remove the connection to the failed station in the station objects
-                if station is not self._stations[failed_station]:
-                    station.remove_connection(unique_id)
-                    #if len(station._connections) == 0:
-                        #del self._stations[station]
+            for station in connection.get_stations():
+
+                station.remove_connection(connection)
+                #if len(station._connections) == 0:
+                    #del self._stations[station]
 
             # Remove the connection to the failed station from the dictionary
-            del self._connections[unique_id]
-            self._total_connections -= 1
+            self._connections.remove(connection)
 
         # Remove the failed station from the dictionary
-        del self._stations[failed_station]
+        # del self._stations[failed_station]
 
     def remove_random_connection(self):
         """Removes random connections"""
-        uid = random.choice(list(self._connections.keys()))
-        self.remove_connection(uid)
+        connection = random.choice(self._connections)
+        self.remove_connection(connection)
 
-    def remove_connection(self, uid):
+    def remove_connection(self, connection):
         """Removes connection"""
-        for station in self._connections[uid]._stations:
-                station.remove_connection(uid)
-        del self._connections[uid]
-        self._total_connections -= 1
+        for station in connection.get_stations():
+                station.remove_connection(connection)
+        self._connections.remove(connection)
+        # self._total_connections -= 1
 
     def add_connection(self, start, end):
         "Adds new connection"
-        new_uid = max(self._connections) + 1
 
         # Create new distance from the coordinates
         if start._x > end._x:
@@ -95,10 +163,10 @@ class Railnet():
         distance = int(c**(1/2) * 100)
 
         connection = Connection(start, end, distance)
-        start.add_connection(new_uid, connection)
-        end.add_connection(new_uid, connection)
-        self._connections[new_uid] = connection
-        self._total_connections += 1
+        start.add_connection(connection)
+        end.add_connection(connection)
+        self._connections.append(connection)
+        # self._total_connections += 1
 
     def change_connection(self):
         """Change connection from random start point to random end point"""
@@ -106,7 +174,7 @@ class Railnet():
         # Get one of the stations from which connection will be changed
         start_connections = []
         start = random.choice(list(self._stations.values()))
-        while len(start._connections) < 1:
+        while len(start.get_connections()) < 1:
             start = random.choice(list(self._stations.values()))
 
         # Get list of existing connecting stations
@@ -119,32 +187,12 @@ class Railnet():
             end = random.choice(list(self._stations.values()))
 
         # Remove an old connection and add the new connection
-        removed_connection = random.choice(list(start._connections.keys()))
+        removed_connection = random.choice(start.get_connections())
         self.remove_connection(removed_connection)
         self.add_connection(start, end)
-
-    # def follow_track(self, route):
-    #     """Follow all tracks again"""
-    #     for track in route:
-            
-    #         # Makes sure the current stop is passed
-    #         for i in range(len(track._route) - 1):
-    #             current_stop = self._stations[track._route[i]]
-    #             current_stop.travel()
-    #             next_stop = self._stations[track._route[i + 1]]
-
-    #             # Makes sure the connection is passed
-    #             for connection in current_stop._connections:
-    #                 if current_stop._connections[connection].get_destination(current_stop) == next_stop:
-    #                     current_stop._connections[connection].travel()
-    #                     break
-
-    #         # Makes sure the final stop of the track is passed
-    #         if len(track._route) > 1:
-    #             next_stop.travel()
     
-    def follow_track(self, route):
-        for train in route:
+    def follow_track(self):
+        for train in self._trains:
             self.follow_train(train)
 
     def follow_train(self, train):
@@ -156,19 +204,19 @@ class Railnet():
         for connection in train.get_connections():
             connection.travel()
 
-    def reset_track(self, route):
-        for train in route:
+    def reset_track(self):
+        for train in self._trains:
             self.reset_train(train)
 
     def reset_train(self, train):
 
         # reset the stations
-        for station in train.get_stations():
-            station.reset()
+        # for station in train.get_stations():
+        #     station.remove()
 
         # reset the connections
         for connection in train.get_connections():
-            connection.reset()
+            connection.remove()
 
     def reset(self):
 
@@ -177,6 +225,14 @@ class Railnet():
             station.reset()
 
         # reset the connections
-        for connection in self._connections.values():
+        for connection in self._connections:
             connection.reset()
 
+        self._trains = []
+
+    def __repr__(self):
+        representation = 'Route:\n'
+        for train in self._trains:
+            representation += f'{train}' + '\n'
+        representation += f'quality = {self.quality()}'
+        return representation

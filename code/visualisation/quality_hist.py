@@ -10,7 +10,7 @@ def quality_hist(qualityroutes):
     plt.xlabel('Quality')
     plt.ylabel('Number of runs')
     plt.title(f'Quality for {len(qualityroutes)} runs')
-    plt.savefig('./code/output/lijnvoeringkwaliteit.png')
+    plt.savefig('./code/lijnvoeringkwaliteit.png')
 
     # best_qual = max(qualityroutes.keys())
     # best_route = qualityroutes[best_qual]
