@@ -2,7 +2,7 @@
 main.py
 """
 from code.algorithms.random_algorithm import Make_Random_Routes
-from code.algorithms.lara_algorithm import Make_Greedy_Routes
+from code.algorithms.lara_algorithm import Depth_First
 from code.visualisation.plotly_animation import create_animation
 from code.classes.structure import Railnet
 from code.visualisation.quality_hist import quality_hist
@@ -27,7 +27,7 @@ if __name__ == '__main__':
     else:
         file_stations = 'data/StationsNationaal.csv'
         file_connections = 'data/ConnectiesNationaal.csv'
-        max_trains = 19
+        max_trains = 20
         max_time = 180
     
     qualityroutes = []
@@ -52,7 +52,7 @@ if __name__ == '__main__':
 
     if args.algorithm == 'new':
         for _ in range(args.runs):
-            route = Make_Greedy_Routes(rails, max_trains, max_time)
+            route = Depth_First(rails, max_trains, max_time)
             route.run()
             quality = route.quality()
 

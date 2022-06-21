@@ -101,13 +101,29 @@ class Train():
                 counter += 1
                 possible_connections.append(connection)
                 weights.append(1)
-        # print(weights)
 
         choice = random.choices(possible_connections, weights, k=1)
         if choice[0] == "stop":
             self.is_running = False
             return None
         return choice[0]
+
+    def choose_first_connection(self):
+        """
+        Choose the next connection if the list of possible connections
+        that has not been passed yet.
+        """
+        possible_connections = []
+        for connection in self._current_station.get_connections():
+            if not connection.passed():
+                possible_connections.append(connection)
+        if possible_connections:
+            return possible_connections[0]
+
+        # no more possible connections
+        self.stop()
+        return None
+
 
     def move(self, connection):
         """

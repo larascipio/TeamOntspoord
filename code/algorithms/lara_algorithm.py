@@ -5,7 +5,7 @@ import random
 
 class Depth_First():
     """
-
+    A Depth First search algorithm.
     """
     def __init__(self, railnet, num_trains: int, max_distance: int):
         """
@@ -18,8 +18,6 @@ class Depth_First():
         self._trains = []
         self._best_route = None
         self._start_quality = 0
-
-# Initialize the algorithm DONE
 
     def create_train(self):
         """
@@ -36,15 +34,6 @@ class Depth_First():
 
         return Train(self._railnet, start, self._max_dist)
 
-
-# Choose a start station (first create a train) DONE
-
-# Choose next station in line, repeat until no stations are left DONE 
-
-# When traject is complete, save it 
-
-# Calculate score DONE 
-
 # Check if different route can be made with same start station, otherwise choose next station 
 
 # if more than 2 stations: check quality
@@ -59,7 +48,6 @@ class Depth_First():
             self._start_quality = new_value
             print(f"New best value: {self.best_value}")
 
-    
     def quality(self) -> float:
         """
         Calculate the quality of the current routes.
