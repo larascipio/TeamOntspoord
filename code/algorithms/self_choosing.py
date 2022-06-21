@@ -22,15 +22,16 @@ class Make_Iterated_Routes():
         for station in self._railnet.get_stations().values():
             self._possible_stations.append(station)
     
-    def run(self, iterations):
+    def run(self):
         """
         Run the algorithm.
         """
         # Create a random max distance (BIAS: not higher than input max distance)
         # self._random_distance = random.randint(1, self._max_dist)
+        # set default iterations 
         for _ in range(self._max_trains):
             self.run_one_train()
-        self.change_tracks(iterations)
+        self.change_tracks(1)
 
     def run_one_train(self):
 
