@@ -16,35 +16,6 @@ class Make_Random_Routes():
         self._tot_connections = len(self._railnet.get_connections())
         self._trains = []
     
-    def run(self):
-        """
-        Run thealgorithm.
-        """
-
-        # Create a random amount of trains within the constraint (BIAS: 0 = eruit )
-        self._random_amount = random.randint(1, self._max_trains)
-        for _ in range(self._random_amount):
-            # create a train
-            train = self.create_train()
-
-            if not train:
-                return
-
-        # keep going until the route is 2 hours
-            while train.is_running():
-                connection = train.choose_random_connection()
-
-                if not connection:
-                    break
-
-                if connection.get_distance() + train.get_distance() < self._max_dist:
-                    train.move(connection)
-                else:
-                    train.stop()
-
-        # save the train
-            self._trains.append(train)
-    
     def create_train(self):
         """
         Create a new train at a random start station.
@@ -80,3 +51,31 @@ class Make_Random_Routes():
         representation += f'quality = {self.quality()}'
         return representation
     
+    def run(self):
+        """
+        Run the algorithm.
+        """
+
+        # Create a random amount of trains within the constraint (BIAS: 0 = eruit )
+        self._random_amount = random.randint(1, self._max_trains)
+        for _ in range(self._random_amount):
+            # create a train
+            train = self.create_train()
+
+            if not train:
+                return
+
+        # keep going until the route is 2 hours
+            while train.is_running():
+                connection = train.choose_random_connection()
+
+                if not connection:
+                    break
+
+                if connection.get_distance() + train.get_distance() < self._max_dist:
+                    train.move(connection)
+                else:
+                    train.stop()
+
+        # save the train
+            self._trains.append(train)

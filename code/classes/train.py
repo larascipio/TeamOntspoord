@@ -30,23 +30,11 @@ class Train():
     def get_stations(self):
         """ Get all the stations in this trains route. """
         return self._stations_traveled
-
-    # def choose_connection(self):
-    #     """
-    #     Choose the first of the connections that has not been passed yet.
-    #     """
-    #     print(self._current_station, self._current_station.get_connections() - self._routes.all_connections_passed())
-    #     for connection in self._current_station.get_connections() - self._routes.all_connections_passed():
-    #         if self._distance + connection.get_distance() <= self._max_dist:
-    #             return connection
-    #     self._running = False
-    #     return None
-
+    
     def choose_next_connection(self):
         """
         Choose a random connection that has not been passed yet.
         """
-        
         possible_connections = []
         for connection in self._current_station.get_connections():
             if not connection.passed():
@@ -69,10 +57,37 @@ class Train():
         #             weights.append(1)
         #         else:
         #             weights.append(2)
+    def choose_shortest_connection(self):
+        """
+        Choose the shortest connection that has not been passed yet.
+        """
+        distance = 100
+        for connection in self._current_station.get_connections():
+            if not connection.passed():
+                if connection._distance < distance:
+                    distance = connection._distance 
+                    chosen_connection = connection
+                return chosen_connection
 
+        # no more possible connections
+        self.stop()
+        return None
 
-        
-        # this train cannot go further
+    def choose_longest_connection(self):
+        """
+        Choose if possible the inbetween connection that has not been passed yet.
+        """
+        distance = 0
+        for connection in self._current_station.get_connections():
+            if not connection.passed():
+                if connection._distance > distance:
+                    distance = connection._distance 
+                    chosen_connection = connection
+                return chosen_connection
+
+        # no more possible connections
+        self.stop()
+        return None
 
     def weighted_connection(self):
         possible_connections = []
@@ -98,13 +113,29 @@ class Train():
                 counter += 1
                 possible_connections.append(connection)
                 weights.append(1)
-        # print(weights)
 
         choice = random.choices(possible_connections, weights, k=1)
         if choice[0] == "stop":
             self.is_running = False
             return None
         return choice[0]
+
+    def choose_first_connection(self):
+        """
+        Choose the next connection if the list of possible connections
+        that has not been passed yet.
+        """
+        possible_connections = []
+        for connection in self._current_station.get_connections():
+            if not connection.passed():
+                possible_connections.append(connection)
+        if possible_connections:
+            return possible_connections[0]
+
+        # no more possible connections
+        self.stop()
+        return None
+
 
     def move(self, connection):
         """
@@ -116,11 +147,12 @@ class Train():
         self._distance += connection.get_distance()
 
         # move the current station
-        self._current_station = connection.get_destination(self._current_station)
+        next_station = connection.get_destination(self._stations_traveled[-1])
+        self._current_station = next_station
 
         # add the station and connection to the route
-        self._route.append(self._current_station.get_name())
-        self._stations_traveled.append(self._current_station)
+        self._route.append(next_station.get_name())
+        self._stations_traveled.append(next_station)
         self._connections_traveled.append(connection)
         connection.travel()
         # print(self.get_connections())

@@ -102,4 +102,4 @@ class Connection():
         return self._distance
 
     def __repr__(self):
-        return f'Connection {self._stations[0].get_name()}-{self._stations[1].get_name()}'
+        return f'Connection {self._passed} {self._stations[0].get_name()}-{self._stations[1].get_name()}'
