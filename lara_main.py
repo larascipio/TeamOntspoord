@@ -3,7 +3,6 @@ main.py
 """
 from code.algorithms.random_algorithm import Make_Random_Routes
 from code.algorithms.lara_algorithm import Make_Greedy_Routes
-from code.algorithms.simulated_annealing import Hillclimber
 from code.visualisation.plotly_animation import create_animation
 from code.classes.structure import Railnet
 from code.visualisation.quality_hist import quality_hist
@@ -28,7 +27,7 @@ if __name__ == '__main__':
     else:
         file_stations = 'data/StationsNationaal.csv'
         file_connections = 'data/ConnectiesNationaal.csv'
-        max_trains = 20
+        max_trains = 19
         max_time = 180
     
     qualityroutes = []
@@ -45,6 +44,8 @@ if __name__ == '__main__':
             if quality > best_quality:
                     best_quality = quality
                     best_route = route
+                    print(best_route)
+
 
             qualityroutes.append(quality)
             rails.reset()
@@ -58,6 +59,7 @@ if __name__ == '__main__':
             if quality > best_quality:
                 best_quality = quality
                 best_route = route
+                print(best_route)
 
             qualityroutes.append(best_quality)
             rails.reset()
