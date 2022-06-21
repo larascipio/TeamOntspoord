@@ -1,14 +1,19 @@
+from venv import create
 import plotly.graph_objects as go
 import plotly.express as px
-import random
+# import random
+import dash
+from dash import dcc
+from dash import html
 
-def create_animation(railnet, routeclass):
+def create_animation(railnet, routeclass, live=False):
 
-    # ask if you want moving trains
-    if input('Do you want moving trains? (y/n) ') == 'y':
-        moving = True
-    else:
-        moving = False
+    # # ask if you want moving trains
+    # if input('Do you want moving trains? (y/n) ') == 'y':
+    #     moving = True
+    # else:
+    #     moving = False
+    moving = False
 
     # get the stations and connections
     stations = list(railnet.get_stations().values())
@@ -16,7 +21,6 @@ def create_animation(railnet, routeclass):
 
     # create the colours for the trains
     route = routeclass.get_trains()
-    num_trains = len(route)
     colorlist = px.colors.qualitative.Plotly
     # color = random.choices(colorlist, k=num_trains)
     color = colorlist + colorlist
@@ -30,14 +34,7 @@ def create_animation(railnet, routeclass):
             first_station = train._stations_traveled[0]
             first_x.append(first_station._x)
             first_y.append(first_station._y)
-        # data = [go.Scatter(
-        #     x=first_x,
-        #     y=first_y,
-        #     # color = color,
-        #     mode='markers',
-        #     marker=dict(color=color, size=20),
-        #     hoverinfo='skip'
-        # )]
+
         data = [go.Scattermapbox(
             lon=first_x,
             lat=first_y,
@@ -48,16 +45,6 @@ def create_animation(railnet, routeclass):
         )]
     else:
         data = []
-    
-    # train = route[0]
-    # first_station = train._stations_traveled[0]
-    # data = [go.Scatter(
-    #     x=[first_station._x],
-    #     y=[first_station._y],
-    #     mode='markers',
-    #     marker=dict(color='yellow', size=20),
-    #     hoverinfo='skip'
-    # )]
 
     # ----------------------------- Create the connections --------------------
     distances = []
@@ -119,14 +106,7 @@ def create_animation(railnet, routeclass):
             x_frames.append(x)
             y_frames.append(y)
         frames = [go.Frame(
-            # data=[go.Scatter(
-            #     x=x_frames[k],
-            #     y=y_frames[k],
-            #     # color = color,
-            #     mode='markers',
-            #     marker=dict(color=color, size=20),
-            #     hoverinfo='skip'
-            data=[go.Scattermapbox(
+                data=[go.Scattermapbox(
                 lon=x_frames[k],
                 lat=y_frames[k],
                 # color = color,
@@ -137,8 +117,6 @@ def create_animation(railnet, routeclass):
             for k in range(len(x_frames))]
 
     # ----------------------------- Create the lines --------------------------
-
-    # loop for the max length of a train = 30
 
     i = 0
     for train in route:
@@ -152,7 +130,6 @@ def create_animation(railnet, routeclass):
         data += [go.Scattermapbox(
             lon=x_routes,
             lat=y_routes,
-            # color = color[i],
             mode = 'markers+lines',
             marker=dict(color=color[i%len(color)]),
             hoverinfo='skip'
@@ -164,23 +141,7 @@ def create_animation(railnet, routeclass):
         # make the figure
         fig = go.Figure(
             data=data,
-            # layout=go.Layout(
-            #     xaxis=dict(range=[min(x_stations)-0.1, max(x_stations)+0.1], autorange=False),
-            #     yaxis=dict(range=[min(y_stations)-0.2, max(y_stations)+0.2], autorange=False),
-            #     title_text='A map of all trainstations and connections', 
-            #     hovermode='closest',
-            #     updatemenus=[dict(
-            #         type='buttons',
-            #         buttons=[dict(
-            #             label='Play',
-            #             method='animate',
-            #             args=[None]
-            #         )])],
-            #     showlegend=False
-            # ),
             layout=go.Layout(
-                # xaxis=dict(range=[min(x_stations)-0.1, max(x_stations)+0.1], autorange=False),
-                # yaxis=dict(range=[min(y_stations)-0.2, max(y_stations)+0.2], autorange=False),
                 title_text='A map of all trainstations and connections', 
                 hovermode='closest',
                 updatemenus=[dict(
@@ -191,7 +152,6 @@ def create_animation(railnet, routeclass):
                         args=[None]
                     )])],
                 showlegend=False
-            # )
             ),
             frames=frames
         )
@@ -200,8 +160,6 @@ def create_animation(railnet, routeclass):
         fig = go.Figure(
             data=data,
             layout=go.Layout(
-                # xaxis=dict(range=[min(x_stations)-0.1, max(x_stations)+0.1], autorange=False),
-                # yaxis=dict(range=[min(y_stations)-0.2, max(y_stations)+0.2], autorange=False),
                 title_text='A map of all trainstations and connections', 
                 hovermode='closest',
                 updatemenus=[dict(
@@ -225,4 +183,13 @@ def create_animation(railnet, routeclass):
         }
     )
 
-    fig.show()
+    if not live:
+        fig.show()
+        return
+
+    app = dash.Dash()
+    app.layout = html.Div([
+        dcc.Graph(figure=fig, style={'width': '90vh', 'height': '90vh'})
+    ])
+
+    app.run_server(debug=True, use_reloader=False)
