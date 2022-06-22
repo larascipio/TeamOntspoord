@@ -14,12 +14,10 @@ class Make_Random_Routes():
         # self._max_trains = num_trains
         # self._max_dist = max_distance
         # self._tot_connections = len(self._railnet.get_connections())
-        self._max_trains = self._railnet.get_max_trains()
-        self._max_dist = self._railnet.get_max_distance()
+        # self._max_trains = self._railnet.get_max_trains()
+        # self._max_dist = self._railnet.get_max_distance()
         # self._trains = []
-        self._possible_stations = []
-        for station in self._railnet.get_stations().values():
-            self._possible_stations.append(station)
+        self._possible_stations = list(self._railnet.get_stations().values())
     
     def create_train(self):
         """
@@ -60,7 +58,7 @@ class Make_Random_Routes():
         """
 
         # Create a random amount of trains within the constraint (BIAS: 0 = eruit )
-        self._random_amount = random.randint(1, self._max_trains)
+        self._random_amount = random.randint(1, self._railnet.get_max_trains())
         for _ in range(self._random_amount):
             self.run_one_train()
         #     # create a train
@@ -99,7 +97,7 @@ class Make_Random_Routes():
             if not connection:
                 break
 
-            if connection.get_distance() + train.get_distance() < self._max_dist:
+            if connection.get_distance() + train.get_distance() < self._railnet.get_max_distance():
                 train.move(connection)
             else:
                 train.stop()

@@ -6,12 +6,8 @@ class Make_Biased_Routes():
         Create a train at the given station.
         """
         self._railnet = railnet
-        self._max_trains = self._railnet.get_max_trains()
-        self._max_dist = self._railnet.get_max_distance()
-
-        self._possible_stations = []
-        for station in self._railnet.get_stations().values():
-            self._possible_stations.append(station)
+        self._possible_stations = list(self._railnet.get_stations().values())
+        
 
     # def starter_locations(self):
     #     weighted_chance_list = []
@@ -23,6 +19,11 @@ class Make_Biased_Routes():
     #     return weighted_chance_list
 
     def precise_starter_locations(self):
+        """
+        Get starter locations with connections that haven't been passed through.
+        Give preference to stations with few connections, so connections near the edge
+        will be used.
+        """
         weighted_chance_list = []
         for station in self._railnet.get_stations().values():
             weighted_chance = 0
@@ -41,12 +42,15 @@ class Make_Biased_Routes():
         """
         # Create a random max distance (BIAS: not higher than input max distance)
         # self._random_distance = random.randint(1, self._max_dist)
-        for _ in range(self._max_trains):
+        for _ in range(self._railnet.get_max_trains()):
             self.run_one_train()
         self.change_tracks(iterations)
         # self.change_worst_train(iterations)
 
     def run_one_train(self):
+        """
+        Create and run one train
+        """
         train = self.create_weighted_train()
 
         if not train:
@@ -60,7 +64,7 @@ class Make_Biased_Routes():
             if not connection:
                 break
 
-            if connection.get_distance() + train.get_distance() < self._max_dist:
+            if connection.get_distance() + train.get_distance() < self._railnet.get_max_distance():
                 train.move(connection)
             else:
                 train.stop()
@@ -79,32 +83,9 @@ class Make_Biased_Routes():
         train = self._railnet.create_train(start)
         return train
 
-
-    def check_trains_quality(self):
-        """
-        Check how each train affects the quality. 
-        Store in two lists so duplicate scores aren't overwritten.
-        The higher the quality difference, the more negatively the train affects the quality
-        """
-        self.overall_quality = self._railnet.quality()
-        iterated_train_list = []
-        quality_list = []
-
-        for train in self._railnet.get_trains():
-            self._railnet.remove_train(train)
-
-            quality_difference = self._railnet.quality() - self.overall_quality
-            # quality_dict[new_quality] = train
-            iterated_train_list.append(train)
-            quality_list.append(quality_difference)
-
-            self._railnet.add_train(train)
-
-        return iterated_train_list, quality_list
-
     def change_worst_train(self, iterations):
         
-        iterated_train_list, quality_list = self.check_trains_quality()
+        iterated_train_list, quality_list = self._railnet.check_trains_quality()
         worst_train_index = quality_list.index(max(quality_list))
         worst_train = iterated_train_list[worst_train_index]
 
@@ -112,7 +93,7 @@ class Make_Biased_Routes():
 
     def change_one_track(self, removed_train, iterations):
 
-        start_quality = self.quality()
+        start_quality = self._railnet.quality()
 
         self._railnet.remove_train(removed_train)
         removed_quality = self._railnet.quality()
@@ -136,13 +117,13 @@ class Make_Biased_Routes():
 
     def change_tracks(self, iterations):
 
-        the_very_first_quality = self.quality()
+        the_very_first_quality = self._railnet.quality()
 
-        for _ in range(self._max_trains):
+        for _ in range(self._railnet.get_max_trains()):
             removed_train = self._railnet.get_trains()[0]
             self.change_one_track(removed_train, iterations)
             
-        print(f'From {the_very_first_quality} to {self.quality()}')
+        print(f'From {the_very_first_quality} to {self._railnet.quality()}')
         print(f'{len(self._railnet.get_passed_connections())} connections passed out of {self._railnet.get_total_connections()}')
 
     # def __repr__(self):
