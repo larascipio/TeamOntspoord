@@ -318,14 +318,13 @@ class Hillclimber():
         # qual_now = self.quality() + train.get_distance() + 100
         qual_now = self._railnet.quality() + train.get_distance() + 100
 
+        for connection in train.get_connections():
+            connection.travel()
+
         if self.keep_change(qual_now=qual_now,qual_before=qual_before):
             # self.delete_train(train)
             self._railnet.remove_train(train)
             # print('Removed!')
-        else:
-            for connection in train.get_connections():
-                connection.travel()
-            # print('Not worth it.')
 
         # # check
         # for connection in train.get_connections():

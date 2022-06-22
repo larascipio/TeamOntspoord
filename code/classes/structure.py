@@ -30,12 +30,32 @@ class Railnet():
                 # self._total_connections += 1
 
     def create_train(self, start):
+        """
+        Create a train at the given station.
+        """
         train = Train(self, start, self._max_dist)
         self._trains.append(train)
         return train
 
+    def remove_train(self, train):
+        """
+        Remove the given train from the railnet.
+        """
+        # if train in self._trains:
+        #     self._trains.remove(train)
+        #     self.reset_train(train)
+        if not train in self._trains:
+            raise Exception('This train does not exist.')
+
+        for connection in train.get_connections():
+            connection.remove()
+        
+        self._trains.remove(train)
+
     def add_train(self, train):
-        """Add existing train to the railnet"""
+        """
+        Add existing train to the railnet
+        """
         self.follow_train(train)
         self._trains.append(train)
 
@@ -48,11 +68,6 @@ class Railnet():
         train = self._trains.pop(0)
         self.reset_train(train)
         return train
-
-    def remove_train(self, train):
-        if train in self._trains:
-            self._trains.remove(train)
-            self.reset_train(train)
 
     def add_route(self, route):
         self._trains = route
@@ -88,11 +103,38 @@ class Railnet():
         Calculate the quality of the current routes.
         """
         qual = (len(self.get_passed_connections())/self.get_total_connections())*10000
+        
         for train in self._trains:
             qual -= 100
             qual -= train.get_distance()
         
         return qual
+
+    def reset_track(self):
+        for train in self._trains:
+            self.reset_train(train)
+
+    def reset_train(self, train):
+
+        # reset the stations
+        # for station in train.get_stations():
+        #     station.remove()
+
+        # reset the connections
+        for connection in train.get_connections():
+            connection.reset()
+
+    def reset(self):
+
+        # reset the stations
+        for station in self._stations.values():
+            station.reset()
+
+        # reset the connections
+        for connection in self._connections:
+            connection.reset()
+
+        self._trains = []
 
     def check_trains_quality(self):
         """
@@ -118,6 +160,7 @@ class Railnet():
     def station_failure(self, failed_station):
         """Removes a failed station from the dictionary, including all connections to it"""
         if failed_station not in self._stations:
+            # TODO moet hier niet een error komen?
             return
 
         for connection in self._stations[failed_station].get_connections():
@@ -205,31 +248,7 @@ class Railnet():
         for connection in train.get_connections():
             connection.travel()
 
-    def reset_track(self):
-        for train in self._trains:
-            self.reset_train(train)
 
-    def reset_train(self, train):
-
-        # reset the stations
-        # for station in train.get_stations():
-        #     station.remove()
-
-        # reset the connections
-        for connection in train.get_connections():
-            connection.remove()
-
-    def reset(self):
-
-        # reset the stations
-        for station in self._stations.values():
-            station.reset()
-
-        # reset the connections
-        for connection in self._connections:
-            connection.reset()
-
-        self._trains = []
 
     def __repr__(self):
         representation = 'Route:\n'
