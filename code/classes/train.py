@@ -188,6 +188,7 @@ class Train():
         
         self._stations_traveled.pop(0)
         self._route.pop(0)
+        return first_connection
     
     def get_distance(self):
         return self._distance

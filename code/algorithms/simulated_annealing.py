@@ -1,10 +1,11 @@
+from operator import index
 from code.algorithms.random_algorithm import Make_Random_Routes
 from code.classes.train import Train
 import random
 import sys
 
 class Hillclimber():
-    def __init__(self, railnet, max_trains, max_time):
+    def __init__(self, railnet, max_trains: int, max_time: int):
         """
         Initialize the hillclimber algorithm.
         """
@@ -25,11 +26,17 @@ class Hillclimber():
         self._max_iter = 10000
 
     def keep_change(self, qual_before, qual_now) -> bool:
+        """
+        Returns true if the change made has increased the score.
+        """
         if qual_now < qual_before:
             return False
         return True
     
     def get_trains(self) -> list:
+        """
+        Returns a list with all trains.
+        """
         return self._trains
 
     def quality(self) -> float:
@@ -76,6 +83,14 @@ class Hillclimber():
             else:
                 change(train_to_change)
 
+            # check
+            for train in self._trains:
+                distance = 0
+                for connection in train.get_connections():
+                    distance += connection.get_distance()
+                if train.get_distance() != distance:
+                    raise Exception(f'The length of the train is {distance}, not {train.get_distance()}!')
+
         # print()
     
     def extend_train(self, train):
@@ -86,7 +101,7 @@ class Hillclimber():
         station = train.get_stations()[index]
         next_connection = random.choice(station.get_connections())
 
-        if train.get_distance() + next_connection.get_distance() > self._max_dist:
+        if (train.get_distance() + next_connection.get_distance()) > self._max_dist:
             # print('The train is too long.')
             return
 
@@ -205,17 +220,15 @@ class Hillclimber():
             # print('The train is too short.')
             return
         
-        connections = train.get_connections()[1:-1]
+        connections = train.get_connections()
 
-        if not connections:
-            return
-
-        connection = random.choice(connections)
-        connection.remove()
+        index_to_split = random.randint(1, len(connections)-2)
+        connection_to_split = connections[index_to_split]
+        connection_to_split.remove()
 
         # the quality without this connection, but with an extra train
-        qual_now = self.quality() + connection.get_distance() - 100
-        connection.travel()
+        qual_now = self.quality() + connection_to_split.get_distance() - 100
+        connection_to_split.travel()
 
         # check if the quality is better or worse
         if not self.keep_change(qual_before=qual_before, qual_now=qual_now):
@@ -226,18 +239,26 @@ class Hillclimber():
 
         # create a new train to replace the other one
         new_train = Train(self._railnet, train.get_stations()[0], self._max_dist)
+        # print(train)
 
-        for current_connection in connections:
+        # print(connections)
+        # print(index_to_split)
+        # print()
+
+        for index in range(index_to_split):
+            # print(index)
 
             # remove the connection from this train
-            train.remove_first_connection()
+            connection = train.remove_first_connection()
 
-            # check if this is the connection at which to split
-            if current_connection == connection:
-                break
-                
             # move the new train
-            new_train.move(current_connection)
+            new_train.move(connection)
+            # print(connection)
+            # print(f'This is now: {new_train}\nand {train}')
+            # print()
+        
+        # remove the chosen connection
+        train.remove_first_connection()
         
         # keep the new train if its longer than one station
         if len(new_train.get_stations()) > 1:
@@ -249,13 +270,23 @@ class Hillclimber():
 
         # print(f'This is now: {new_train}\nand {train}')
 
-        # # check
-        # for connection in train.get_connections():
-        #     if not connection.passed():
-        #         print('split_train')
-        #         print(connection)
-        #         print(train)
-        #         raise Exception('it was split_train')
+        # check
+        old_station = train.get_stations()[0]
+        i = 0
+        for new_station in train.get_stations()[1:]:
+            if train.get_connections()[i].get_destination(old_station) != new_station:
+                print(old_station, new_station)
+                print(i, train.get_connections()[i])
+                raise Exception('SPLIT INCORRECTLY')
+            old_station = new_station
+            i += 1
+        
+        for connection_to_split in train.get_connections():
+            if not connection_to_split.passed():
+                print('split_train')
+                print(connection_to_split)
+                print(train)
+                raise Exception('it was split_train')
 
 
     def remove_train(self, train):

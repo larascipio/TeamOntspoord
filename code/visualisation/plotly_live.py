@@ -12,7 +12,7 @@ class Live_Plot():
         # ----------------------------- Create the connections --------------------
         self._railsdata = []
         distances = []
-        for connection in rails.get_connections().values():
+        for connection in rails.get_connections():
             x = []
             y = []
             for station in connection._stations:
