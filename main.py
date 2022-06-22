@@ -66,14 +66,14 @@ if __name__ == '__main__':
     # ----------------------------- Run once ----------------------------------
     if args.make == 'once':
 
-        route = Algorithm(rails, max_trains, max_time)
-        route.run(100000)
-        route_quality = route.quality()
+        route = Algorithm(rails)
+        route.run()
+        route_quality = rails.quality()
 
         print(route)
         print(route_quality)
-        output(route_quality, route.get_trains(), './code/output/output.csv')
-        create_animation(rails, route)
+        output(route_quality, rails.get_trains(), './code/output/output.csv')
+        create_animation(rails)
 
 
     # ----------------------------- Create histogram --------------------------
@@ -82,9 +82,9 @@ if __name__ == '__main__':
         qualities = []
         for _ in range(1000):
             rails.reset()
-            route = Algorithm(rails, max_trains, max_time)
+            route = Algorithm(rails)
             route.run()
-            qualities.append(route.quality())
+            qualities.append(rails.quality())
 
         # Create hist for best routes 
         quality_hist(qualities)
@@ -98,16 +98,16 @@ if __name__ == '__main__':
         
         for _ in range(10000):
             rails.reset()
-            route = Algorithm(rails, max_trains, max_time)
+            route = Algorithm(rails)
             route.run()
             if route.quality() >= best_qual:
-                best_qual = route.quality()
+                best_qual = rails.quality()
                 best_route = route
                 print(best_qual)
                 plot.update_fig(best_route)
-                output(best_qual, best_route.get_trains(), './code/output/output.csv')
+                output(best_qual, rails.get_trains(), './code/output/output.csv')
 
         print(best_route)
         print(best_qual)
-        output(best_qual, best_route.get_trains(), './code/output/output.csv')
-        create_animation(rails, best_route)
+        output(best_qual, rails.get_trains(), './code/output/output.csv')
+        create_animation(rails)

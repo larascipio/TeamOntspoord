@@ -10,8 +10,6 @@ class Make_Iterated_Routes():
         self._railnet = railnet
         self._max_trains = self._railnet.get_max_trains()
         self._max_dist = self._railnet.get_max_distance()
-        self._tot_stations = len(self._railnet.get_stations())
-        self._tot_connections = len(self._railnet.get_connections())
         self._possible_stations = []
         for station in self._railnet.get_stations().values():
             self._possible_stations.append(station)
@@ -136,11 +134,11 @@ class Make_Iterated_Routes():
 
         print(f'From {the_very_first_quality} to {self._railnet.quality()}')
 
-        print(f'{len(self._railnet.get_passed_connections())} connections passed out of {self._tot_connections}')
+        print(f'{len(self._railnet.get_passed_connections())} connections passed out of {self._railnet.get_total_connections()}')
 
-    def __repr__(self):
-        representation = 'Route:\n'
-        for train in self._trains:
-            representation += f'{train}' + '\n'
-        representation += f'quality = {self._railnet.quality()}'
-        return representation
+    # def __repr__(self):
+    #     representation = 'Route:\n'
+    #     for train in self._trains:
+    #         representation += f'{train}' + '\n'
+    #     representation += f'quality = {self._railnet.quality()}'
+    #     return representation

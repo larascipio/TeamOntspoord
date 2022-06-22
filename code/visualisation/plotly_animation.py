@@ -6,7 +6,7 @@ import dash
 from dash import dcc
 from dash import html
 
-def create_animation(railnet, routeclass, live=False):
+def create_animation(railnet, live=False):
 
     # # ask if you want moving trains
     # if input('Do you want moving trains? (y/n) ') == 'y':
@@ -20,7 +20,7 @@ def create_animation(railnet, routeclass, live=False):
     connectionlist = list(railnet.get_connections())
 
     # create the colours for the trains
-    route = routeclass.get_trains()
+    route = railnet.get_trains()
     colorlist = px.colors.qualitative.Plotly
     # color = random.choices(colorlist, k=num_trains)
     color = colorlist + colorlist
