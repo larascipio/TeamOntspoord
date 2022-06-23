@@ -201,14 +201,7 @@ class Railnet():
 
         for connection in self._stations[failed_station].get_connections():
 
-            for station in connection.get_stations():
-
-                station.remove_connection(connection)
-                #if len(station._connections) == 0:
-                    #del self._stations[station]
-
-            # Remove the connection to the failed station from the dictionary
-            self._connections.remove(connection)
+            self.remove_connection(connection)
 
         # Remove the failed station from the dictionary
         # del self._stations[failed_station]
@@ -225,7 +218,11 @@ class Railnet():
         Removes connection.
         """
         for station in connection.get_stations():
+
                 station.remove_connection(connection)
+                #if len(station.get_connections()) == 0:
+                    #del self._stations[station]
+                    
         self._connections.remove(connection)
 
     def add_connection(self, start, end):

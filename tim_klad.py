@@ -15,20 +15,26 @@ max_time = 180
 qualitydict = {}
 rails = Railnet(max_trains, max_time)
 rails.load(file_stations, file_connections)
-stationlist = list(rails.get_stations().keys())
+stationlist = list(rails.get_stations().values())
+minus_distance = 0
+quality_difference_dict = {}
+
 
 for station in stationlist:
-    rails.station_failure(station)
-    rails.get_max_quality()
-    rails.reset
-    rails.load(file_stations, file_connections)
+    for connection in station.get_connections():
+        minus_distance += connection.get_distance()
 
+    total_distance = 1551 - minus_distance
+    minus_trains = (total_distance // max_time + 1) * 100
+    theoretical_quality = 10000 - minus_trains - total_distance
+    quality_difference_dict[station.get_name()] = theoretical_quality
+    minus_distance = 0
 
-# Failed station if desired
+print(quality_difference_dict)
 
+    
+#     rails.reset
+#     rails.load(file_stations, file_connections)
 
-# Change a number of random connections of choice
-for _ in range(args.changeconnection):
-    rails.change_connection()
 
 
