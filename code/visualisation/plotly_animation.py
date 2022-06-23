@@ -111,7 +111,7 @@ def create_animation(railnet, save_as_png=False, num=0):
                 lat=y_frames[k],
                 # color = color,
                 mode='markers',
-                marker=dict(color=[color[i%len(color)] for i in range(len(x_frames))], size=20),
+                marker=dict(color=['black' for i in range(len(x_frames))], size=20),
                 hoverinfo='skip'
             )])
             for k in range(len(x_frames))]

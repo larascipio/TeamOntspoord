@@ -61,7 +61,7 @@ class Hillclimber():
             #     print('RANDOM ROUTES')
         # return self._railnet.get_trains()
 
-    def run(self, iterations=10000):
+    def run(self, iterations=100000):
         self._max_iter=iterations
         # gif = Live_Plot(self._railnet)
 
@@ -348,10 +348,11 @@ class Hillclimber():
 
 
 class Simulated_Annealing(Hillclimber):
-    def __init__(self, railnet, start_temp = 20):
+    def __init__(self, railnet, start_temp = 20, base=0.999):
         super().__init__(railnet)
         self._starttemp = start_temp
         self.temps = []
+        self._base = base
 
     def keep_change(self, qual_before, qual_now):
 
@@ -361,8 +362,8 @@ class Simulated_Annealing(Hillclimber):
 
         # determine the temperature for this iteration
         # temp = 1
-        temp = self._starttemp - (self._starttemp/self._max_iter) * self._iter
-        # temp = self._starttemp * pow(0.997, self._iter)
+        # temp = self._starttemp - (self._starttemp/self._max_iter) * self._iter
+        temp = self._starttemp * pow(self._base, self._iter)
 
         # print(temp)        
 
@@ -377,3 +378,56 @@ class Simulated_Annealing(Hillclimber):
         elif pow(2, qual_change/temp) > random.random():
             return True
         return False
+
+class Reheating(Hillclimber):
+    """
+    https://www.sciencedirect.com/science/article/pii/S0377221717300759?casa_token=JEj48ByZMJIAAAAA:bu5jvRf5EphHFiPSGWEodYny0K8gAqNqzpyHKZL93NKg_ysug9u30CTNJ2j7JndgfxkFmZIDVg
+    """
+    def __init__(self, railnet, start_temp=100, base=0.999):
+        super().__init__(railnet)
+        self._heat = 0 # current number of reheats
+        self._bestqual = 0
+        self._bestroute = None
+        self._currentbest = 0
+        
+        self._temp = start_temp
+        self._base = base
+        self._stuck = 0
+        
+        self.temps = []
+        self.best = []
+        self.current = []
+    
+    def keep_change(self, qual_before, qual_now) -> bool:
+
+        self.temps.append(self._temp)
+        self.best.append(self._bestqual)
+        self.current.append(qual_before)
+
+        # 10 times no changes
+        if self._stuck > 50:
+            self._heat += 1
+            self._temp *= 2
+            self._stuck = 0
+
+        # determine whether this change is kept
+        qual_change = qual_now - qual_before
+
+        # positive changes are always accepted
+        if qual_change > 0:
+            if qual_now > self._bestqual:
+                self._bestqual = qual_now
+                self._bestroute = self._railnet.get_trains()
+            keep = True
+            self._stuck = 0
+        elif self._temp == 0:
+            keep = False
+        elif pow(2, qual_change/self._temp) > random.random():
+            keep = True
+            self._stuck = 0
+        else:
+            keep = False
+            self._stuck += 1
+
+        self._temp *= self._base
+        return keep
