@@ -44,7 +44,7 @@ def simple_visualization(railnet):
     """Visualizes all the tracks in a plot"""
     plt.figure(figsize=(25, 35))
 
-    for station in railnet.get_stations():
+    for station in list(railnet.get_stations().values()):
         plt.plot(float(station._x), float(station._y), 'o', color='b')
         plt.annotate(station._name, (float(station._x), float(station._y)))
 

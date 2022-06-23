@@ -11,7 +11,7 @@ from code.classes.structure import Railnet
 # from code.visualisation.quality_hist import quality_hist
 from code.visualisation.output import output
 from code.visualisation.simple_visualization import simple_visualization
-from code.visualisation.plotly_animation import create_animation
+# from code.visualisation.plotly_animation import create_animation
 from tim_quality_hist import quality_hist
 from math import ceil
 import argparse
@@ -45,7 +45,8 @@ if __name__ == '__main__':
     best_quality = 0
     rails = Railnet(max_trains, max_time)
     rails.load(file_stations, file_connections)
-    rails.station_failure(args.stationfailure)
+    if args.stationfailure:
+        rails.station_failure(args.stationfailure)
 
     # Change a number of random connections of choice
     for _ in range(args.changeconnection):
@@ -64,13 +65,13 @@ if __name__ == '__main__':
     if args.algorithm == 'random':
         for _ in range(args.runs):
 
-            route = Make_Random_Routes(rails, max_trains, max_time)
+            route = Make_Random_Routes(rails)
             route.run()
-            route_quality = route.quality()
+            route_quality = rails.quality()
 
             if route_quality > best_quality:
                 best_quality = route_quality
-                best_route = route
+                best_route = rails.get_trains()
 
             qualityroutes.append(route_quality)
             rails.reset()
@@ -80,11 +81,11 @@ if __name__ == '__main__':
 
             route = Make_Bad_Routes(rails, max_trains, max_time)
             route.run()
-            route_quality = route.quality()
+            route_quality = rails.quality()
 
             if route_quality > best_quality:
                 best_quality = route_quality
-                best_route = route
+                best_route = rails.get_trains()
 
             qualityroutes.append(route_quality)
             rails.reset()
@@ -93,13 +94,13 @@ if __name__ == '__main__':
         iterations = int(input('How many iterations? '))
         for _ in range(args.runs):
 
-            route = Hillclimber(rails, max_trains, max_time)
+            route = Hillclimber(rails)
             route.run(iterations)
-            route_quality = route.quality()
+            route_quality = rails.quality()
 
             if route_quality > best_quality:
                 best_quality = route_quality
-                best_route = route
+                best_route = rails.get_trains()
 
             qualityroutes.append(route_quality)
             rails.reset()
@@ -123,7 +124,7 @@ if __name__ == '__main__':
         iterations = int(input('How many iterations? '))
         for _ in range(args.runs):
 
-            route = Simulated_Annealing(rails, max_trains, max_time, 1)
+            route = Simulated_Annealing(rails)
             route.run(iterations)
             route_quality = route.quality()
 
@@ -138,27 +139,27 @@ if __name__ == '__main__':
         iterations = int(input('How many iterations? '))
         for _ in range(args.runs):
 
-            route = Make_Biased_Routes(rails, max_trains, max_time)
+            route = Make_Biased_Routes(rails)
             route.run(iterations)
-            route_quality = route.quality()
+            route_quality = rails.quality()
 
             if route_quality > best_quality:
                 best_quality = route_quality
-                best_route = route
+                best_route = rails.get_trains()
 
             qualityroutes.append(route_quality)
             rails.reset()
     
     quality_hist(qualityroutes)
-
-    rails.add_route(best_route)
     # print(rails)
-    output(best_quality, rails.get_trains(), 'output.csv')
+    output(best_quality, best_route, 'output.csv')
 
     choose_plot = input('Do you want a detailed visualisation of the route? (y/n) ')
 
     if choose_plot == "y":
-        create_animation(rails, rails.get_trains())
+        # create_animation(rails, rails.get_trains())
+        pass
     else:
+        rails.add_route(best_route)
         simple_visualization(rails)
 

@@ -1,6 +1,7 @@
 from code.classes.stations import Station, Connection
 from code.classes.train import Train
 import plotly.express as px
+from math import ceil
 import csv
 import random
 
@@ -15,7 +16,10 @@ class Railnet():
         self._color = colorlist + colorlist + colorlist
 
     def load(self, file_locations: str, file_connections: str):
-        """Load the stations and its connections"""
+        """
+        Load the stations and its connections.
+        """
+
         with open(file_locations, newline = '') as csvfile:
             reader = csv.DictReader(csvfile)
             for row in reader: 
@@ -38,41 +42,55 @@ class Railnet():
         """
         train = Train(self, start, self._color.pop())
         self._trains.append(train)
+
         return train
 
     def remove_train(self, train):
         """
         Remove the given train from the railnet.
         """
-        # if train in self._trains:
-        #     self._trains.remove(train)
-        #     self.reset_train(train)
         if not train in self._trains:
             raise Exception('This train does not exist.')
 
-        for connection in train.get_connections():
-            connection.remove()
-        
+        self.remove_train_connections(train)
         self._trains.remove(train)
 
     def add_train(self, train):
         """
-        Add existing train to the railnet
+        Add existing train to the railnet.
         """
         self.follow_train(train)
         self._trains.append(train)
 
     def remove_last_train(self):
+        """
+        Removes and returns last train from the railnet.
+        """
         train = self._trains.pop()
-        self.reset_train(train)
+        self.remove_train_connections(train)
+
         return train
 
     def remove_first_train(self):
+        """
+        Removes and returns first train from the railnet.
+        """
         train = self._trains.pop(0)
-        self.reset_train(train)
+        self.remove_train_connections(train)
+
         return train
 
+    def remove_train_connections(self, train):
+        """
+        Remove effect train had on connections.
+        """
+        for connection in train.get_connections():
+            connection.remove()
+
     def add_route(self, route):
+        """
+        Add set of trains to the railnet.
+        """
         self._trains = route
         self.follow_track()
 
@@ -113,22 +131,10 @@ class Railnet():
         
         return qual
 
-    def reset_track(self):
-        for train in self._trains:
-            self.reset_train(train)
-
-    def reset_train(self, train):
-
-        # reset the stations
-        # for station in train.get_stations():
-        #     station.remove()
-
-        # reset the connections
-        for connection in train.get_connections():
-            connection.reset()
-
     def reset(self):
-
+        """
+        Completely resets the railnet.
+        """
         # reset the stations
         for station in self._stations.values():
             station.reset()
@@ -143,7 +149,7 @@ class Railnet():
         """
         Check how each train affects the quality. 
         Store in two lists so duplicate scores aren't overwritten.
-        The higher the quality difference, the more negatively the train affects the quality
+        The higher the quality difference, the more negatively the train affects the quality.
         """
         self.overall_quality = self.quality()
         iterated_train_list = []
@@ -160,11 +166,26 @@ class Railnet():
 
         return iterated_train_list, quality_list
 
+    def get_max_quality(self):
+        """
+        Get the theoretical maximum quality for the railroad.
+        """
+        total_distance = 0
+
+        for connection in self.get_connections():
+            total_distance += connection.get_distance()
+
+        minus_trains = (total_distance // self._max_dist + 1) * 100
+        theoretical_quality = 10000 - minus_trains - total_distance
+
+        return theoretical_quality
+
     def station_failure(self, failed_station):
-        """Removes a failed station from the dictionary, including all connections to it"""
+        """
+        Removes all connections to and from a failed station.
+        """
         if failed_station not in self._stations:
-            # TODO moet hier niet een error komen?
-            return
+            raise Exception('This station does not exist.')
 
         for connection in self._stations[failed_station].get_connections():
 
@@ -181,21 +202,27 @@ class Railnet():
         # del self._stations[failed_station]
 
     def remove_random_connection(self):
-        """Removes random connections"""
+        """
+        Removes random connection.
+        """
         connection = random.choice(self._connections)
         self.remove_connection(connection)
 
     def remove_connection(self, connection):
-        """Removes connection"""
+        """
+        Removes connection.
+        """
         for station in connection.get_stations():
                 station.remove_connection(connection)
         self._connections.remove(connection)
         # self._total_connections -= 1
 
     def add_connection(self, start, end):
-        "Adds new connection"
+        """
+        Adds new connection with start and end point.
+        """
 
-        # Create new distance from the coordinates
+        # Calculate new distance from the coordinates
         if start._x > end._x:
             a = start._x - end._x
         else:
@@ -216,7 +243,10 @@ class Railnet():
         # self._total_connections += 1
 
     def change_connection(self):
-        """Change connection from random start point to random end point"""
+        """
+        Change connection from random start point to random end point.
+        Only where the connection did not exist before.
+        """
 
         # Get one of the stations from which connection will be changed
         start_connections = []
@@ -239,10 +269,16 @@ class Railnet():
         self.add_connection(start, end)
     
     def follow_track(self):
+        """
+        Passes all connections and stations.
+        """
         for train in self._trains:
             self.follow_train(train)
 
     def follow_train(self, train):
+        """
+        Passes all connections and stations of a given train.
+        """
         # pass the stations
         for station in train.get_stations():
             station.travel()
