@@ -200,7 +200,7 @@ class Railnet():
         if failed_station not in self._stations:
             raise Exception('This station does not exist.')
 
-        failed_connections = self._stations[failed_station].get_connections()
+        failed_connections = self._stations[failed_station].get_connections().copy()
 
         for connection in failed_connections:
 
@@ -213,9 +213,12 @@ class Railnet():
     def remove_random_connection(self):
         """
         Removes random connection.
+        Returns connection for possible restoration.
         """
         connection = random.choice(self._connections)
         self.remove_connection(connection)
+
+        return connection
 
     def remove_connection(self, connection):
         """
@@ -242,14 +245,16 @@ class Railnet():
         Restore connection that was removed.
         """
         for station in connection.get_stations():
-            if connection not in station.get_connections():
-                station.add(connection)
 
-        self._connectionlist.append(connection)
+            if connection not in station.get_connections():
+                station.add_connection(connection)
+
+        self._connections.append(connection)
 
     def add_connection(self, start, end):
         """
         Adds new connection with start and end point.
+        Returns connection.
         """
 
         # Calculate new distance from the coordinates
@@ -271,10 +276,13 @@ class Railnet():
         end.add_connection(connection)
         self._connections.append(connection)
 
+        return connection
+
     def change_connection(self):
         """
         Change connection from random start point to random end point.
         Only where the connection did not exist before.
+        Returns the removed and added connection.
         """
 
         # Get one of the stations from which connection will be changed
@@ -295,7 +303,9 @@ class Railnet():
         # Remove an old connection and add the new connection
         removed_connection = random.choice(start.get_connections())
         self.remove_connection(removed_connection)
-        self.add_connection(start, end)
+        added_connection = self.add_connection(start, end)
+
+        return removed_connection, added_connection
 
     def empty_railnet(self):
         """
