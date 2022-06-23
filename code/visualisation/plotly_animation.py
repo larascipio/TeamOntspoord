@@ -158,9 +158,10 @@ def create_animation(railnet, save_as_png=False, num=0):
             lon=x_routes,
             lat=y_routes,
             mode = 'markers+lines',
-            marker=dict(color=train.get_color()),
+            marker=dict(color=train.get_color(), opacity=0.5),
             # width=i,
             hoverinfo='skip'
+            
         )]
         i += 1
 
@@ -210,6 +211,7 @@ def create_animation(railnet, save_as_png=False, num=0):
             'zoom': 7
         }
     )
+
 
     if save_as_png:
         fig.write_image(f'code/output/create_gif/fig{num}.jpeg')

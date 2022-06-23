@@ -11,7 +11,6 @@ class Hillclimber():
         Initialize the hillclimber algorithm.
         """
         self._railnet = railnet
-        # self._trains = self.get_random_routes()
         self.get_random_routes()
         self._changes = [
             self.extend_train, 
@@ -22,8 +21,8 @@ class Hillclimber():
         ]
         # self._max_trains = max_trains
         # self._max_dist = max_time
-        self._max_trains = self._railnet.get_max_trains()
-        self._max_dist = self._railnet.get_max_distance()
+        # self._max_trains = self._railnet.get_max_trains()
+        # self._max_dist = self._railnet.get_max_distance()
 
         # needed for annealing
         self._iter = 0
@@ -112,7 +111,7 @@ class Hillclimber():
         station = train.get_stations()[index]
         next_connection = random.choice(station.get_connections())
 
-        if (train.get_distance() + next_connection.get_distance()) > self._max_dist:
+        if (train.get_distance() + next_connection.get_distance()) > self._railnet.get_max_distance():
             # print('The train is too long.')
             return
 
@@ -187,7 +186,7 @@ class Hillclimber():
     def make_new_train(self,p=0):
         # print('Make new train')
 
-        if len(self._railnet.get_trains()) == self._max_trains:
+        if len(self._railnet.get_trains()) == self._railnet.get_max_trains():
             # print('Too many trains.')
             return
 
@@ -227,7 +226,7 @@ class Hillclimber():
     def split_train(self, train):
         # print(f'Split {train}')
 
-        if len(self._railnet.get_trains()) == self._max_trains:
+        if len(self._railnet.get_trains()) == self._railnet.get_max_trains():
             # print('Too many trains.')
             return
 
