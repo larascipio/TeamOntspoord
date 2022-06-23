@@ -1,6 +1,6 @@
 from code.classes.stations import Station, Connection
 from code.classes.train import Train
-from math import ceil
+import plotly.express as px
 import csv
 import random
 
@@ -11,6 +11,11 @@ class Railnet():
         self._trains = []
         self._max_trains = num_trains
         self._max_dist = max_distance
+
+        # create the colors for the trains
+        # self._colorlist = px.colors.qualitative.Vivid[:-1] + px.colors.qualitative.Dark2[:-1]
+        self._colorset = {'fuchsia', 'red', 'cyan', 'blue', 'darkorange', 'green', 'darkviolet', 'black', 'gold', 'deeppink', 'lime', 'darkred'}
+        # self._color = self._colorlist.copy()
 
     def load(self, file_locations: str, file_connections: str):
         """
@@ -37,7 +42,16 @@ class Railnet():
         """
         Create a train at the given station.
         """
-        train = Train(self, start, self._max_dist)
+        available_colors = self._colorset - self.all_colors_used()
+        if available_colors:
+            color = random.sample(available_colors, 1)[0]
+        else:
+            color = random.sample(self._colorset, 1)[0]
+        train = Train(self, start, color)
+
+        # if len(self._color) < len(self._colorlist):
+        #     self._color += self._colorlist.copy()
+        # train = Train(self, start, self._color.pop())
         self._trains.append(train)
 
         return train
@@ -91,13 +105,13 @@ class Railnet():
         self._trains = route
         self.follow_track()
 
-    def get_stations(self) -> list:
+    def get_stations(self) -> dict:
         return self._stations
 
     def get_connections(self) -> list:
         return self._connections
 
-    def get_trains(self) -> dict:
+    def get_trains(self) -> list:
         return self._trains
     
     def get_total_connections(self) -> int:
@@ -173,7 +187,7 @@ class Railnet():
         for connection in self.get_connections():
             total_distance += connection.get_distance()
 
-        minus_trains = ceil(total_distance / self._max_dist) * 100
+        minus_trains = (total_distance // self._max_dist + 1) * 100
         theoretical_quality = 10000 - minus_trains - total_distance
 
         return theoretical_quality
@@ -213,7 +227,6 @@ class Railnet():
         for station in connection.get_stations():
                 station.remove_connection(connection)
         self._connections.remove(connection)
-        # self._total_connections -= 1
 
     def add_connection(self, start, end):
         """
@@ -238,7 +251,6 @@ class Railnet():
         start.add_connection(connection)
         end.add_connection(connection)
         self._connections.append(connection)
-        # self._total_connections += 1
 
     def change_connection(self):
         """
@@ -293,7 +305,11 @@ class Railnet():
         for connection in train.get_connections():
             connection.travel()
 
-
+    def all_colors_used(self) -> set:
+        colors = set()
+        for train in self._trains:
+            colors.add(train.get_color())
+        return colors
 
     def __repr__(self):
         representation = 'Route:\n'

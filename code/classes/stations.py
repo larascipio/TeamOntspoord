@@ -98,8 +98,11 @@ class Connection():
     def reset(self):
         self._passed = 0
 
-    def get_distance(self):
+    def get_distance(self) -> int:
         return self._distance
+
+    def get_times_passed(self) -> int:
+        return self._passed
 
     def __repr__(self):
         return f'Connection {self._passed} {self._stations[0].get_name()}-{self._stations[1].get_name()}'

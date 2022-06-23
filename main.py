@@ -64,6 +64,7 @@ if __name__ == '__main__':
     rails.load(file_stations, file_connections)
 
     # ----------------------------- Run once ----------------------------------
+
     if args.make == 'once':
 
         route = Algorithm(rails)
@@ -74,7 +75,6 @@ if __name__ == '__main__':
         print(route_quality)
         output(route_quality, rails.get_trains(), './code/output/output.csv')
         create_animation(rails)
-
 
     # ----------------------------- Create histogram --------------------------
 
@@ -100,7 +100,7 @@ if __name__ == '__main__':
             rails.reset()
             route = Algorithm(rails)
             route.run()
-            if route.quality() >= best_qual:
+            if rails.quality() >= best_qual:
                 best_qual = rails.quality()
                 best_route = route
                 print(best_qual)
