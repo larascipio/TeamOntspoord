@@ -1,8 +1,9 @@
-from operator import index
 from code.algorithms.random_algorithm import Make_Random_Routes
+from code.visualisation.plotly_animation import create_animation, create_gif
+from code.visualisation.plotly_live import Live_Plot
 # from code.classes.train import Train
 import random
-# import sys
+import sys
 
 class Hillclimber():
     def __init__(self, railnet):
@@ -61,12 +62,14 @@ class Hillclimber():
             #     print('RANDOM ROUTES')
         # return self._railnet.get_trains()
 
-    def run(self, iterations=100000):
+    def run(self, iterations=10000):
         self._max_iter=iterations
+        # gif = Live_Plot(self._railnet)
+
         # keep trying a random change and see if the score increases
         for self._iter in range(self._max_iter):
 
-            # sys.stdout.write(f'\rThe quality is {self.quality()}')
+            # sys.stdout.write(f'\r{self._iter}')
             # sys.stdout.flush()
 
             # while len(self._trains) == 0:
@@ -86,15 +89,19 @@ class Hillclimber():
             else:
                 change(train_to_change)
 
-            # check
-            for train in self._railnet.get_trains():
-                distance = 0
-                for connection in train.get_connections():
-                    distance += connection.get_distance()
-                if train.get_distance() != distance:
-                    raise Exception(f'The length of the train is {distance}, not {train.get_distance()}!')
+            # create a gif:
+            # gif.update_fig(self._iter)
+
+            # # check
+            # for train in self._railnet.get_trains():
+            #     distance = 0
+            #     for connection in train.get_connections():
+            #         distance += connection.get_distance()
+            #     if train.get_distance() != distance:
+            #         raise Exception(f'The length of the train is {distance}, not {train.get_distance()}!')
 
         # print()
+        # create_gif('hillclimber')
     
     def extend_train(self, train):
         # print(f'Extend {train}')

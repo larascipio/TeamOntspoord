@@ -1,12 +1,15 @@
-from venv import create
 import plotly.graph_objects as go
 import plotly.express as px
-# import random
-import dash
-from dash import dcc
-from dash import html
 
-def create_animation(railnet, live=False):
+import glob
+from PIL import Image
+
+# import random
+# import dash
+# from dash import dcc
+# from dash import html
+
+def create_animation(railnet, save_as_png=False, num=0):
 
     # # ask if you want moving trains
     # if input('Do you want moving trains? (y/n) ') == 'y':
@@ -21,9 +24,6 @@ def create_animation(railnet, live=False):
 
     # create the colours for the trains
     route = railnet.get_trains()
-    colorlist = px.colors.qualitative.Plotly
-    # color = random.choices(colorlist, k=num_trains)
-    color = colorlist + colorlist
 
     # ----------------------------- Create the start of the animation ---------
 
@@ -40,7 +40,7 @@ def create_animation(railnet, live=False):
             lat=first_y,
             # color = color,
             mode='markers',
-            marker=dict(color=color, size=20),
+            marker=dict(color=train.get_color(), size=20),
             hoverinfo='skip'
         )]
     else:
@@ -59,7 +59,7 @@ def create_animation(railnet, live=False):
             lon=x,
             lat=y, 
             mode = 'markers+lines', 
-            marker=dict(color='black', size=1), 
+            marker=dict(color='lightgray', size=1), 
             hoverinfo='skip'
         ))
 
@@ -116,7 +116,7 @@ def create_animation(railnet, live=False):
             )])
             for k in range(len(x_frames))]
 
-    # ----------------------------- Create the lines --------------------------
+    # ----------------------------- Create the routes -------------------------
 
     i = 0
     # b = set()
@@ -132,20 +132,33 @@ def create_animation(railnet, live=False):
         #         b.add((station_x, station_y))
         #         pass
 
-        
-        for station in train.get_stations():
-            station_x, station_y = station.get_position()
-            # if (station_x, station_y) not in b:
-            #     station_x -= 0.001
-            #     station_y -= 0.001
-            x_routes.append(station_x)
-            y_routes.append(station_y)
+
+        # for station in train.get_stations():
+        #     station_x, station_y = station.get_position()
+        #     # if (station_x, station_y) not in b:
+        #     #     station_x -= 0.001
+        #     #     station_y -= 0.001
+        #     x_routes.append(station_x)
+        #     y_routes.append(station_y)
+
+        last_station = train.get_stations()[0]
+        for connection in train.get_connections():
+            times_passed = connection.get_times_passed()
+            last_x, last_y = last_station.get_position()
+            if times_passed > 1:
+                # move the connection
+                pass
+            
+            
+            x_routes.append(last_x)
+            y_routes.append(last_y)
+            last_station = connection.get_destination(last_station)
 
         data += [go.Scattermapbox(
             lon=x_routes,
             lat=y_routes,
             mode = 'markers+lines',
-            marker=dict(color=color[i%len(color)]),
+            marker=dict(color=train.get_color()),
             # width=i,
             hoverinfo='skip'
         )]
@@ -188,23 +201,39 @@ def create_animation(railnet, live=False):
             )
         )
 
-    # try to include a map
+    # include a map
     fig.update_layout(
         margin = {'l':0,'t':0, 'b':0, 'r':0},
         mapbox = {
             'center': {'lon': 5.2, 'lat': 52.2},
-            'style': 'open-street-map',
+            'style': 'carto-positron',
             'zoom': 7
         }
     )
 
-    if not live:
+    if save_as_png:
+        fig.write_image(f'code/output/create_gif/fig{num}.jpeg')
+    else:
         fig.show()
-        return
 
-    app = dash.Dash()
-    app.layout = html.Div([
-        dcc.Graph(figure=fig, style={'width': '90vh', 'height': '90vh'})
-    ])
 
-    app.run_server(debug=True, use_reloader=False)
+    # app = dash.Dash()
+    # app.layout = html.Div([
+    #     dcc.Graph(figure=fig, style={'width': '90vh', 'height': '90vh'})
+    # ])
+
+    # app.run_server(debug=True, use_reloader=False)
+
+def create_gif(name: str):
+    frames = []
+    files = glob.glob(f"code/output/create_gif/*.jpeg")
+    # print(files)
+    for image in files:
+        # print(image)
+        i = Image.open(image)
+        # print(i)
+        frames.append(i)
+    # print(frames)
+    frame_one = frames[0]
+    frame_one.save(f"{name}.gif", append_images=frames[1:],
+                optimize=False, save_all=True, duration=100, loop=0)

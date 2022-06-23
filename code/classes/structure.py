@@ -1,5 +1,6 @@
 from code.classes.stations import Station, Connection
 from code.classes.train import Train
+import plotly.express as px
 import csv
 import random
 
@@ -10,6 +11,8 @@ class Railnet():
         self._trains = []
         self._max_trains = num_trains
         self._max_dist = max_distance
+        colorlist = px.colors.qualitative.Vivid[:-1]
+        self._color = colorlist + colorlist + colorlist
 
     def load(self, file_locations: str, file_connections: str):
         """Load the stations and its connections"""
@@ -33,7 +36,7 @@ class Railnet():
         """
         Create a train at the given station.
         """
-        train = Train(self, start, self._max_dist)
+        train = Train(self, start, self._color.pop())
         self._trains.append(train)
         return train
 
