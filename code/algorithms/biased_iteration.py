@@ -36,7 +36,7 @@ class Make_Biased_Routes():
             weighted_chance_list.append(weighted_chance)
         return weighted_chance_list
     
-    def run(self, iterations):
+    def run(self):
         """
         Run the algorithm.
         """
@@ -44,7 +44,7 @@ class Make_Biased_Routes():
         # self._random_distance = random.randint(1, self._max_dist)
         for _ in range(self._railnet.get_max_trains()):
             self.run_one_train()
-        self.change_tracks(iterations)
+        self.change_tracks(250)
         # self.change_worst_train(iterations)
 
     def run_one_train(self):

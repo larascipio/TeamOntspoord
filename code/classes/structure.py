@@ -106,15 +106,12 @@ class Railnet():
         self.follow_track()
 
     def get_stations(self) -> dict:
-        """
-        Returns a dictionary with all the stations in the railnet.
-        """
         return self._stations
 
-    def get_connections(self):
+    def get_connections(self) -> list:
         return self._connections
 
-    def get_trains(self):
+    def get_trains(self) -> list:
         return self._trains
     
     def get_total_connections(self) -> int:
@@ -127,10 +124,10 @@ class Railnet():
                 connections_passed.add(connection)
         return connections_passed
 
-    def get_max_trains(self):
+    def get_max_trains(self) -> int:
         return self._max_trains
 
-    def get_max_distance(self):
+    def get_max_distance(self) -> int:
         return self._max_dist
 
     def quality(self) -> float:
@@ -163,7 +160,8 @@ class Railnet():
         """
         Check how each train affects the quality. 
         Store in two lists so duplicate scores aren't overwritten.
-        The higher the quality difference, the more negatively the train affects the quality.
+        The higher the quality difference, the more negatively the 
+        train affects the quality.
         """
         self.overall_quality = self.quality()
         iterated_train_list = []
@@ -180,7 +178,7 @@ class Railnet():
 
         return iterated_train_list, quality_list
 
-    def get_max_quality(self):
+    def get_max_quality(self) -> float:
         """
         Get the theoretical maximum quality for the railroad.
         """
@@ -194,26 +192,23 @@ class Railnet():
 
         return theoretical_quality
 
-    def station_failure(self, failed_station):
+    def station_failure(self, failed_station) -> list:
         """
         Removes all connections to and from a failed station.
+        Return a list of removed connections for possible restoration.
         """
         if failed_station not in self._stations:
             raise Exception('This station does not exist.')
 
-        for connection in self._stations[failed_station].get_connections():
+        failed_connections = self._stations[failed_station].get_connections()
 
-            for station in connection.get_stations():
+        for connection in failed_connections:
 
-                station.remove_connection(connection)
-                #if len(station._connections) == 0:
-                    #del self._stations[station]
-
-            # Remove the connection to the failed station from the dictionary
-            self._connections.remove(connection)
+            self.remove_connection(connection)
 
         # Remove the failed station from the dictionary
         # del self._stations[failed_station]
+        return failed_connections
 
     def remove_random_connection(self):
         """
@@ -227,9 +222,30 @@ class Railnet():
         Removes connection.
         """
         for station in connection.get_stations():
+
                 station.remove_connection(connection)
+                #if len(station.get_connections()) == 0:
+                    #del self._stations[station]
+
         self._connections.remove(connection)
-        # self._total_connections -= 1
+
+    def restore_multiple_connections(self, connectionlist: list):
+        """
+        Restore multiple connections.
+        """
+        for connection in connectionlist:
+
+            self.restore_connection(connection)
+
+    def restore_connection(self, connection):
+        """
+        Restore connection that was removed.
+        """
+        for station in connection.get_stations():
+            if connection not in station.get_connections():
+                station.add(connection)
+
+        self._connectionlist.append(connection)
 
     def add_connection(self, start, end):
         """
@@ -254,7 +270,6 @@ class Railnet():
         start.add_connection(connection)
         end.add_connection(connection)
         self._connections.append(connection)
-        # self._total_connections += 1
 
     def change_connection(self):
         """
@@ -281,6 +296,14 @@ class Railnet():
         removed_connection = random.choice(start.get_connections())
         self.remove_connection(removed_connection)
         self.add_connection(start, end)
+
+    def empty_railnet(self):
+        """
+        Empty the railnet, so new stations 
+        and connections can be loaded in.
+        """
+        self._stations = {}
+        self._connections = []
     
     def follow_track(self):
         """

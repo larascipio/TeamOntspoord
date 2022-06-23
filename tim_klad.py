@@ -1,28 +1,40 @@
-import pandas as pd
-import csv
+from code.classes.structure import Railnet
+# from code.visualisation.quality_hist import quality_hist
+from code.visualisation.output import output
+from code.visualisation.simple_visualization import simple_visualization
+# from code.visualisation.plotly_animation import create_animation
+from tim_quality_hist import quality_hist
+import argparse
 
-def main():
-    # GEBRUIK DICTREADER, LOADER.PY
-    # COMMIT PULL PUSH
+file_stations = 'data/StationsNationaal.csv'
+file_connections = 'data/ConnectiesNationaal.csv'
+max_trains = 20
+max_time = 180
 
-    # Create the Data Frame from the csv file, and sort by year and rating
-    connection_dataFrame = pd.read_csv("data/ConnectiesHolland.csv")
-    stations_dataFrame = pd.read_csv("data/StationsHolland.csv")
-    print(connection_dataFrame)
-    print(stations_dataFrame)
-
-    with open("data/StationsHolland.csv", newline = '') as csvfile:
-        reader = csv.DictReader(csvfile)
-        for row in reader: 
-            print(row['station'], (row['x'], row['y']))
-
-    with open("data/ConnectiesHolland.csv", newline = '') as csvfile:
-        reader = csv.DictReader(csvfile)
-        for row in reader: 
-            print(row['station1'], (row['station2'], row['distance'])) 
+# Loads the railnet
+qualitydict = {}
+rails = Railnet(max_trains, max_time)
+rails.load(file_stations, file_connections)
+stationlist = list(rails.get_stations().values())
+minus_distance = 0
+quality_difference_dict = {}
 
 
+for station in stationlist:
+    for connection in station.get_connections():
+        minus_distance += connection.get_distance()
 
-if __name__ == "__main__":
-    main()
+    total_distance = 1551 - minus_distance
+    minus_trains = (total_distance // max_time + 1) * 100
+    theoretical_quality = 10000 - minus_trains - total_distance
+    quality_difference_dict[station.get_name()] = theoretical_quality
+    minus_distance = 0
+
+print(quality_difference_dict)
+
+    
+#     rails.reset
+#     rails.load(file_stations, file_connections)
+
+
 
