@@ -192,19 +192,23 @@ class Railnet():
 
         return theoretical_quality
 
-    def station_failure(self, failed_station):
+    def station_failure(self, failed_station) -> list:
         """
         Removes all connections to and from a failed station.
+        Return a list of removed connections for possible restoration.
         """
         if failed_station not in self._stations:
             raise Exception('This station does not exist.')
 
-        for connection in self._stations[failed_station].get_connections():
+        failed_connections = self._stations[failed_station].get_connections()
+
+        for connection in failed_connections:
 
             self.remove_connection(connection)
 
         # Remove the failed station from the dictionary
         # del self._stations[failed_station]
+        return failed_connections
 
     def remove_random_connection(self):
         """
@@ -222,8 +226,26 @@ class Railnet():
                 station.remove_connection(connection)
                 #if len(station.get_connections()) == 0:
                     #del self._stations[station]
-                    
+
         self._connections.remove(connection)
+
+    def restore_multiple_connections(self, connectionlist: list):
+        """
+        Restore multiple connections.
+        """
+        for connection in connectionlist:
+
+            self.restore_connection(connection)
+
+    def restore_connection(self, connection):
+        """
+        Restore connection that was removed.
+        """
+        for station in connection.get_stations():
+            if connection not in station.get_connections():
+                station.add(connection)
+
+        self._connectionlist.append(connection)
 
     def add_connection(self, start, end):
         """
