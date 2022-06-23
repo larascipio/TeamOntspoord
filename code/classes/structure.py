@@ -91,13 +91,13 @@ class Railnet():
         self._trains = route
         self.follow_track()
 
-    def get_stations(self):
+    def get_stations(self) -> list:
         return self._stations
 
-    def get_connections(self):
+    def get_connections(self) -> list:
         return self._connections
 
-    def get_trains(self):
+    def get_trains(self) -> dict:
         return self._trains
     
     def get_total_connections(self) -> int:
@@ -110,10 +110,10 @@ class Railnet():
                 connections_passed.add(connection)
         return connections_passed
 
-    def get_max_trains(self):
+    def get_max_trains(self) -> int:
         return self._max_trains
 
-    def get_max_distance(self):
+    def get_max_distance(self) -> int:
         return self._max_dist
 
     def quality(self) -> float:
@@ -146,7 +146,8 @@ class Railnet():
         """
         Check how each train affects the quality. 
         Store in two lists so duplicate scores aren't overwritten.
-        The higher the quality difference, the more negatively the train affects the quality.
+        The higher the quality difference, the more negatively the 
+        train affects the quality.
         """
         self.overall_quality = self.quality()
         iterated_train_list = []
@@ -163,7 +164,7 @@ class Railnet():
 
         return iterated_train_list, quality_list
 
-    def get_max_quality(self):
+    def get_max_quality(self) -> float:
         """
         Get the theoretical maximum quality for the railroad.
         """
@@ -264,6 +265,14 @@ class Railnet():
         removed_connection = random.choice(start.get_connections())
         self.remove_connection(removed_connection)
         self.add_connection(start, end)
+
+    def empty_railnet(self):
+        """
+        Empty the railnet, so new stations 
+        and connections can be loaded in.
+        """
+        self._stations = {}
+        self._connections = []
     
     def follow_track(self):
         """
