@@ -4,7 +4,7 @@ main.py
 from code.algorithms.bad_algorithm import Make_Bad_Routes
 from code.algorithms.random_algorithm import Make_Random_Routes
 from code.algorithms.simulated_annealing import Hillclimber, Simulated_Annealing, Reheating
-from code.algorithms.self_choosing import Make_Iterated_Routes
+# from code.algorithms.self_choosing import Make_Iterated_Routes
 from code.algorithms.biased_iteration import Make_Biased_Routes
 from code.visualisation.plotly_animation import create_animation
 from code.visualisation.plotly_live import Live_Plot
@@ -26,7 +26,7 @@ if __name__ == '__main__':
         )
     parser.add_argument(
         "algorithm", 
-        choices=['random','bad','hillclimber','annealing', 'forced_annealing', 'reheating', 'biased_annealing'], 
+        choices=['random','bad','hillclimber','annealing', 'reheating', 'biased_annealing'], 
         help="The algorithm that will be used."
         )
     parser.add_argument(
@@ -56,8 +56,8 @@ if __name__ == '__main__':
         Algorithm = Hillclimber
     elif args.algorithm == 'annealing':
         Algorithm = Simulated_Annealing
-    elif args.algorithm == 'forced_annealing':
-        Algorithm = Make_Iterated_Routes
+    # elif args.algorithm == 'forced_annealing':
+    #     Algorithm = Make_Iterated_Routes
     elif args.algorithm == 'reheating':
         Algorithm = Reheating
     elif args.algorithm == 'biased_annealing':
@@ -85,7 +85,8 @@ if __name__ == '__main__':
 
     elif args.make == 'hist':
         qualities = []
-        for _ in range(1000):
+        for i in range(100):
+            print(i)
             rails.reset()
             route = Algorithm(rails)
             route.run()
