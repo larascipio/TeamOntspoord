@@ -29,6 +29,9 @@ class Make_Random_Routes():
             # choose a random start station 
             start = random.choice(self._possible_stations)
 
+        # while start.get_connections() == 0:
+        #     start = random.choice(self._possible_stations)
+
         train = self._railnet.create_train(start)
         return train
     

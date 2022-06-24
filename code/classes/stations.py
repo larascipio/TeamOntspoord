@@ -4,7 +4,7 @@ stations.py
 
 class Station():
     def __init__(self, station: str, x_coordinate: float, y_coordinate: float):
-        """Create a station.s"""
+        """Create a station."""
         self._connections = []
         self._name = station
         self._x = float(y_coordinate)
@@ -23,23 +23,6 @@ class Station():
 
     def reset(self):
         self._passed = False
-
-    # def travel(self):
-    #     self._passed += 1
-
-    # def passed(self):
-    #     if self._passed > 0:
-    #         return True
-    #     return False
-    
-    # def remove(self):
-    #     if self._passed > 0:
-    #         self._passed -= 1
-    #     else:
-    #         raise Exception('You cannot remove this connection, as it is not passed.')
-        
-    # def reset(self):
-    #     self._passed = 0
 
     def get_connections(self):
         return self._connections

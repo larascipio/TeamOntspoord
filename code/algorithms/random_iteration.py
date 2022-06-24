@@ -27,7 +27,9 @@ class Make_Iterated_Routes():
         for _ in range(self._railnet.get_max_trains()):
             start_quality = self._railnet.quality()
 
-            removed_train = self._railnet.remove_first_train()
+            removed_train = self._railnet.get_trains()[0]
+            self._railnet.remove_train(removed_train)
+            # removed_train = self._railnet.remove_first_train()
             removed_quality = self._railnet.quality()
 
             worst_train_dict = {}
@@ -35,7 +37,9 @@ class Make_Iterated_Routes():
             for _ in range(iterations):
                 self._route.run_one_train()
                 new_quality = self._railnet.quality()
-                new_train = self._railnet.remove_last_train()
+                new_train = self._railnet.get_trains()[-1]
+                self._railnet.remove_train(new_train)
+                # new_train = self._railnet.remove_last_train()
                 
                 if new_quality > start_quality and new_quality > removed_quality:
                     worst_train_dict[new_quality] = new_train
