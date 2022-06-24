@@ -5,15 +5,25 @@ stations.py
 class Station():
     def __init__(self, station: str, x_coordinate: float, y_coordinate: float):
         """Create a station.s"""
-        self._connections = []
+        self._connections = {}
         self._name = station
         self._x = float(y_coordinate)
         self._y = float(x_coordinate)
         self._passed = False
 
-    def add_connection(self, connection):
+    def add_connection(self, connection) -> None:
         """Add a connection from this station to the next."""
-        self._connections.append(connection)
+        station = connection.get_destination(self)
+        self._connections[station.get_name()] = connection
+
+    def get_connection_by_station(self, station_name: str):
+        """
+        Returns the connections that belongs to this station.
+        Used by Railnet.restore_routes.
+        """
+        if not station_name in self._connections:
+            return None
+        return self._connections[station_name]
 
     def travel(self):
         self._passed = True
@@ -42,10 +52,15 @@ class Station():
     #     self._passed = 0
 
     def get_connections(self):
-        return self._connections
+        return list(self._connections.values())
 
     def remove_connection(self, connection):
-        self._connections.remove(connection)
+        """
+        Removes a connection from this station.
+        Used by 
+        """
+        station = connection.get_destination(self)
+        self._connections.pop(station.get_name())
 
     def get_position(self):
         return (self._x, self._y)
