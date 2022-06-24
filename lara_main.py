@@ -52,7 +52,7 @@ if __name__ == '__main__':
 
     if args.algorithm == 'new':
         for _ in range(args.runs):
-            route = Depth_First(rails, max_trains, max_time)
+            route = Depth_First(rails)
             route.run()
             quality = route.quality()
 

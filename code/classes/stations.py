@@ -34,23 +34,6 @@ class Station():
     def reset(self):
         self._passed = False
 
-    # def travel(self):
-    #     self._passed += 1
-
-    # def passed(self):
-    #     if self._passed > 0:
-    #         return True
-    #     return False
-    
-    # def remove(self):
-    #     if self._passed > 0:
-    #         self._passed -= 1
-    #     else:
-    #         raise Exception('You cannot remove this connection, as it is not passed.')
-        
-    # def reset(self):
-    #     self._passed = 0
-
     def get_connections(self):
         return list(self._connections.values())
 

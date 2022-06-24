@@ -14,7 +14,8 @@ Lara, Tim, Eva
 from code.algorithms.bad_algorithm import Make_Bad_Routes
 from code.algorithms.random_algorithm import Make_Random_Routes
 from code.algorithms.simulated_annealing import Hillclimber, Simulated_Annealing, Reheating
-# from code.algorithms.self_choosing import Make_Iterated_Routes
+from code.algorithms.self_choosing import Make_Iterated_Routes
+from code.algorithms.depth_first import Depth_First
 from code.algorithms.biased_iteration import Make_Biased_Routes
 from code.visualisation.plotly_animation import create_animation
 from code.visualisation.plotly_live import Live_Plot
@@ -36,6 +37,7 @@ if __name__ == '__main__':
         )
     parser.add_argument(
         "algorithm", 
+<<<<<<< HEAD
         choices=[
             'random',
             'bad',
@@ -45,6 +47,14 @@ if __name__ == '__main__':
             'biased_annealing'
         ], 
         help="Choose what algorithm you would like to run."
+=======
+<<<<<<< HEAD
+        choices=['random','bad','hillclimber','annealing', 'forced_annealing', 'depth_first'], 
+=======
+        choices=['random','bad','hillclimber','annealing', 'reheating', 'biased_annealing'], 
+>>>>>>> 6e0dbf46625ff42f39c81f6d844c27d5329af15d
+        help="The algorithm that will be used."
+>>>>>>> f68875aa49214c7cece335da5ca6d3a97a774f68
         )
     parser.add_argument(
         "make",
@@ -73,12 +83,19 @@ if __name__ == '__main__':
         Algorithm = Hillclimber
     elif args.algorithm == 'annealing':
         Algorithm = Simulated_Annealing
+<<<<<<< HEAD
+    elif args.algorithm == 'forced_annealing':
+        Algorithm = Make_Iterated_Routes
+    elif args.algorithm == 'depth_first':
+        Algorithm = Depth_First
+=======
     # elif args.algorithm == 'forced_annealing':
     #     Algorithm = Make_Iterated_Routes
     elif args.algorithm == 'reheating':
         Algorithm = Reheating
     elif args.algorithm == 'biased_annealing':
         Algorithm = Make_Biased_Routes
+>>>>>>> 6e0dbf46625ff42f39c81f6d844c27d5329af15d
 
     # --------------------------- Load in rails --------------------------------
 

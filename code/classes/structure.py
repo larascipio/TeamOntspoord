@@ -80,41 +80,77 @@ class Railnet():
     def add_train(self, train):
         """
         Add existing train to the railnet.
+        Used by random_iteration.py and biased_iteration.py
         """
         self.follow_train(train)
         self._trains.append(train)
 
-    def remove_last_train(self):
-        """
-        Removes and returns last train from the railnet.
-        """
-        train = self._trains.pop()
-        self.remove_train_connections(train)
+    # def remove_last_train(self):
+    #     """
+    #     Removes and returns last train from the railnet.
+    #     Used by random_iteration.py and biased_iteration.py
+    #     """
+    #     train = self._trains.pop()
+    #     self.remove_train_connections(train)
 
-        return train
+    #     return train
 
-    def remove_first_train(self):
-        """
-        Removes and returns first train from the railnet.
-        """
-        train = self._trains.pop(0)
-        self.remove_train_connections(train)
+    # def remove_first_train(self):
+    #     """
+    #     Removes and returns first train from the railnet.
+    #     Used by random_iteration.py and biased_iteration.py
+    #     """
+    #     train = self._trains.pop(0)
+    #     self.remove_train_connections(train)
 
-        return train
+    #     return train
 
     def remove_train_connections(self, train):
         """
-        Remove effect train had on connections.
+        Remove the effect train had on connections.
         """
         for connection in train.get_connections():
             connection.remove()
 
     def add_route(self, route):
         """
-        Add set of trains to the railnet.
+        Add list of trains to the railnet.
         """
         self._trains = route
         self.follow_track()
+
+    # def run_random_train(self, train):
+    #     """
+    #     Choose a random connection for the train to use.
+    #     Used by random_algorithm.py
+    #     """
+    #     while train.is_running():
+
+    #         connection = train.choose_random_connection()
+    #         if not connection:
+    #             break
+    #         self.move_train(train, connection)
+
+    # def run_biased_train(self, train):
+    #     """
+    #     Choose an unused connection for the train to use.
+    #     Used by biased_iteration.py
+    #     """
+    #     while train.is_running():
+
+    #         connection = train.choose_next_connection()
+    #         if not connection:
+    #             break
+    #         self.move_train(train, connection)
+
+    # def move_train(self, train, connection):
+    #     """
+    #     Move the train to a new station if possible.
+    #     """
+    #     if connection.get_distance() + train.get_distance() < self._max_dist:
+    #         train.move(connection)
+    #     else:
+    #         train.stop()
 
     def get_stations(self) -> dict:
         return self._stations
@@ -156,6 +192,7 @@ class Railnet():
     def reset(self):
         """
         Completely resets the railnet.
+        Used for a loop where algorithms are run multiple times.
         """
         # reset the stations
         for station in self._stations.values():
@@ -167,27 +204,27 @@ class Railnet():
 
         self._trains = []
 
-    def check_trains_quality(self):
-        """
-        Check how each train affects the quality. 
-        Store in two lists so duplicate scores aren't overwritten.
-        The higher the quality difference, the more negatively the 
-        train affects the quality.
-        """
-        self.overall_quality = self.quality()
-        iterated_train_list = []
-        quality_list = []
+    # def check_trains_quality(self):
+    #     """
+    #     Check how each train affects the quality. 
+    #     Store in two lists so duplicate scores aren't overwritten.
+    #     The higher the quality difference, the more negatively the 
+    #     train affects the quality.
+    #     """
+    #     self.overall_quality = self.quality()
+    #     iterated_train_list = []
+    #     quality_list = []
 
-        for train in self._trains:
-            self.remove_train(train)
+    #     for train in self._trains:
+    #         self.remove_train(train)
 
-            quality_difference = self.quality() - self.overall_quality
-            iterated_train_list.append(train)
-            quality_list.append(quality_difference)
+    #         quality_difference = self.quality() - self.overall_quality
+    #         iterated_train_list.append(train)
+    #         quality_list.append(quality_difference)
 
-            self.add_train(train)
+    #         self.add_train(train)
 
-        return iterated_train_list, quality_list
+    #     return iterated_train_list, quality_list
 
     def get_max_quality(self) -> float:
         """
@@ -237,9 +274,9 @@ class Railnet():
         """
         for station in connection.get_stations():
 
-                station.remove_connection(connection)
-                #if len(station.get_connections()) == 0:
-                    #del self._stations[station]
+            station.remove_connection(connection)
+            #if len(station.get_connections()) == 0:
+                #del self._stations[station]
 
         self._connections.remove(connection)
 
