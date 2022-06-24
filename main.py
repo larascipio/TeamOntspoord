@@ -1,17 +1,22 @@
 """
 main.py
+
+Programmeertheorie - minor programmeren
+Lara, Tim, Eva
+
+- Can be used to run any of the algorithms created for the RailNL case.
+- Uses command line arguments for choosing the dataset, the algorithm and what should be run. TODO (dit klinkt niet zo lekker)
+
 """
+
+# ------------------------------- Imports --------------------------------------
+
 from code.algorithms.bad_algorithm import Make_Bad_Routes
 from code.algorithms.random_algorithm import Make_Random_Routes
-<<<<<<< HEAD
-from code.algorithms.simulated_annealing import Hillclimber, Simulated_Annealing
-from code.algorithms.self_choosing import Make_Iterated_Routes
-from code.algorithms.depth_first import Depth_First
-=======
 from code.algorithms.simulated_annealing import Hillclimber, Simulated_Annealing, Reheating
 # from code.algorithms.self_choosing import Make_Iterated_Routes
+from code.algorithms.depth_first import Depth_First
 from code.algorithms.biased_iteration import Make_Biased_Routes
->>>>>>> 6e0dbf46625ff42f39c81f6d844c27d5329af15d
 from code.visualisation.plotly_animation import create_animation
 from code.visualisation.plotly_live import Live_Plot
 from code.visualisation.output import output
@@ -22,22 +27,27 @@ import argparse
 
 if __name__ == '__main__':
 
-    # ----------------------------- Read command line -------------------------
+    # --------------------------- Read command line ----------------------------
 
     parser = argparse.ArgumentParser(description='create routes')
     parser.add_argument(
         "type", 
         choices=['holland','national'],
-        help="Use the holland or national railroads"
+        help="Choose between the dataset for hollands or national railways."
         )
     parser.add_argument(
         "algorithm", 
-<<<<<<< HEAD
-        choices=['random','bad','hillclimber','annealing', 'forced_annealing', 'depth_first'], 
-=======
-        choices=['random','bad','hillclimber','annealing', 'reheating', 'biased_annealing'], 
->>>>>>> 6e0dbf46625ff42f39c81f6d844c27d5329af15d
-        help="The algorithm that will be used."
+        choices=[
+            'random',
+            'bad',
+            'hillclimber',
+            'annealing',
+            # 'forced_annealing',
+            'depth_first',
+            'reheating',
+            'biased_annealing'
+        ], 
+        help="Choose what algorithm you would like to run."
         )
     parser.add_argument(
         "make",
@@ -66,26 +76,21 @@ if __name__ == '__main__':
         Algorithm = Hillclimber
     elif args.algorithm == 'annealing':
         Algorithm = Simulated_Annealing
-<<<<<<< HEAD
-    elif args.algorithm == 'forced_annealing':
-        Algorithm = Make_Iterated_Routes
-    elif args.algorithm == 'depth_first':
-        Algorithm = Depth_First
-=======
     # elif args.algorithm == 'forced_annealing':
     #     Algorithm = Make_Iterated_Routes
+    elif args.algorithm == 'depth_first':
+        Algorithm = Depth_First
     elif args.algorithm == 'reheating':
         Algorithm = Reheating
     elif args.algorithm == 'biased_annealing':
         Algorithm = Make_Biased_Routes
->>>>>>> 6e0dbf46625ff42f39c81f6d844c27d5329af15d
 
-    # ----------------------------- Load in rails -----------------------------
+    # --------------------------- Load in rails --------------------------------
 
     rails = Railnet(max_trains, max_time)
     rails.load(file_stations, file_connections)
 
-    # ----------------------------- Run once ----------------------------------
+    # --------------------------- Run once -------------------------------------
 
     if args.make == 'once':
 
@@ -98,21 +103,23 @@ if __name__ == '__main__':
         output(route_quality, rails.get_trains(), './code/output/output.csv')
         create_animation(rails)
 
-    # ----------------------------- Create histogram --------------------------
+    # --------------------------- Create histogram -----------------------------
 
     elif args.make == 'hist':
         qualities = []
         for i in range(100):
+
+            # run the algorithm multiple times
             print(i)
             rails.reset()
             route = Algorithm(rails)
             route.run()
             qualities.append(rails.quality())
 
-        # Create hist for best routes 
+        # Create hist for the qualities of all runs 
         quality_hist(qualities)
     
-    # ----------------------------- Find best value ---------------------------
+    # --------------------------- Find best value ------------------------------
 
     elif args.make == 'best':
         best_qual = 0
@@ -120,17 +127,23 @@ if __name__ == '__main__':
         plot = Live_Plot(rails)
         
         for _ in range(10000):
+
+            # run the algorithm multiple times
             rails.reset()
             route = Algorithm(rails)
             route.run()
+
+            # show and save the best run till now
             if rails.quality() >= best_qual:
                 best_qual = rails.quality()
-                best_route = route
+                best_route = rails.get_trains()
                 print(best_qual)
                 plot.update_fig(best_route)
                 output(best_qual, rails.get_trains(), './code/output/output.csv')
 
         print(best_route)
         print(best_qual)
-        output(best_qual, rails.get_trains(), './code/output/output.csv')
+        output(best_qual, best_route, './code/output/output.csv')
+        rails.reset()
+        rails.restore_routes(best_route)
         create_animation(rails)

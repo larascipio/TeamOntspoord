@@ -1,10 +1,20 @@
+"""
+structure.py
+
+Programmeertheorie - minor programmeren
+Lara, Tim, Eva
+
+- Houses the main structure for the algorithms to use; Railnet.
+- Railnet contains trains (train.py), stations and connections (station.py).
+"""
+
 from code.classes.stations import Station, Connection
 from code.classes.train import Train
 import plotly.express as px
 import csv
 import random
 
-class Railnet():
+class Railnet(): # TODO misschien is het logischer als de load ook in de init wordt aangeroepen
     def __init__(self, num_trains: int, max_distance: int):
         self._stations = {}
         self._connections = []
@@ -14,7 +24,10 @@ class Railnet():
 
         # create the colors for the trains
         # self._colorlist = px.colors.qualitative.Vivid[:-1] + px.colors.qualitative.Dark2[:-1]
-        self._colorset = {'fuchsia', 'red', 'cyan', 'blue', 'darkorange', 'green', 'darkviolet', 'black', 'gold', 'deeppink', 'lime', 'darkred'}
+        self._colorset = {
+            'fuchsia', 'red', 'cyan', 'blue', 'darkorange', 'green', 
+            'darkviolet', 'black', 'gold', 'deeppink', 'lime', 'darkred'
+        }
         # self._color = self._colorlist.copy()
 
     def load(self, file_locations: str, file_connections: str):
@@ -31,7 +44,11 @@ class Railnet():
         with open(file_connections, newline = '') as csvfile:
             reader = csv.DictReader(csvfile)
             for row in reader: 
-                connection = Connection(self._stations[row['station1']], self._stations[row['station2']], float(row['distance']))
+                connection = Connection(
+                    self._stations[row['station1']],
+                    self._stations[row['station2']],
+                    float(row['distance'])
+                )
                 self._connections.append(connection)
                 self._stations[row['station1']].add_connection(connection)
                 self._stations[row['station2']].add_connection(connection)
@@ -47,6 +64,7 @@ class Railnet():
             color = random.sample(available_colors, 1)[0]
         else:
             color = random.sample(self._colorset, 1)[0]
+        
         train = Train(self, start, color)
 
         # if len(self._color) < len(self._colorlist):
@@ -170,7 +188,8 @@ class Railnet():
         """
         Calculate the quality of the current routes.
         """
-        qual = (len(self.get_passed_connections())/self.get_total_connections())*10000
+        qual = (len(self.get_passed_connections())
+            /self.get_total_connections())*10000
         
         for train in self._trains:
             qual -= 100
@@ -355,6 +374,7 @@ class Railnet():
     def follow_track(self):
         """
         Passes all connections and stations.
+        Used by restore_routes().
         """
         for train in self._trains:
             self.follow_train(train)
@@ -371,16 +391,44 @@ class Railnet():
         for connection in train.get_connections():
             connection.travel()
 
-    def restore_routes(self, route: list):
+    def get_route_names(self) -> list:
+        """
+        Returns a list of lists with names of all stations passed.
+        Used by Reheating (simulated_annealing.py).
+        """
+        route = []
+        for train in self._trains:
+            route.append(train.get_station_names())
+        return route
+
+    def restore_routes(self, route_names: list):
         """
         Restores the given route if the railnet was reset.
+        The give list contains lists with the names of the stations.
+        Used by Reheating (simulated_annealing.py).
         """
         if self._trains != []:
             raise Exception('This railnet was not yet reset.')
-        self._trains = route
-        self.follow_track()
+        
+        for train in route_names:
+
+            # create new train
+            new_train = self.create_train(self._stations[train.pop(0)])
+
+            # move the train over the stations
+            while train:
+                station = new_train.get_stations()[-1]
+                connection = station.get_connection_by_station(train.pop(0))
+                new_train.move(connection)
+
+        # self._trains = route
+        # self.follow_track()
 
     def all_colors_used(self) -> set:
+        """
+        Returns a set with all colors used by the trains in the railnet.
+        Used by self.create_train to determine the color for a next train.
+        """
         colors = set()
         for train in self._trains:
             colors.add(train.get_color())

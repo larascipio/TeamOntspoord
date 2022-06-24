@@ -24,6 +24,7 @@ class Make_Biased_Routes():
         Give preference to stations with few connections, so connections near the edge
         will be used.
         """
+
         weighted_chance_list = []
         for station in self._railnet.get_stations().values():
             weighted_chance = 0

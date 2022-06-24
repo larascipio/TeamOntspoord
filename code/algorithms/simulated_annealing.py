@@ -198,7 +198,6 @@ class Hillclimber():
 
         connection.travel()
 
-        exit()
         # qual_now = self.quality() - connection.get_distance() - 100
         qual_now = self._railnet.quality() - connection.get_distance() - 100
         connection.remove()
@@ -424,7 +423,7 @@ class Reheating(Hillclimber):
         if qual_change > 0:
             if qual_now > self._bestqual:
                 self._bestqual = qual_now
-                self._bestroute = self._railnet.get_trains()
+                self._bestroute = self._railnet.get_route_names()
             keep = True
             self._stuck = 0
         elif self._temp == 0:

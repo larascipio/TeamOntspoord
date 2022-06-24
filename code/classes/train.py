@@ -8,30 +8,30 @@ class Train():
         self._routes = routes
         self._distance = 0
         self._current_station = starting_station
-        self._route = [self._current_station.get_name()]
+        self._station_names = [self._current_station.get_name()]
         self._stations_traveled = [self._current_station]
         self._connections_traveled = []
         # self._current_station.travel()
         self._running = True
         self._color = color
     
-    def is_running(self):
+    def is_running(self) -> bool:
         """ Check if this train is still running. """
         return self._running
 
-    def stop(self):
+    def stop(self) -> None:
         """ Stop the train. """
         self._running = False
 
-    def get_connections(self):
+    def get_connections(self) -> list:
         """ Get all the connections that this train has in its route. """
         return self._connections_traveled
 
-    def get_stations(self):
+    def get_stations(self) -> list:
         """ Get all the stations in this trains route. """
         return self._stations_traveled
     
-    def get_color(self):
+    def get_color(self) -> tuple:
         return self._color
     
     def choose_next_connection(self):
@@ -154,7 +154,7 @@ class Train():
         self._current_station = next_station
 
         # add the station and connection to the route
-        self._route.append(next_station.get_name())
+        self._station_names.append(next_station.get_name())
         self._stations_traveled.append(next_station)
         self._connections_traveled.append(connection)
         connection.travel()
@@ -169,7 +169,7 @@ class Train():
 
         self._stations_traveled.pop()
         self._current_station = self._stations_traveled[-1]
-        self._route.pop()
+        self._station_names.pop()
 
     def movestart(self, connection):
         """
@@ -179,7 +179,7 @@ class Train():
 
         new_station = connection.get_destination(self._stations_traveled[0])
 
-        self._route.insert(0, new_station.get_name())
+        self._station_names.insert(0, new_station.get_name())
         self._stations_traveled.insert(0, new_station)
         self._connections_traveled.insert(0, connection)
         connection.travel()
@@ -190,14 +190,14 @@ class Train():
         first_connection.remove()
         
         self._stations_traveled.pop(0)
-        self._route.pop(0)
+        self._station_names.pop(0)
         return first_connection
     
     def get_distance(self):
         return self._distance
     
-    def get_route(self):
-        return self._route
+    def get_station_names(self):
+        return self._station_names
 
     def __repr__(self):
         return f'Train: {[station for station in self._stations_traveled]}'
