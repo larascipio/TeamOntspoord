@@ -18,7 +18,7 @@ class Make_Biased_Routes():
     #         weighted_chance_list.append(weighted_chance)
     #     return weighted_chance_list
 
-    def precise_starter_locations(self):
+    def precise_starter_locations(self): # TODO comments
         """
         Get starter locations with connections that haven't been passed through.
         Give preference to stations with few connections, so connections near the edge
@@ -41,7 +41,7 @@ class Make_Biased_Routes():
         """
         Run the algorithm.
         """
-        # Create a random max distance (BIAS: not higher than input max distance)
+        # Create a random max distance (BIAS: not higher than input max distance) < waarom is dat een bias?
         # self._random_distance = random.randint(1, self._max_dist)
         for _ in range(self._railnet.get_max_trains()):
             weighted_chance_list = self.precise_starter_locations()
@@ -58,7 +58,7 @@ class Make_Biased_Routes():
         if not train:
             return
 
-        # keep going until the route is 2 hours
+        # keep going until the route is the max distance
         while train.is_running():
             # connection = train.choose_connection()
             connection = train.choose_next_connection()

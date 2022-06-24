@@ -191,13 +191,6 @@ def create_animation(railnet, save_as_png=False, num=0):
             layout=go.Layout(
                 title_text='A map of all trainstations and connections', 
                 hovermode='closest',
-                updatemenus=[dict(
-                    type='buttons',
-                    buttons=[dict(
-                        label='Play',
-                        method='animate',
-                        args=[None]
-                    )])],
                 showlegend=False
             )
         )

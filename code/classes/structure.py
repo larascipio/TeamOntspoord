@@ -8,14 +8,19 @@ Lara, Tim, Eva
 - Railnet contains trains (train.py), stations and connections (station.py).
 """
 
+# ------------------------------- Imports --------------------------------------
+
 from code.classes.stations import Station, Connection
 from code.classes.train import Train
-import plotly.express as px
+# import plotly.express as px
 import csv
 import random
 
+# ------------------------------- Railnet --------------------------------------
+
 class Railnet(): # TODO misschien is het logischer als de load ook in de init wordt aangeroepen
     def __init__(self, num_trains: int, max_distance: int):
+        """Create a railnet with files given."""
         self._stations = {}
         self._connections = []
         self._trains = []
@@ -23,16 +28,14 @@ class Railnet(): # TODO misschien is het logischer als de load ook in de init wo
         self._max_dist = max_distance
 
         # create the colors for the trains
-        # self._colorlist = px.colors.qualitative.Vivid[:-1] + px.colors.qualitative.Dark2[:-1]
         self._colorset = {
             'fuchsia', 'red', 'cyan', 'blue', 'darkorange', 'green', 
             'darkviolet', 'black', 'gold', 'deeppink', 'lime', 'darkred'
         }
-        # self._color = self._colorlist.copy()
 
     def load(self, file_locations: str, file_connections: str):
         """
-        Load the stations and its connections.
+        Load the stations and its connections from the provided files.
         """
 
         with open(file_locations, newline = '') as csvfile:
@@ -54,110 +57,6 @@ class Railnet(): # TODO misschien is het logischer als de load ook in de init wo
                 self._stations[row['station2']].add_connection(connection)
                 # uid += 1
                 # self._total_connections += 1
-
-    def create_train(self, start):
-        """
-        Create a train at the given station.
-        """
-        available_colors = self._colorset - self.all_colors_used()
-        if available_colors:
-            color = random.sample(available_colors, 1)[0]
-        else:
-            color = random.sample(self._colorset, 1)[0]
-        
-        train = Train(self, start, color)
-
-        # if len(self._color) < len(self._colorlist):
-        #     self._color += self._colorlist.copy()
-        # train = Train(self, start, self._color.pop())
-        self._trains.append(train)
-
-        return train
-
-    def remove_train(self, train):
-        """
-        Remove the given train from the railnet.
-        """
-        if not train in self._trains:
-            raise Exception('This train does not exist.')
-
-        self.remove_train_connections(train)
-        self._trains.remove(train)
-
-    def add_train(self, train):
-        """
-        Add existing train to the railnet.
-        Used by random_iteration.py and biased_iteration.py
-        """
-        self.follow_train(train)
-        self._trains.append(train)
-
-    # def remove_last_train(self):
-    #     """
-    #     Removes and returns last train from the railnet.
-    #     Used by random_iteration.py and biased_iteration.py
-    #     """
-    #     train = self._trains.pop()
-    #     self.remove_train_connections(train)
-
-    #     return train
-
-    # def remove_first_train(self):
-    #     """
-    #     Removes and returns first train from the railnet.
-    #     Used by random_iteration.py and biased_iteration.py
-    #     """
-    #     train = self._trains.pop(0)
-    #     self.remove_train_connections(train)
-
-    #     return train
-
-    def remove_train_connections(self, train):
-        """
-        Remove the effect train had on connections.
-        """
-        for connection in train.get_connections():
-            connection.remove()
-
-    # def add_route(self, route):
-    #     """
-    #     Add list of trains to the railnet.
-    #     """
-    #     self._trains = route
-    #     self.follow_track()
-
-    # def run_random_train(self, train):
-    #     """
-    #     Choose a random connection for the train to use.
-    #     Used by random_algorithm.py
-    #     """
-    #     while train.is_running():
-
-    #         connection = train.choose_random_connection()
-    #         if not connection:
-    #             break
-    #         self.move_train(train, connection)
-
-    # def run_biased_train(self, train):
-    #     """
-    #     Choose an unused connection for the train to use.
-    #     Used by biased_iteration.py
-    #     """
-    #     while train.is_running():
-
-    #         connection = train.choose_next_connection()
-    #         if not connection:
-    #             break
-    #         self.move_train(train, connection)
-
-    # def move_train(self, train, connection):
-    #     """
-    #     Move the train to a new station if possible.
-    #     """
-    #     if connection.get_distance() + train.get_distance() < self._max_dist:
-    #         train.move(connection)
-    #     else:
-    #         train.stop()
 
     def get_stations(self) -> dict:
         return self._stations
@@ -184,69 +83,96 @@ class Railnet(): # TODO misschien is het logischer als de load ook in de init wo
     def get_max_distance(self) -> int:
         return self._max_dist
 
+    def all_colors_used(self) -> set:
+        """
+        Returns a set with all colors used by the trains in the railnet.
+        Used by self.create_train to determine the color for a next train.
+        """
+        colors = set()
+        for train in self._trains:
+            colors.add(train.get_color())
+        return colors
+
+    def __repr__(self):
+        representation = 'Route:\n'
+        for train in self._trains:
+            representation += f'{train}' + '\n'
+        representation += f'quality = {self.quality()}'
+        return representation
+
+    # --------------------------- trains ---------------------------------------
+
+    def create_train(self, start):
+        """
+        Create a train at the given station.
+        """
+        available_colors = self._colorset - self.all_colors_used()
+        if available_colors:
+            color = random.sample(available_colors, 1)[0]
+        else:
+            color = random.sample(self._colorset, 1)[0]
+        
+        train = Train(self, start, color)
+
+        self._trains.append(train)
+
+        return train
+
+    def remove_train(self, train):
+        """
+        Remove the given train from the railnet.
+        """
+        if not train in self._trains:
+            raise Exception('This train does not exist.')
+
+        for connection in train.get_connections():
+            connection.remove()
+
+        self._trains.remove(train)
+
+    # def remove_train_connections(self, train): # TODO where is this used? kan t niet gwn in de code
+    #     """
+    #     Remove the effect train had on connections.
+    #     """
+    #     for connection in train.get_connections():
+    #         connection.remove()
+
+    # --------------------------- Quality --------------------------------------
+
     def quality(self) -> float:
         """
         Calculate the quality of the current routes.
         """
+        # calculate points for the ratio of connections passed
         qual = (len(self.get_passed_connections())
             /self.get_total_connections())*10000
         
+        # remove 100 points and the distance traveled per train
         for train in self._trains:
             qual -= 100
             qual -= train.get_distance()
         
         return qual
 
-    def reset(self):
-        """
-        Completely resets the railnet.
-        Used for a loop where algorithms are run multiple times.
-        """
-        # reset the stations
-        for station in self._stations.values():
-            station.reset()
-
-        # reset the connections
-        for connection in self._connections:
-            connection.reset()
-
-        self._trains = []
-
-    # def check_trains_quality(self):
-    #     """
-    #     Check how each train affects the quality. 
-    #     Store in two lists so duplicate scores aren't overwritten.
-    #     The higher the quality difference, the more negatively the 
-    #     train affects the quality.
-    #     """
-    #     self.overall_quality = self.quality()
-    #     iterated_train_list = []
-    #     quality_list = []
-
-    #     for train in self._trains:
-    #         self.remove_train(train)
-
-    #         quality_difference = self.quality() - self.overall_quality
-    #         iterated_train_list.append(train)
-    #         quality_list.append(quality_difference)
-
-    #         self.add_train(train)
-
-    #     return iterated_train_list, quality_list
-
     def get_max_quality(self) -> float:
         """
         Get the theoretical maximum quality for the railroad.
         """
+        
+        # calculate the total distance of all connections
         total_distance = 0
-
         for connection in self.get_connections():
             total_distance += connection.get_distance()
 
-        minus_trains = (total_distance // self._max_dist + 1) * 100
-        theoretical_quality = 10000 - minus_trains - total_distance
+        # calculate the minimum amount of trains needed for the total distance
+        minimum_trains = (total_distance // self._max_dist + 1)
+
+        # calculate the quality with these variables
+        theoretical_quality = 10000 - minimum_trains*100 - total_distance
 
         return theoretical_quality
+
+    # --------------------------- Changing the railnet -------------------------
 
     def station_failure(self, failed_station) -> list:
         """
@@ -256,7 +182,7 @@ class Railnet(): # TODO misschien is het logischer als de load ook in de init wo
         if failed_station not in self._stations:
             raise Exception('This station does not exist.')
 
-        failed_connections = self._stations[failed_station].get_connections().copy()
+        failed_connections = self._stations[failed_station].get_connections().copy() # TODO < waarom maak je hier een copy?
 
         for connection in failed_connections:
 
@@ -288,12 +214,11 @@ class Railnet(): # TODO misschien is het logischer als de load ook in de init wo
 
         self._connections.remove(connection)
 
-    def restore_multiple_connections(self, connectionlist: list):
+    def restore_multiple_connections(self, connectionlist: list): # TODO waar wordt dit gebruikt?
         """
-        Restore multiple connections.
+        Restore multiple connections. TODO waarom niet loopen waar het gebruikt wordt?
         """
         for connection in connectionlist:
-
             self.restore_connection(connection)
 
     def restore_connection(self, connection):
@@ -301,7 +226,6 @@ class Railnet(): # TODO misschien is het logischer als de load ook in de init wo
         Restore connection that was removed.
         """
         for station in connection.get_stations():
-
             if connection not in station.get_connections():
                 station.add_connection(connection)
 
@@ -363,7 +287,7 @@ class Railnet(): # TODO misschien is het logischer als de load ook in de init wo
 
         return removed_connection, added_connection
 
-    def empty_railnet(self):
+    def empty_railnet(self): # TODO where is this used?
         """
         Empty the railnet, so new stations 
         and connections can be loaded in.
@@ -371,6 +295,38 @@ class Railnet(): # TODO misschien is het logischer als de load ook in de init wo
         self._stations = {}
         self._connections = []
     
+    # --------------------------- Changing routes ------------------------------
+
+    def reset(self):
+        """
+        Completely resets the railnet.
+        Used for a loop where algorithms are run multiple times.
+        """
+        # reset the stations
+        for station in self._stations.values():
+            station.reset()
+
+        # reset the connections
+        for connection in self._connections:
+            connection.reset()
+
+        self._trains = []
+
+    def add_route(self, route):
+        """
+        Add an existing list of trains to the railnet.
+        """
+        self._trains = route
+        self.follow_track()
+
+    def add_train(self, train):
+        """
+        Add existing train to the railnet.
+        Used by random_iteration.py and biased_iteration.py
+        """
+        self.follow_train(train)
+        self._trains.append(train)
+
     def follow_track(self):
         """
         Passes all connections and stations.
@@ -390,6 +346,8 @@ class Railnet(): # TODO misschien is het logischer als de load ook in de init wo
         # pass the connections
         for connection in train.get_connections():
             connection.travel()
+    
+    # --------------------------- Changing routes without trains ---------------
 
     def get_route_names(self) -> list:
         """
@@ -421,22 +379,81 @@ class Railnet(): # TODO misschien is het logischer als de load ook in de init wo
                 connection = station.get_connection_by_station(train.pop(0))
                 new_train.move(connection)
 
-        # self._trains = route
-        # self.follow_track()
+    # --------------------------- Archived methods -----------------------------
 
-    def all_colors_used(self) -> set:
-        """
-        Returns a set with all colors used by the trains in the railnet.
-        Used by self.create_train to determine the color for a next train.
-        """
-        colors = set()
-        for train in self._trains:
-            colors.add(train.get_color())
-        return colors
+    # def remove_last_train(self):
+    #     """
+    #     Removes and returns last train from the railnet.
+    #     Used by random_iteration.py and biased_iteration.py
+    #     """
+    #     train = self._trains.pop()
+    #     self.remove_train_connections(train)
 
-    def __repr__(self):
-        representation = 'Route:\n'
-        for train in self._trains:
-            representation += f'{train}' + '\n'
-        representation += f'quality = {self.quality()}'
-        return representation
+    #     return train
+
+    # def remove_first_train(self):
+    #     """
+    #     Removes and returns first train from the railnet.
+    #     Used by random_iteration.py and biased_iteration.py
+    #     """
+    #     train = self._trains.pop(0)
+    #     self.remove_train_connections(train)
+
+    #     return train
+
+    
+    # def run_random_train(self, train):
+    #     """
+    #     Choose a random connection for the train to use.
+    #     Used by random_algorithm.py
+    #     """
+    #     while train.is_running():
+
+    #         connection = train.choose_random_connection()
+    #         if not connection:
+    #             break
+    #         self.move_train(train, connection)
+
+    # def run_biased_train(self, train):
+    #     """
+    #     Choose an unused connection for the train to use.
+    #     Used by biased_iteration.py
+    #     """
+    #     while train.is_running():
+
+    #         connection = train.choose_next_connection()
+    #         if not connection:
+    #             break
+    #         self.move_train(train, connection)
+
+    # def move_train(self, train, connection):
+    #     """
+    #     Move the train to a new station if possible.
+    #     """
+    #     if connection.get_distance() + train.get_distance() < self._max_dist:
+    #         train.move(connection)
+    #     else:
+    #         train.stop()
+
+
+    # def check_trains_quality(self):
+    #     """
+    #     Check how each train affects the quality. 
+    #     Store in two lists so duplicate scores aren't overwritten.
+    #     The higher the quality difference, the more negatively the 
+    #     train affects the quality.
+    #     """
+    #     self.overall_quality = self.quality()
+    #     iterated_train_list = []
+    #     quality_list = []
+
+    #     for train in self._trains:
+    #         self.remove_train(train)
+
+    #         quality_difference = self.quality() - self.overall_quality
+    #         iterated_train_list.append(train)
+    #         quality_list.append(quality_difference)
+
+    #         self.add_train(train)
+
+    #     return iterated_train_list, quality_list

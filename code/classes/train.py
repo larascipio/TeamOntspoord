@@ -1,4 +1,17 @@
+"""
+train.py
+
+Programmeertheorie - minor programmeren
+Lara, Tim, Eva
+
+- Contains the Train class
+"""
+
+# --------------------------------- Imports ------------------------------------
+
 import random
+
+# --------------------------------- Train --------------------------------------
 
 class Train():
     def __init__(self, routes, starting_station, color):
@@ -33,6 +46,17 @@ class Train():
     
     def get_color(self) -> tuple:
         return self._color
+
+    def get_distance(self):
+        return self._distance
+    
+    def get_station_names(self):
+        return self._station_names
+
+    def __repr__(self):
+        return f'Train: {[station for station in self._stations_traveled]}'
+
+    # --------------------------- Different choosing methods -------------------
     
     def choose_next_connection(self):
         """
@@ -60,6 +84,7 @@ class Train():
         #             weights.append(1)
         #         else:
         #             weights.append(2)
+
     def choose_shortest_connection(self):
         """
         Choose the shortest connection that has not been passed yet.
@@ -139,6 +164,7 @@ class Train():
         self.stop()
         return None
 
+    # --------------------------- Changing the train ---------------------------
 
     def move(self, connection):
         """
@@ -192,12 +218,3 @@ class Train():
         self._stations_traveled.pop(0)
         self._station_names.pop(0)
         return first_connection
-    
-    def get_distance(self):
-        return self._distance
-    
-    def get_station_names(self):
-        return self._station_names
-
-    def __repr__(self):
-        return f'Train: {[station for station in self._stations_traveled]}'

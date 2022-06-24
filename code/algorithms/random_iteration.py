@@ -7,7 +7,7 @@ class Make_Iterated_Routes():
         Loads the railnet on which the algorithm will be used
         """
         self._railnet = railnet
-        self._route = Make_Random_Routes(self._railnet)
+        self._route = Make_Random_Routes(self._railnet) # Waarom gebruik je deze als je later zelf meer treinen toevoegd?
     
     def run(self):
         """
@@ -17,7 +17,7 @@ class Make_Iterated_Routes():
             self._route.run_one_train()
         self.change_tracks(1000)
 
-    def change_tracks(self, iterations):
+    def change_tracks(self, iterations): # TODO comments! zo'n blok code is onleesbaar
         """
         Create for each train multiple new trains (using iterations) that could possibly replace it
         Replace the current train with the train that most positively affects the overall quality
