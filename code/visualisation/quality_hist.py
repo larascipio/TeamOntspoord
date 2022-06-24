@@ -1,22 +1,19 @@
 import matplotlib.pyplot as plt
-from code.visualisation.output import output
+from statistics import mean
 
-# def quality_hist(qualityroutes, best_quality, best_route):
 def quality_hist(qualityroutes):
     """
-        Create a hist for the best quality routes 
+    Create a hist for the best quality routes 
     """
-    plt.hist(qualityroutes, color='g', bins=100)
+    plt.figure(figsize=(80, 15))
+    font = {'weight' : 'bold',
+            'size'   : 50}
+    plt.rc('font', **font)
+    plt.hist(qualityroutes, range=[0, 10000], color='g', bins=100)
+    plt.xlim([0, 10000])
     plt.xlabel('Quality')
     plt.ylabel('Number of runs')
-    plt.title(f'Quality for {len(qualityroutes)} runs')
+    plt.title(f'Quality for {len(qualityroutes)} runs - Mean quality: {mean(qualityroutes)}')
     plt.savefig('./code/lijnvoeringkwaliteit.png')
 
-    # best_qual = max(qualityroutes.keys())
-    # best_route = qualityroutes[best_qual]
 
-    # for train in best_route:
-    #     print(train._route)
-    
-    # outputfile = 'output.csv'
-    # output(best_quality, best_route.get_trains(), outputfile)

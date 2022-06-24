@@ -5,9 +5,10 @@ import os
 
 class Live_Plot():
     def __init__(self, rails):
-        print('see the plot at:')
-        path = os.getcwd()
-        print(f'{path}\code\output\live_plot.html')
+        # print('see the plot at:')
+        # path = os.getcwd()
+        # print(f'{path}\code\output\live_plot.html')
+        self._rails = rails
 
         # ----------------------------- Create the connections --------------------
         self._railsdata = []
@@ -57,29 +58,29 @@ class Live_Plot():
         self.update_fig(None)
 
 
-    def update_fig(self, route):
+    def update_fig(self, num):
 
         # ----------------------------- Create the lines --------------------------
         data = self._railsdata
 
-        if route:
-            i = 0
-            for train in route.get_trains():
-                x_routes = []
-                y_routes = []
-                for station in train.get_stations():
-                    station_x, station_y = station.get_position()
-                    x_routes.append(station_x)
-                    y_routes.append(station_y)
+        
+        i = 0
+        for train in self._rails.get_trains():
+            x_routes = []
+            y_routes = []
+            for station in train.get_stations():
+                station_x, station_y = station.get_position()
+                x_routes.append(station_x)
+                y_routes.append(station_y)
 
-                data += [go.Scattermapbox(
-                    lon=x_routes,
-                    lat=y_routes,
-                    mode = 'lines',
-                    marker=dict(color=self._color[i%len(self._color)]),
-                    hoverinfo='skip'
-                )]
-                i += 1
+            data += [go.Scattermapbox(
+                lon=x_routes,
+                lat=y_routes,
+                mode = 'lines',
+                marker=dict(color=self._color[i%len(self._color)]),
+                hoverinfo='skip'
+            )]
+            i += 1
 
         # create the figure
         fig = go.Figure(
@@ -91,10 +92,11 @@ class Live_Plot():
         fig.update_layout(
             margin = {'l':0,'t':0, 'b':0, 'r':0},
             mapbox = {
-                'center': {'lon': 5.2, 'lat': 52.2},
+                'center': {'lon': 5.2, 'lat': 52.1},
                 'style': 'open-street-map',
-                'zoom': 7
+                'zoom': 6.4
             }
         )
 
-        fig.write_html('code/output/live_plot.html')
+        # fig.write_html('code/output/live_plot.html')
+        fig.write_image(f'code/output/create_gif/fig{num}.jpeg')

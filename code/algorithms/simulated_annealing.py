@@ -1,8 +1,9 @@
-from operator import index
 from code.algorithms.random_algorithm import Make_Random_Routes
+from code.visualisation.plotly_animation import create_animation, create_gif
+from code.visualisation.plotly_live import Live_Plot
 # from code.classes.train import Train
 import random
-# import sys
+import sys
 
 class Hillclimber():
     def __init__(self, railnet):
@@ -10,7 +11,6 @@ class Hillclimber():
         Initialize the hillclimber algorithm.
         """
         self._railnet = railnet
-        # self._trains = self.get_random_routes()
         self.get_random_routes()
         self._changes = [
             self.extend_train, 
@@ -21,8 +21,8 @@ class Hillclimber():
         ]
         # self._max_trains = max_trains
         # self._max_dist = max_time
-        self._max_trains = self._railnet.get_max_trains()
-        self._max_dist = self._railnet.get_max_distance()
+        # self._max_trains = self._railnet.get_max_trains()
+        # self._max_dist = self._railnet.get_max_distance()
 
         # needed for annealing
         self._iter = 0
@@ -63,10 +63,12 @@ class Hillclimber():
 
     def run(self, iterations=100000):
         self._max_iter=iterations
+        # gif = Live_Plot(self._railnet)
+
         # keep trying a random change and see if the score increases
         for self._iter in range(self._max_iter):
 
-            # sys.stdout.write(f'\rThe quality is {self.quality()}')
+            # sys.stdout.write(f'\r{self._iter}')
             # sys.stdout.flush()
 
             # while len(self._trains) == 0:
@@ -86,15 +88,19 @@ class Hillclimber():
             else:
                 change(train_to_change)
 
-            # check
-            for train in self._railnet.get_trains():
-                distance = 0
-                for connection in train.get_connections():
-                    distance += connection.get_distance()
-                if train.get_distance() != distance:
-                    raise Exception(f'The length of the train is {distance}, not {train.get_distance()}!')
+            # create a gif:
+            # gif.update_fig(self._iter)
+
+            # # check
+            # for train in self._railnet.get_trains():
+            #     distance = 0
+            #     for connection in train.get_connections():
+            #         distance += connection.get_distance()
+            #     if train.get_distance() != distance:
+            #         raise Exception(f'The length of the train is {distance}, not {train.get_distance()}!')
 
         # print()
+        # create_gif('hillclimber')
     
     def extend_train(self, train):
         # print(f'Extend {train}')
@@ -105,7 +111,7 @@ class Hillclimber():
         station = train.get_stations()[index]
         next_connection = random.choice(station.get_connections())
 
-        if (train.get_distance() + next_connection.get_distance()) > self._max_dist:
+        if (train.get_distance() + next_connection.get_distance()) > self._railnet.get_max_distance():
             # print('The train is too long.')
             return
 
@@ -180,7 +186,7 @@ class Hillclimber():
     def make_new_train(self,p=0):
         # print('Make new train')
 
-        if len(self._railnet.get_trains()) == self._max_trains:
+        if len(self._railnet.get_trains()) == self._railnet.get_max_trains():
             # print('Too many trains.')
             return
 
@@ -222,7 +228,7 @@ class Hillclimber():
     def split_train(self, train):
         # print(f'Split {train}')
 
-        if len(self._railnet.get_trains()) == self._max_trains:
+        if len(self._railnet.get_trains()) == self._railnet.get_max_trains():
             # print('Too many trains.')
             return
 
@@ -261,7 +267,7 @@ class Hillclimber():
         # print(index_to_split)
         # print()
 
-        for index in range(index_to_split):
+        for _ in range(index_to_split):
             # print(index)
 
             # remove the connection from this train
@@ -344,10 +350,11 @@ class Hillclimber():
 
 
 class Simulated_Annealing(Hillclimber):
-    def __init__(self, railnet, start_temp = 20):
+    def __init__(self, railnet, start_temp = 20, base=0.999):
         super().__init__(railnet)
         self._starttemp = start_temp
         self.temps = []
+        self._base = base
 
     def keep_change(self, qual_before, qual_now):
 
@@ -357,8 +364,8 @@ class Simulated_Annealing(Hillclimber):
 
         # determine the temperature for this iteration
         # temp = 1
-        temp = self._starttemp - (self._starttemp/self._max_iter) * self._iter
-        # temp = self._starttemp * pow(0.997, self._iter)
+        # temp = self._starttemp - (self._starttemp/self._max_iter) * self._iter
+        temp = self._starttemp * pow(self._base, self._iter)
 
         # print(temp)        
 
@@ -373,3 +380,61 @@ class Simulated_Annealing(Hillclimber):
         elif pow(2, qual_change/temp) > random.random():
             return True
         return False
+
+class Reheating(Hillclimber):
+    """
+    https://www.sciencedirect.com/science/article/pii/S0377221717300759?casa_token=JEj48ByZMJIAAAAA:bu5jvRf5EphHFiPSGWEodYny0K8gAqNqzpyHKZL93NKg_ysug9u30CTNJ2j7JndgfxkFmZIDVg
+    """
+    def __init__(self, railnet, start_temp=100, base=0.999):
+        super().__init__(railnet)
+        self._heat = 0 # current number of reheats
+        self._bestqual = 0
+        self._bestroute = None
+        self._currentbest = 0
+        
+        self._temp = start_temp
+        self._base = base
+        self._stuck = 0
+        
+        self.temps = []
+        self.best = []
+        self.current = []
+    
+    def run(self):
+        super().run()
+        self._railnet.reset()
+        self._railnet.restore_routes(self._bestroute)
+
+    def keep_change(self, qual_before, qual_now) -> bool:
+
+        self.temps.append(self._temp)
+        self.best.append(self._bestqual)
+        self.current.append(qual_before)
+
+        # 10 times no changes
+        if self._stuck > 50:
+            self._heat += 1
+            self._temp *= 2
+            self._stuck = 0
+
+        # determine whether this change is kept
+        qual_change = qual_now - qual_before
+
+        # positive changes are always accepted
+        if qual_change > 0:
+            if qual_now > self._bestqual:
+                self._bestqual = qual_now
+                self._bestroute = self._railnet.get_trains()
+            keep = True
+            self._stuck = 0
+        elif self._temp == 0:
+            keep = False
+        elif pow(2, qual_change/self._temp) > random.random():
+            keep = True
+            self._stuck = 0
+        else:
+            keep = False
+            self._stuck += 1
+
+        self._temp *= self._base
+        return keep

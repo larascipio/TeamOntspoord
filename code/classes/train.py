@@ -1,7 +1,7 @@
 import random
 
 class Train():
-    def __init__(self, routes, starting_station, max_distance):
+    def __init__(self, routes, starting_station, color):
         """
         Create a train at the given station.
         """
@@ -13,7 +13,7 @@ class Train():
         self._connections_traveled = []
         # self._current_station.travel()
         self._running = True
-        self._max_dist = max_distance
+        self._color = color
     
     def is_running(self):
         """ Check if this train is still running. """
@@ -30,6 +30,9 @@ class Train():
     def get_stations(self):
         """ Get all the stations in this trains route. """
         return self._stations_traveled
+    
+    def get_color(self):
+        return self._color
     
     def choose_next_connection(self):
         """
@@ -106,7 +109,7 @@ class Train():
         Choose a random connection.
         """
 
-        weights = [self._distance/self._max_dist]
+        weights = [self._distance/self._routes.get_max_distance()]
         counter = 0
         possible_connections = ["stop"]
         for connection in self._current_station.get_connections():
