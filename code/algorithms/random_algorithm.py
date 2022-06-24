@@ -11,6 +11,7 @@ class Make_Random_Routes():
         Use network of routes to initialize the algorithm.
         """
         self._railnet = railnet
+        print(self._railnet)
         # self._max_trains = num_trains
         # self._max_dist = max_distance
         # self._tot_connections = len(self._railnet.get_connections())
@@ -33,6 +34,7 @@ class Make_Random_Routes():
         #     start = random.choice(self._possible_stations)
 
         train = self._railnet.create_train(start)
+        print(train)
         return train
     
     # def get_trains(self):

@@ -371,6 +371,15 @@ class Railnet():
         for connection in train.get_connections():
             connection.travel()
 
+    def restore_routes(self, route: list):
+        """
+        Restores the given route if the railnet was reset.
+        """
+        if self._trains != []:
+            raise Exception('This railnet was not yet reset.')
+        self._trains = route
+        self.follow_track()
+
     def all_colors_used(self) -> set:
         colors = set()
         for train in self._trains:

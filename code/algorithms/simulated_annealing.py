@@ -197,6 +197,8 @@ class Hillclimber():
         connection = random.choice(self._railnet.get_connections())
 
         connection.travel()
+
+        exit()
         # qual_now = self.quality() - connection.get_distance() - 100
         qual_now = self._railnet.quality() - connection.get_distance() - 100
         connection.remove()
@@ -265,7 +267,7 @@ class Hillclimber():
         # print(index_to_split)
         # print()
 
-        for index in range(index_to_split):
+        for _ in range(index_to_split):
             # print(index)
 
             # remove the connection from this train
@@ -398,6 +400,11 @@ class Reheating(Hillclimber):
         self.best = []
         self.current = []
     
+    def run(self):
+        super().run()
+        self._railnet.reset()
+        self._railnet.restore_routes(self._bestroute)
+
     def keep_change(self, qual_before, qual_now) -> bool:
 
         self.temps.append(self._temp)

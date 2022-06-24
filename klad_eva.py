@@ -82,7 +82,7 @@ if __name__ == '__main__':
 
     rails.reset()
     reheat = Reheating(rails)
-    reheat.run(100000)
+    reheat.run(1000000)
     # print(reheat.best)
     # print(reheat.temps)
     # print(reheat.current)
