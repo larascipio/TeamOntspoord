@@ -191,6 +191,8 @@ class Hillclimber():
         connection = random.choice(self._railnet.get_connections())
 
         connection.travel()
+
+        exit()
         # qual_now = self.quality() - connection.get_distance() - 100
         qual_now = self._railnet.quality() - connection.get_distance() - 100
         connection.remove()

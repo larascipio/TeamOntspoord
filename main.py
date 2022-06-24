@@ -5,6 +5,7 @@ from code.algorithms.bad_algorithm import Make_Bad_Routes
 from code.algorithms.random_algorithm import Make_Random_Routes
 from code.algorithms.simulated_annealing import Hillclimber, Simulated_Annealing
 from code.algorithms.self_choosing import Make_Iterated_Routes
+from code.algorithms.depth_first import Depth_First
 from code.visualisation.plotly_animation import create_animation
 from code.visualisation.plotly_live import Live_Plot
 from code.visualisation.output import output
@@ -25,7 +26,7 @@ if __name__ == '__main__':
         )
     parser.add_argument(
         "algorithm", 
-        choices=['random','bad','hillclimber','annealing', 'forced_annealing'], 
+        choices=['random','bad','hillclimber','annealing', 'forced_annealing', 'depth_first'], 
         help="The algorithm that will be used."
         )
     parser.add_argument(
@@ -57,6 +58,8 @@ if __name__ == '__main__':
         Algorithm = Simulated_Annealing
     elif args.algorithm == 'forced_annealing':
         Algorithm = Make_Iterated_Routes
+    elif args.algorithm == 'depth_first':
+        Algorithm = Depth_First
 
     # ----------------------------- Load in rails -----------------------------
 
