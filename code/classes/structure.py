@@ -128,7 +128,28 @@ class Railnet(): # TODO misschien is het logischer als de load ook in de init wo
         for connection in train.get_connections():
             connection.remove()
 
+<<<<<<< HEAD
         self._trains.remove(train)
+=======
+    # def add_route(self, route):
+    #     """
+    #     Add list of trains to the railnet.
+    #     """
+    #     self._trains = route
+    #     self.follow_track()
+
+    # def run_random_train(self, train):
+    #     """
+    #     Choose a random connection for the train to use.
+    #     Used by random_algorithm.py
+    #     """
+    #     while train.is_running():
+
+    #         connection = train.choose_random_connection()
+    #         if not connection:
+    #             break
+    #         self.move_train(train, connection)
+>>>>>>> c9f9f187e14b20d3d91a39c4a8596961552e79d8
 
     # def remove_train_connections(self, train): # TODO where is this used? kan t niet gwn in de code
     #     """
