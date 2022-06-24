@@ -101,12 +101,12 @@ class Railnet():
         for connection in train.get_connections():
             connection.remove()
 
-    def add_route(self, route):
-        """
-        Add list of trains to the railnet.
-        """
-        self._trains = route
-        self.follow_track()
+    # def add_route(self, route):
+    #     """
+    #     Add list of trains to the railnet.
+    #     """
+    #     self._trains = route
+    #     self.follow_track()
 
     # def run_random_train(self, train):
     #     """

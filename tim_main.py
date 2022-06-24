@@ -70,7 +70,7 @@ if __name__ == '__main__':
     best_quality = 0
 
     # Run the algorithm for the given amount of runs
-    for _ in range(args.runs):
+    for i in range(args.runs):
 
         route = Algorithm(rails)
         route.run()
@@ -82,6 +82,7 @@ if __name__ == '__main__':
 
         qualityroutes.append(route_quality)
         rails.reset()
+        print(i)
     
     if best_quality > 0:
         output(best_quality, best_route, 'output.csv')
@@ -97,5 +98,5 @@ if __name__ == '__main__':
         pass
     else:
         # Simple visualisation
-        rails.add_route(best_route)
+        rails.restore_routes(best_route)
         simple_visualization(rails)

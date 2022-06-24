@@ -43,15 +43,16 @@ class Make_Biased_Routes():
         # Create a random max distance (BIAS: not higher than input max distance)
         # self._random_distance = random.randint(1, self._max_dist)
         for _ in range(self._railnet.get_max_trains()):
-            self.run_one_train()
+            weighted_chance_list = self.precise_starter_locations()
+            self.run_one_train(weighted_chance_list)
         self.change_tracks(250)
         # self.change_worst_train(iterations)
 
-    def run_one_train(self):
+    def run_one_train(self, weighted_chance_list):
         """
         Create and run one train
         """
-        train = self.create_weighted_train()
+        train = self.create_weighted_train(weighted_chance_list)
 
         if not train:
             return
@@ -69,12 +70,12 @@ class Make_Biased_Routes():
             else:
                 train.stop()
     
-    def create_weighted_train(self):
+    def create_weighted_train(self, weighted_chance_list):
         """
         Create a new train at a random start station.
         """
         start = None
-        weighted_chance_list = self.precise_starter_locations()
+        # weighted_chance_list = self.precise_starter_locations()
         # choose random starting point
         while not start:
             start = random.choices(self._possible_stations, weights=weighted_chance_list, k=1)
@@ -98,22 +99,26 @@ class Make_Biased_Routes():
         self._railnet.remove_train(removed_train)
         removed_quality = self._railnet.quality()
 
-        worst_train_dict = {}
+        if removed_quality > start_quality:
+            best_quality = removed_quality
+        else:
+            best_quality = start_quality
+            best_replacement = removed_train
+
+        weighted_chance_list = self.precise_starter_locations()
 
         for _ in range(iterations):
-            self.run_one_train()
+            self.run_one_train(weighted_chance_list)
             new_quality = self._railnet.quality()
             new_train = self._railnet.get_trains()[-1]
             self._railnet.remove_train(new_train)
             
-            if new_quality > start_quality and new_quality > removed_quality:
-                worst_train_dict[new_quality] = new_train
+            if new_quality > best_quality:
+                best_quality = new_quality
+                best_replacement = new_train
 
-        if len(worst_train_dict) > 0:
-            best_replacement = max(worst_train_dict)
-            self._railnet.add_train(worst_train_dict[best_replacement])
-        elif removed_quality < start_quality:
-            self._railnet.add_train(removed_train)
+        if best_quality > removed_quality:
+            self._railnet.add_train(best_replacement)
 
     def change_tracks(self, iterations):
 
