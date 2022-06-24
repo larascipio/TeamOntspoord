@@ -4,7 +4,7 @@ stations.py
 
 class Station():
     def __init__(self, station: str, x_coordinate: float, y_coordinate: float):
-        """Create a station.s"""
+        """Create a station."""
         self._connections = {}
         self._name = station
         self._x = float(y_coordinate)

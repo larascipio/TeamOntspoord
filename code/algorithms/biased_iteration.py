@@ -46,7 +46,7 @@ class Make_Biased_Routes():
         for _ in range(self._railnet.get_max_trains()):
             weighted_chance_list = self.precise_starter_locations()
             self.run_one_train(weighted_chance_list)
-        self.change_tracks(250)
+        self.change_tracks(1000)
         # self.change_worst_train(iterations)
 
     def run_one_train(self, weighted_chance_list):

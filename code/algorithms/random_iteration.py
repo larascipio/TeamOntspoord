@@ -15,7 +15,7 @@ class Make_Iterated_Routes():
         """
         for _ in range(self._railnet.get_max_trains()):
             self._route.run_one_train()
-        self.change_tracks(250)
+        self.change_tracks(1000)
 
     def change_tracks(self, iterations):
         """
@@ -39,7 +39,7 @@ class Make_Iterated_Routes():
 
 
             for _ in range(iterations):
-                
+
                 self._route.run_one_train()
                 new_quality = self._railnet.quality()
                 new_train = self._railnet.get_trains()[-1]
