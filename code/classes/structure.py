@@ -14,7 +14,7 @@ import plotly.express as px
 import csv
 import random
 
-class Railnet():
+class Railnet(): # TODO misschien is het logischer als de load ook in de init wordt aangeroepen
     def __init__(self, num_trains: int, max_distance: int):
         self._stations = {}
         self._connections = []
@@ -24,7 +24,10 @@ class Railnet():
 
         # create the colors for the trains
         # self._colorlist = px.colors.qualitative.Vivid[:-1] + px.colors.qualitative.Dark2[:-1]
-        self._colorset = {'fuchsia', 'red', 'cyan', 'blue', 'darkorange', 'green', 'darkviolet', 'black', 'gold', 'deeppink', 'lime', 'darkred'}
+        self._colorset = {
+            'fuchsia', 'red', 'cyan', 'blue', 'darkorange', 'green', 
+            'darkviolet', 'black', 'gold', 'deeppink', 'lime', 'darkred'
+        }
         # self._color = self._colorlist.copy()
 
     def load(self, file_locations: str, file_connections: str):
@@ -41,7 +44,11 @@ class Railnet():
         with open(file_connections, newline = '') as csvfile:
             reader = csv.DictReader(csvfile)
             for row in reader: 
-                connection = Connection(self._stations[row['station1']], self._stations[row['station2']], float(row['distance']))
+                connection = Connection(
+                    self._stations[row['station1']],
+                    self._stations[row['station2']],
+                    float(row['distance'])
+                )
                 self._connections.append(connection)
                 self._stations[row['station1']].add_connection(connection)
                 self._stations[row['station2']].add_connection(connection)
@@ -181,7 +188,8 @@ class Railnet():
         """
         Calculate the quality of the current routes.
         """
-        qual = (len(self.get_passed_connections())/self.get_total_connections())*10000
+        qual = (len(self.get_passed_connections())
+            /self.get_total_connections())*10000
         
         for train in self._trains:
             qual -= 100
