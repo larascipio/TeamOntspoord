@@ -55,8 +55,6 @@ class Railnet(): # TODO misschien is het logischer als de load ook in de init wo
                 self._connections.append(connection)
                 self._stations[row['station1']].add_connection(connection)
                 self._stations[row['station2']].add_connection(connection)
-                # uid += 1
-                # self._total_connections += 1
 
     def get_stations(self) -> dict:
         return self._stations
@@ -175,46 +173,25 @@ class Railnet(): # TODO misschien is het logischer als de load ook in de init wo
         if failed_station not in self._stations:
             raise Exception('This station does not exist.')
 
-        # Make a list of removed stations for restoration, store the failed station
-        # removed_station = self._stations[failed_station]
+        # Make a list of removed stations for restoration
         removed_station_list = []
-        # removed_station_list.append(removed_station)
 
         # Copy the removed connections, so they can be restored later
         failed_connections = self._stations[failed_station].get_connections().copy()
 
-        # Remove the connections
+        # Remove the connections, save removed stations in the list
         for connection in failed_connections:
 
             removed_stations = self.remove_connection(connection)
             removed_station_list.extend(removed_stations)
 
-            # Remove the destination station if there are no more connections
-            # if len(destination_station.get_connections()) == 0:
-
-            #     removed_station_list.append(self._stations[destination_station.get_name()])
-            #     del self._stations[destination_station.get_name()]
-
-
-        # # Remove the failed station from the dictionary
-        # del self._stations[failed_station]
-
-        # Return the removed connections and stations for possible restoration
+        # Return list of connections and stations for possible restoration
         return failed_connections, removed_station_list
 
-    def remove_random_connection(self):
-        """
-        Removes random connection.
-        Returns connection for possible restoration.
-        """
-        connection = random.choice(self._connections)
-        self.remove_connection(connection)
-
-        return connection
-
-    def remove_connection(self, connection):
+    def remove_connection(self, connection) -> list:
         """
         Removes connection.
+        Removes stations without connections.
         """
         removed_station_list = []
 
@@ -222,8 +199,10 @@ class Railnet(): # TODO misschien is het logischer als de load ook in de init wo
 
             station.remove_connection(connection)
 
+            # If a station has no more connections
             if len(station.get_connections()) == 0:
-
+                
+                # Delete the station and save it for restoration
                 removed_station_list.append(station)
                 del self._stations[station.get_name()]
 
@@ -348,11 +327,11 @@ class Railnet(): # TODO misschien is het logischer als de load ook in de init wo
         """
         Passes all connections and stations of a given train.
         """
-        # pass the stations
+        # Pass the stations
         for station in train.get_stations():
             station.travel()
 
-        # pass the connections
+        # Pass the connections
         for connection in train.get_connections():
             connection.travel()
     
@@ -371,7 +350,7 @@ class Railnet(): # TODO misschien is het logischer als de load ook in de init wo
     def restore_routes(self, route_names: list):
         """
         Restores the given route if the railnet was reset.
-        The give list contains lists with the names of the stations.
+        The given list contains lists with the names of the stations.
         Used by Reheating (simulated_annealing.py).
         """
         if self._trains != []:
@@ -488,3 +467,13 @@ class Railnet(): # TODO misschien is het logischer als de load ook in de init wo
     #     """
     #     self._stations = {}
     #     self._connections = []
+
+        # def remove_random_connection(self):
+    #     """
+    #     Removes random connection.
+    #     Returns connection for possible restoration.
+    #     """
+    #     connection = random.choice(self._connections)
+    #     self.remove_connection(connection)
+
+    #     return connection
