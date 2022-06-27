@@ -130,13 +130,6 @@ class Railnet(): # TODO misschien is het logischer als de load ook in de init wo
 
         self._trains.remove(train)
 
-    # def remove_train_connections(self, train): # TODO where is this used? kan t niet gwn in de code
-    #     """
-    #     Remove the effect train had on connections.
-    #     """
-    #     for connection in train.get_connections():
-    #         connection.remove()
-
     # --------------------------- Quality --------------------------------------
 
     def quality(self) -> float:
@@ -182,15 +175,32 @@ class Railnet(): # TODO misschien is het logischer als de load ook in de init wo
         if failed_station not in self._stations:
             raise Exception('This station does not exist.')
 
-        failed_connections = self._stations[failed_station].get_connections().copy() # TODO < waarom maak je hier een copy?
+        # Make a list of removed stations for restoration, store the failed station
+        # removed_station = self._stations[failed_station]
+        removed_station_list = []
+        # removed_station_list.append(removed_station)
 
+        # Copy the removed connections, so they can be restored later
+        failed_connections = self._stations[failed_station].get_connections().copy()
+
+        # Remove the connections
         for connection in failed_connections:
 
-            self.remove_connection(connection)
+            removed_stations = self.remove_connection(connection)
+            removed_station_list.extend(removed_stations)
 
-        # Remove the failed station from the dictionary
+            # Remove the destination station if there are no more connections
+            # if len(destination_station.get_connections()) == 0:
+
+            #     removed_station_list.append(self._stations[destination_station.get_name()])
+            #     del self._stations[destination_station.get_name()]
+
+
+        # # Remove the failed station from the dictionary
         # del self._stations[failed_station]
-        return failed_connections
+
+        # Return the removed connections and stations for possible restoration
+        return failed_connections, removed_station_list
 
     def remove_random_connection(self):
         """
@@ -206,13 +216,21 @@ class Railnet(): # TODO misschien is het logischer als de load ook in de init wo
         """
         Removes connection.
         """
+        removed_station_list = []
+
         for station in connection.get_stations():
 
             station.remove_connection(connection)
-            #if len(station.get_connections()) == 0:
-                #del self._stations[station]
+
+            if len(station.get_connections()) == 0:
+
+                removed_station_list.append(station)
+                del self._stations[station.get_name()]
 
         self._connections.remove(connection)
+
+        return removed_station_list
+
 
     def restore_connection(self, connection):
         """
@@ -223,6 +241,12 @@ class Railnet(): # TODO misschien is het logischer als de load ook in de init wo
                 station.add_connection(connection)
 
         self._connections.append(connection)
+
+    def restore_station(self, station):
+        """
+        Restore station that was removed
+        """
+        self._stations[station.get_name()] = station
 
     def add_connection(self, start, end):
         """
@@ -275,32 +299,10 @@ class Railnet(): # TODO misschien is het logischer als de load ook in de init wo
 
         # Remove an old connection and add the new connection
         removed_connection = random.choice(start.get_connections())
-        self.remove_connection(removed_connection)
+        removed_station_list = self.remove_connection(removed_connection)
         added_connection = self.add_connection(start, end)
 
-        return removed_connection, added_connection
-
-    def remove_unconnected_stations(self):
-        """
-        Remove stations without connections.
-        """
-        for station in self._stations:
-            if len(self._stations[station].get_connections()) == 0:
-                self.remove_station(station)
-    
-    def remove_station(self, station):
-        """
-        Remove station from the railnet.
-        """
-        del self._stations[station]
-
-    def empty_railnet(self): # TODO where is this used?
-        """
-        Empty the railnet, so new stations 
-        and connections can be loaded in.
-        """
-        self._stations = {}
-        self._connections = []
+        return removed_connection, added_connection, removed_station_list
     
     # --------------------------- Changing routes ------------------------------
 
@@ -464,3 +466,25 @@ class Railnet(): # TODO misschien is het logischer als de load ook in de init wo
     #         self.add_train(train)
 
     #     return iterated_train_list, quality_list
+
+        # def remove_unconnected_stations(self):
+    #     """
+    #     Remove stations without connections.
+    #     """
+    #     for station in self._stations:
+    #         if len(self._stations[station].get_connections()) == 0:
+    #             self.remove_station(station)
+    
+    # def remove_station(self, station):
+    #     """
+    #     Remove station from the railnet.
+    #     """
+    #     del self._stations[station]
+
+    # def empty_railnet(self):
+    #     """
+    #     Empty the railnet, so new stations 
+    #     and connections can be loaded in.
+    #     """
+    #     self._stations = {}
+    #     self._connections = []

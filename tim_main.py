@@ -46,6 +46,7 @@ if __name__ == '__main__':
     # Failed station if desired
     if args.stationfailure:
         rails.station_failure(args.stationfailure)
+        rails.remove_unconnected_stations()
 
     # Change a number of random connections of choice
     for _ in range(args.changeconnection):
