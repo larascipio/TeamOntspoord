@@ -84,6 +84,6 @@ class Depth_First():
 
                 # Calculate quality with different train
                 self._new_quality = self._railnet.quality()
-                exit()
+                
             
     
