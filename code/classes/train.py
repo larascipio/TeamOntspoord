@@ -164,6 +164,14 @@ class Train():
         self.stop()
         return None
 
+    def get_possible_connections(self):
+        possible_connections = []
+        for connection in self._current_station.get_connections():
+            if not connection.passed():
+                possible_connections.append(connection)
+        if possible_connections:
+            return possible_connections
+
     # --------------------------- Changing the train ---------------------------
 
     def move(self, connection):

@@ -17,7 +17,6 @@ class Depth_First():
         self._railnet = railnet
         self._possible_stations = list(self._railnet.get_stations().values())
         self.get_random_routes()
-        # print(self._railnet)
         self._best_route = None
         self._quality = self._railnet.quality()
         self._best_quality = self._quality
@@ -33,60 +32,99 @@ class Depth_First():
         """
         Method that gets the next state from the list of states.
         """
-        return self._railnet._trains.pop()
+        if len(self._copy_railnet_trains) > 0:
+            return self._copy_railnet_trains.pop()
+  
     
     def build_trains(self):
         """
-        Creates all possible child-connections from one train and adds them to the list of states.
+        Creates all possible trajects from a single start station and returns them in a list.
         """
         # all possible trains from a start station
-        possible_trains = []
         
+    
         # get start station
-        start_station = self._current_train._current_station
-
-        # create train 
-        train = self._railnet.create_train(start_station)
+        #start_station = self._current_train._current_station
+        route_current_train = self._current_train.get_stations()
+        start_station = route_current_train[0]
+        path = []
+        list_of_trains = []
+        stack = [start_station]
+        #print(f'Start {stack}')
         
-        while train.choose_first_connection() != None:
-            connection = train.choose_first_connection()
-            train.move(connection)
-            
-        possible_trains.append(train)
-        print(possible_trains)
-        return train 
+        while stack:
 
-    def find_best_train():
-        pass
+            station = stack.pop()
 
-    def check_solution(self):
+            if station not in path:
+                path.append(station)
+            # else:
+            #     continue
+                
+                for connection in station.get_connections():
+                    station = connection._stations[1]
+                    if not station._passed:
+                        stack.append(station)
+                        station._passed = True 
+                
+                #print(f'Stack {stack}')
+                train = copy.deepcopy(stack)
+                train = Train()
+                list_of_trains.append(train)
+                
+        return list_of_trains
+
+    def find_best_train(self):
         """
         Checks and accepts better solutions than the current solution.
         """
-        if self._new_quality >= self._old_quality:
-            self._best_quality = self._new_quality
+        for train in self._trains:
+            print("1")
+            print(self._copy_railnet)
+            print("2")
+            print(self._current_train)
+            changed_train = self._copy_railnet._trains.pop()
+            self._copy_railnet.add_train(train)
+            print(self._copy_railnet)
+            self._new_quality = self._copy_railnet.quality()
+            if self._new_quality >= self._old_quality:
+                self._best_quality = self._new_quality 
+
+    # def check_solution(self, train):
+    #     """
+    #     Checks and accepts better solutions than the current solution.
+    #     """
+    #     if self._new_quality >= self._old_quality:
+    #         self._best_quality = self._new_quality
     
     def run(self):
         """
         Run the algorithm.
         """
-        # Copy the random trains
-        self._stack = copy.deepcopy(list(self._railnet.get_trains()))
+        # Copy the random train network 
+        self._copy_railnet = copy.deepcopy(self._railnet)
+        # Copy the random train
+        self._copy_railnet_trains = copy.deepcopy(list(self._railnet.get_trains()))
+        #self._copy_railnet_trains = list(self._copy_railnet.get_trains())
+       # print(self._copy_railnet)
         self._old_quality = self._quality
         print(f'Old {self._railnet}')
-        
+
         # Go through every route of random and change it with depth first 
-        while len(self._stack) != 0:
+        while self._copy_railnet_trains:
 
             # Remove train from stack to change connections
             self._current_train = self.get_next_train()
             if self._current_train is not None:
                 
                 # Build and find trains with highest quality 
-                train = self.build_trains()
+                self._trains = self.build_trains()
+
+                if self._trains: 
+                    self.find_best_train()
                 
                 # Add train to current route
-                #self._railnet.add_train(train)
+                self._railnet.add_train(train)
                 print(f'New {self._railnet}')
 
                 # Calculate quality with different train
