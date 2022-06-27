@@ -2,7 +2,7 @@
 tim_main.py
 """
 
-from code.algorithms.bad_algorithm import Make_Bad_Routes
+from code.algorithms.bad_algorithm import Make_Greedy_Routes
 from code.algorithms.random_algorithm import Make_Random_Routes
 from code.algorithms.simulated_annealing import Hillclimber, Simulated_Annealing
 from code.algorithms.random_iteration import Make_Iterated_Routes
@@ -55,7 +55,7 @@ if __name__ == '__main__':
     if args.algorithm == 'random':
         Algorithm = Make_Random_Routes
     elif args.algorithm == 'bad':
-        Algorithm = Make_Bad_Routes
+        Algorithm = Make_Greedy_Routes
     elif args.algorithm == 'hillclimber':
         Algorithm = Hillclimber
     elif args.algorithm == 'annealing':

@@ -7,14 +7,14 @@ There will never be more trains than the number provided and the trains will nev
 
 import random
 
-class Make_Bad_Routes():
-    def __init__(self, railnet, num_trains: int, max_distance: int):
+class Make_Greedy_Routes():
+    def __init__(self, railnet):
         """
         Use network of routes to initialize the algorithm.
         """
         self._railnet = railnet
-        self._max_trains = num_trains
-        self._max_dist = max_distance
+        # self._max_trains = num_trains
+        # self._max_dist = max_distance
         self._tot_stations = len(self._railnet.get_stations())
         self._tot_connections = len(self._railnet.get_connections())
         self._trains = []
@@ -34,7 +34,7 @@ class Make_Bad_Routes():
         while len(self._railnet.get_passed_connections()) < self._tot_connections:
             
             # check if there can be another train
-            if len(self._trains) == self._max_trains:
+            if len(self._trains) == self._railnet.get_max_trains():
                 return
                 raise Exception('Too many trains made.')
             
@@ -53,7 +53,7 @@ class Make_Bad_Routes():
                     break
 
                 # check if the train does not exceed the allowed distance
-                if connection.get_distance() + train.get_distance() < self._max_dist:
+                if connection.get_distance() + train.get_distance() < self._railnet.get_max_distance():
                     train.move(connection)
                 else:
                     train.stop()
@@ -94,7 +94,7 @@ class Make_Bad_Routes():
                 raise Exception('Cannot create a new train.')
 
         # create the train
-        return Train(self, start, self._max_dist)
+        return Train(self, start, self._railnet.get_max_distance())
 
 
     def get_trains(self):

@@ -303,7 +303,7 @@ class Hillclimber():
         #         print('remove_train')
         #         print(connection)
         #         print(train)
-        #         raise Exception('it was remove_train')     
+        #         raise Exception('it was remove_train')
 
 class Simulated_Annealing(Hillclimber):
     def __init__(self, railnet, start_temp:int = 20, base:float = 0.999):
