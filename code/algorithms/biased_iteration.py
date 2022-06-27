@@ -18,21 +18,20 @@ class Make_Biased_Routes():
     #         weighted_chance_list.append(weighted_chance)
     #     return weighted_chance_list
 
-    def precise_starter_locations(self): # TODO comments
+    def precise_starter_locations(self):
         """
         Get starter locations with connections that haven't been passed through.
         """
-
         weighted_chance_list = []
         for station in self._railnet.get_stations().values():
             weighted_chance = 0
-            if len(station.get_connections()) > 0:
-                for connection in station.get_connections():
-                    if connection.passed():
-                        weighted_chance += 1
-                if weighted_chance > 0:
-                    # Give preference to stations with few connections
-                    weighted_chance = 1 / weighted_chance
+            # Only use stations that have yet to be passed connections
+            for connection in station.get_connections():
+                if connection.passed():
+                    weighted_chance += 1
+            if weighted_chance > 0:
+                # Give preference to stations with few connections
+                weighted_chance = 1 / weighted_chance
             weighted_chance_list.append(weighted_chance)
         return weighted_chance_list
     
@@ -43,7 +42,7 @@ class Make_Biased_Routes():
         for _ in range(self._railnet.get_max_trains()):
             weighted_chance_list = self.precise_starter_locations()
             self.run_one_train(weighted_chance_list)
-        self.change_tracks(1000)
+        self.change_tracks(200)
         # self.change_worst_train(iterations)
 
     def run_one_train(self, weighted_chance_list):
