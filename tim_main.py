@@ -11,7 +11,7 @@ from code.classes.structure import Railnet
 # from code.visualisation.quality_hist import quality_hist
 from code.visualisation.output import output
 from code.visualisation.simple_visualization import simple_visualization
-# from code.visualisation.plotly_animation import create_animation
+from code.visualisation.plotly_animation import create_animation
 from tim_quality_hist import quality_hist
 import argparse
 
@@ -93,9 +93,8 @@ if __name__ == '__main__':
     choose_plot = input('Do you want a detailed visualisation of the route? (y/n) ')
 
     if choose_plot == "y":
-        # TODO animatie werkt niet
-        # create_animation(rails, rails.get_trains())
-        pass
+        rails.restore_routes(best_route)
+        create_animation(rails)
     else:
         # Simple visualisation
         rails.restore_routes(best_route)

@@ -214,13 +214,6 @@ class Railnet(): # TODO misschien is het logischer als de load ook in de init wo
 
         self._connections.remove(connection)
 
-    def restore_multiple_connections(self, connectionlist: list): # TODO waar wordt dit gebruikt?
-        """
-        Restore multiple connections. TODO waarom niet loopen waar het gebruikt wordt?
-        """
-        for connection in connectionlist:
-            self.restore_connection(connection)
-
     def restore_connection(self, connection):
         """
         Restore connection that was removed.
@@ -286,6 +279,20 @@ class Railnet(): # TODO misschien is het logischer als de load ook in de init wo
         added_connection = self.add_connection(start, end)
 
         return removed_connection, added_connection
+
+    def remove_unconnected_stations(self):
+        """
+        Remove stations without connections.
+        """
+        for station in self._stations:
+            if len(self._stations[station].get_connections()) == 0:
+                self.remove_station(station)
+    
+    def remove_station(self, station):
+        """
+        Remove station from the railnet.
+        """
+        del self._stations[station]
 
     def empty_railnet(self): # TODO where is this used?
         """
