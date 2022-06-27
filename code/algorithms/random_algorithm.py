@@ -24,6 +24,7 @@ class Make_Random_Routes():
         """
         Create a new train at a random start station.
         """
+        # TODO waarom moeten we eerst start=None maken?
         start = None
         # choose random starting point
         while not start:

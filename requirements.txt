@@ -3,3 +3,6 @@ argparse
 random 
 csv
 kaleido #for creating gifs
+matplotlib
+Pillow
+pandas

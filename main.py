@@ -133,7 +133,7 @@ if __name__ == '__main__':
             output(route_quality, rails.get_trains(), './code/output/output.csv')
             create_animation(rails)
 
-    # --------------------------- Create histogram -----------------------------
+    #--------------------------- Create histogram -----------------------------
 
         elif args.make == 'hist':
             qualities = []
