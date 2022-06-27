@@ -18,7 +18,6 @@ class Depth_First():
         self._possible_stations = list(self._railnet.get_stations().values())
         self.get_random_routes()
         # print(self._railnet)
-        self._copy_railnet = [copy.deepcopy(self._railnet)]
         self._best_route = None
         self._quality = self._railnet.quality()
         self._best_quality = self._quality
@@ -36,21 +35,29 @@ class Depth_First():
         """
         return self._railnet._trains.pop()
     
-    def build_train(self):
+    def build_trains(self):
         """
         Creates all possible child-connections from one train and adds them to the list of states.
         """
+        # all possible trains from a start station
+        possible_trains = []
+        
         # get start station
         start_station = self._current_train._current_station
 
         # create train 
         train = self._railnet.create_train(start_station)
-
+        
         while train.choose_first_connection() != None:
             connection = train.choose_first_connection()
             train.move(connection)
-        
+            
+        possible_trains.append(train)
+        print(possible_trains)
         return train 
+
+    def find_best_train():
+        pass
 
     def check_solution(self):
         """
@@ -75,15 +82,15 @@ class Depth_First():
             self._current_train = self.get_next_train()
             if self._current_train is not None:
                 
-                # Create new depth first train
-                train = self.build_train()
-
+                # Build and find trains with highest quality 
+                train = self.build_trains()
+                
                 # Add train to current route
                 #self._railnet.add_train(train)
                 print(f'New {self._railnet}')
 
                 # Calculate quality with different train
                 self._new_quality = self._railnet.quality()
-                exit()
+                
             
     
