@@ -18,11 +18,9 @@ class Make_Biased_Routes():
     #         weighted_chance_list.append(weighted_chance)
     #     return weighted_chance_list
 
-    def precise_starter_locations(self):
+    def precise_starter_locations(self): # TODO comments
         """
         Get starter locations with connections that haven't been passed through.
-        Give preference to stations with few connections, so connections near the edge
-        will be used.
         """
 
         weighted_chance_list = []
@@ -33,6 +31,7 @@ class Make_Biased_Routes():
                     if connection.passed():
                         weighted_chance += 1
                 if weighted_chance > 0:
+                    # Give preference to stations with few connections
                     weighted_chance = 1 / weighted_chance
             weighted_chance_list.append(weighted_chance)
         return weighted_chance_list
@@ -41,12 +40,10 @@ class Make_Biased_Routes():
         """
         Run the algorithm.
         """
-        # Create a random max distance (BIAS: not higher than input max distance)
-        # self._random_distance = random.randint(1, self._max_dist)
         for _ in range(self._railnet.get_max_trains()):
             weighted_chance_list = self.precise_starter_locations()
             self.run_one_train(weighted_chance_list)
-        self.change_tracks(250)
+        self.change_tracks(1000)
         # self.change_worst_train(iterations)
 
     def run_one_train(self, weighted_chance_list):
@@ -58,9 +55,9 @@ class Make_Biased_Routes():
         if not train:
             return
 
-        # keep going until the route is 2 hours
+        # keep going until the route is the max distance
         while train.is_running():
-            # connection = train.choose_connection()
+
             connection = train.choose_next_connection()
 
             if not connection:
@@ -94,6 +91,10 @@ class Make_Biased_Routes():
     #     self.change_one_track(worst_train, iterations)
 
     def change_one_track(self, removed_train, iterations):
+        """
+        Create trainroutes and replace 
+        the current train if preferable.
+        """
 
         start_quality = self._railnet.quality()
 
@@ -122,6 +123,9 @@ class Make_Biased_Routes():
             self._railnet.add_train(best_replacement)
 
     def change_tracks(self, iterations):
+        """
+        Iterate over every single train and possibly replace them.
+        """
 
         # the_very_first_quality = self._railnet.quality()
 
@@ -131,10 +135,3 @@ class Make_Biased_Routes():
             
         # print(f'From {the_very_first_quality} to {self._railnet.quality()}')
         # print(f'{len(self._railnet.get_passed_connections())} connections passed out of {self._railnet.get_total_connections()}')
-
-    # def __repr__(self):
-    #     representation = 'Route:\n'
-    #     for train in self._trains:
-    #         representation += f'{train}' + '\n'
-    #     representation += f'quality = {self.quality()}'
-    #     return representation

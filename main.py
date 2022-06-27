@@ -5,15 +5,16 @@ Programmeertheorie - minor programmeren
 Lara, Tim, Eva
 
 - Can be used to run any of the algorithms created for the RailNL case.
-- Uses command line arguments for choosing the dataset, the algorithm and what should be run. TODO (dit klinkt niet zo lekker)
-
+- Uses command line arguments for choosing the dataset, the algorithm and 
+    how the algorithm should be used.
 """
 
 # ------------------------------- Imports --------------------------------------
 
 from code.algorithms.bad_algorithm import Make_Bad_Routes
 from code.algorithms.random_algorithm import Make_Random_Routes
-from code.algorithms.simulated_annealing import Hillclimber, Simulated_Annealing, Reheating
+from code.algorithms.simulated_annealing import Hillclimber, Simulated_Annealing
+from code.algorithms.simulated_annealing import Reheating
 # from code.algorithms.self_choosing import Make_Iterated_Routes
 from code.algorithms.depth_first import Depth_First
 from code.algorithms.biased_iteration import Make_Biased_Routes
@@ -98,12 +99,11 @@ if __name__ == '__main__':
         route.run()
         route_quality = rails.quality()
 
-        print(route)
         print(route_quality)
         output(route_quality, rails.get_trains(), './code/output/output.csv')
         create_animation(rails)
 
-    # --------------------------- Create histogram -----------------------------
+    #--------------------------- Create histogram -----------------------------
 
     elif args.make == 'hist':
         qualities = []
@@ -124,7 +124,7 @@ if __name__ == '__main__':
     elif args.make == 'best':
         best_qual = 0
         best_route = None
-        plot = Live_Plot(rails)
+        # plot = Live_Plot(rails)
         
         for _ in range(10000):
 
@@ -138,12 +138,13 @@ if __name__ == '__main__':
                 best_qual = rails.quality()
                 best_route = rails.get_trains()
                 print(best_qual)
-                plot.update_fig(best_route)
-                output(best_qual, rails.get_trains(), './code/output/output.csv')
+                output(best_qual,rails.get_trains(),'./code/output/output.csv')
+                create_animation(rails)
 
+        # show the best route again
         print(best_route)
         print(best_qual)
-        output(best_qual, best_route, './code/output/output.csv')
+        output(best_qual,best_route,'./code/output/output.csv')
         rails.reset()
         rails.restore_routes(best_route)
         create_animation(rails)
