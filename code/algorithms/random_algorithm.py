@@ -43,12 +43,12 @@ class Make_Random_Routes():
         for _ in range(self._random_amount):
             self.run_one_train()
 
-    def run_one_train(self, train):
+    def run_one_train(self):
         """
         Run a single train.
         """
         train = self.create_train()
-        
+
         # Keep going until the max time is achieved
         while train.is_running():
 
