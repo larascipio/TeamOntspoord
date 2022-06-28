@@ -1,5 +1,12 @@
 """
-tim_main.py
+rnet_changes_main.py
+
+Programmeertheorie - minor programmeren
+Lara, Tim, Eva
+
+- Can be used to run any of the algorithms created for the RailNL case.
+- Uses command line arguments for choosing the dataset, the algorithm and 
+    amount of runs, failed station and amount of changed connections
 """
 
 from code.algorithms.bad_algorithm import Make_Greedy_Routes
@@ -8,24 +15,54 @@ from code.algorithms.simulated_annealing import Hillclimber, Simulated_Annealing
 from code.algorithms.random_iteration import Make_Iterated_Routes
 from code.algorithms.biased_iteration import Make_Biased_Routes
 from code.classes.structure import Railnet
-# from code.visualisation.quality_hist import quality_hist
 from code.visualisation.output import output
-from code.visualisation.simple_visualization import simple_visualization
 from code.visualisation.plotly_animation import create_animation
 from tim_quality_hist import quality_hist
 import argparse
 
+# ------------------------------- Imports --------------------------------------
 
 if __name__ == '__main__':
 
-    # Use commandline arguments to choose the railroad, algorithm, amount of runs/changed connections and a failed station
+    # Use commandline arguments to choose the railroad and algorithm
     # Amount of runs, changing connections or having a failed station is optional
     parser = argparse.ArgumentParser(description='create routes')
-    parser.add_argument("type", choices=['holland','national'], default='holland', help="Use the holland or national railroads")
-    parser.add_argument("algorithm", choices=['random','bad','hillclimber', 'iteration', 'annealing', 'bias'], default='random', help="Choose algrorithm")
-    parser.add_argument("runs", type=int, nargs="?", default=1, help="Amount of runs")
-    parser.add_argument("changeconnection", type=int, nargs="?", default=0, help="Amount of changed connections")
-    parser.add_argument("stationfailure", nargs="?", help="Give failed station")
+    parser.add_argument(
+        "type", 
+        choices=['holland','national'], 
+        default='holland', 
+        help="Use the holland or national railroads"
+        )
+    parser.add_argument(
+        "algorithm", 
+        choices=[
+            'random',
+            'bad',
+            'hillclimber', 
+            'iteration', 
+            'annealing', 
+            'bias'], 
+            default='random', 
+            help="Choose algrorithm"
+            )
+    parser.add_argument(
+        "runs", 
+        type=int, 
+        nargs="?", 
+        default=1, 
+        help="Amount of runs"
+        )
+    parser.add_argument(
+        "changeconnection", 
+        type=int, nargs="?", 
+        default=0, 
+        help="Amount of changed connections"
+        )
+    parser.add_argument(
+        "stationfailure", 
+        nargs="?", 
+        help="Give failed station"
+        )
     args = parser.parse_args()
 
     if args.type == 'holland':
@@ -39,6 +76,8 @@ if __name__ == '__main__':
         max_trains = 20
         max_time = 180
 
+    # --------------------------- Load in rails --------------------------------
+    
     # Loads the railnet
     rails = Railnet(max_trains, max_time)
     rails.load(file_stations, file_connections)
@@ -46,11 +85,11 @@ if __name__ == '__main__':
     # Failed station if desired
     if args.stationfailure:
         rails.station_failure(args.stationfailure)
-        rails.remove_unconnected_stations()
 
     # Change a number of random connections of choice
     for _ in range(args.changeconnection):
-        rails.change_connection()
+        old_connection, new_connection, removed_station_list = rails.change_connection()
+        print(f'{old_connection.get_stations()} to {new_connection.get_stations()}')
     
     # Choose the algorithm
     if args.algorithm == 'random':
@@ -83,7 +122,9 @@ if __name__ == '__main__':
 
         qualityroutes.append(route_quality)
         rails.reset()
-        print(i)
+        print(f'{i + 1}/{args.runs}', end = "\r")
+
+    print("Finished running")
     
     if best_quality > 0:
         output(best_quality, best_route, 'output.csv')
@@ -91,12 +132,5 @@ if __name__ == '__main__':
     if args.runs > 1:
         quality_hist(qualityroutes)
 
-    choose_plot = input('Do you want a detailed visualisation of the route? (y/n) ')
-
-    if choose_plot == "y":
-        rails.restore_routes(best_route)
-        create_animation(rails)
-    else:
-        # Simple visualisation
-        rails.restore_routes(best_route)
-        simple_visualization(rails)
+    # rails.restore_routes(best_route)
+    # create_animation(rails)

@@ -3,7 +3,7 @@ from statistics import mean
 
 def quality_hist(qualityroutes):
     """
-    Create a hist for the best quality routes 
+    Create a histogram for the routes.
     """
     plt.figure(figsize=(80, 15))
     font = {'weight' : 'bold',
@@ -14,6 +14,6 @@ def quality_hist(qualityroutes):
     plt.xlabel('Quality')
     plt.ylabel('Number of runs')
     plt.title(f'Quality for {len(qualityroutes)} runs - Mean quality: {mean(qualityroutes)}')
-    plt.savefig('./code/lijnvoeringkwaliteit.png')
+    plt.savefig('./code/railnet_quality_histogram.png')
 
 
