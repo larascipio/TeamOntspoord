@@ -10,6 +10,7 @@ class Make_Greedy_Routes():
         """
         Use network of routes to initialize the algorithm.
         """
+        
         self._railnet = railnet
 
         # find the endstations
@@ -54,56 +55,29 @@ class Make_Greedy_Routes():
             if train.get_stations()[-1] in self._end_stations:
                 self._end_stations.remove(train._current_station)
 
-            print(self._railnet.get_trains())
-
     def create_train(self):
         """
         Create a train at a station.
         """
 
         # choose starting point
-        start = None
-
-        # keep going untill a starting point is found
-        while not start:
-            if len(self._end_stations) > 0:
+        if len(self._end_stations) > 0:
 
             # choose one of the endstations
-                start = self._end_stations.pop()
-                
-            else:
-                # choose a random station that has not been travelled
-                for station in self._railnet.get_stations().values():
+            start = self._end_stations.pop()
+            return self._railnet.create_train(start)
+            
+        else:
+            # choose a random station that has not been travelled
+            for station in self._railnet.get_stations().values():
 
-                    # check if all connections are passed
-                    if set(station.get_connections()) - self._railnet.get_passed_connections():
-                        start = station
-                        break
-                
-                # there are no stations left for new trains.
-                return None
+                # check if there is a connection that has not been passed
+                if set(station.get_connections()) - self._railnet.get_passed_connections():
+                    return self._railnet.create_train(station)
+            
+        # there are no stations left for new trains.
+        return None
 
-        # create the train
-        return self._railnet.create_train(start)
-
-    # def all_stations_passed(self) -> set:
-    #     """
-    #     Give a set of all stations passed.
-    #     """
-    #     stations = set()
-    #     for train in self._route.get_trains.values():
-    #         stations.add(train.get_stations())
-    #     return stations
-
-    # def quality(self) -> float:
-    #     """
-    #     Calculate the quality of the current routes.
-    #     """
-    #     qual = (len(self._railnet.get_passed_connections())/self._tot_connections)*10000
-    #     for train in self._trains:
-    #         qual -= 100
-    #         qual -= train.get_distance()
-    #     return qual
 
     def __repr__(self):
         representation = 'Route:\n'

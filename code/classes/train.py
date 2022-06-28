@@ -71,7 +71,6 @@ class Train():
             return random.choice(list(possible_connections))
 
         # no more possible connections
-        print('no more connections')
         self.stop()
         return None
 
