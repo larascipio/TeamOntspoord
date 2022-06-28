@@ -123,19 +123,17 @@ class Train():
         Choose a random connection.
         """
 
-        weights = [self._distance/self._routes.get_max_distance()]
-        counter = 0
-        possible_connections = ["stop"]
-        for connection in self._current_station.get_connections():
-                counter += 1
-                possible_connections.append(connection)
-                weights.append(1)
+        # choose one of the connections or stop
+        possible_connections = [None] + self._current_station.get_connections()
 
-        choice = random.choices(possible_connections, weights, k=1)
-        if choice[0] == "stop":
+        # the chance to stop gets higher if the route is longer
+        weights = [self._distance/self._routes.get_max_distance()] + [1 for _ in range(len(possible_connections)-1)]
+        
+        # choose the next move
+        choice = random.choices(possible_connections, weights)[0]
+        if not choice:
             self.is_running = False
-            return None
-        return choice[0]
+        return choice
 
     def choose_first_connection(self):
         """

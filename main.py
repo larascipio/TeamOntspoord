@@ -19,8 +19,7 @@ from code.algorithms.random_iteration import Make_Iterated_Routes
 from code.algorithms.biased_iteration import Make_Biased_Routes
 from code.algorithms.depth_first import Depth_First
 
-from code.visualisation.plotly_animation import create_animation
-from code.visualisation.plotly_live import Live_Plot
+from code.visualisation.plotly_animation import create_animation, create_boxplot
 from code.visualisation.output import output
 from code.visualisation.quality_hist import quality_hist
 # from code.visualisation.simple_visualization import simple_visualization
@@ -207,36 +206,32 @@ if __name__ == '__main__':
         ]
         names = []
         for a in algorithms:
-            name = a.__name__
-            name.replace('_', ' ')
+            name = str(a.__name__)
+            name = name.replace('_', ' ')
             names.append(name)
         
         if args.basis == 'iterations':
             df = pd.DataFrame(columns=names, index = [i for i in range(args.runs)])
 
             for Algorithm in algorithms:
+                print(Algorithm.__name__.replace('_', ' '))
                 for i in range(args.runs):
                     rails.reset()
                     route = Algorithm(rails)
                     route.run()
                     df.loc[i, Algorithm.__name__.replace('_', ' ')] = rails.quality()
-                print(Algorithm.__name__)
-            
-            print(df)
-            fig = px.box(df, y=names, title=f'Quality for {args.runs} iterations on the {args.type} map')
-            fig.update_xaxes(title='Algorithm')
-            fig.update_yaxes(title='Quality')
-            fig.show()
+                
+            create_boxplot(df, title=f'Quality for {args.runs} iterations on the {args.type} map')
         
         elif args.basis == 'time':
             df = pd.DataFrame(columns=names)
 
             for Algorithm in algorithms:
-                print(Algorithm.__name__)
+                print(Algorithm.__name__.replace('_', ' '))
                 start = time.time()
                 n_runs = 0
 
-                while time.time() - start < 10:
+                while time.time() - start < args.runs:
                     # run the algorithm    
                     rails.reset()
                     route = Algorithm(rails)
@@ -245,7 +240,7 @@ if __name__ == '__main__':
                     n_runs += 1
             
             print(df)
-            fig = px.box(df, y=names, title=f'Quality for {args.runs} minutes on the {args.type} map')
+            fig = px.box(df, y=names, title=f'Quality for {args.runs} seconds on the {args.type} map')
             fig.update_xaxes(title='Algorithm')
             fig.update_yaxes(title='Quality')
             fig.show()
