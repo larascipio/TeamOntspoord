@@ -1,3 +1,14 @@
+"""
+random_algorithm.py
+
+Programmeertheorie - minor programmeren
+Lara, Tim, Eva
+
+- Houses the random algorithm that is used by random iteration,
+    hillclimber, simultaneous annealing and reheating.
+- Uses the Railnet structure.
+"""
+
 import random
 
 class Make_Random_Routes():
@@ -30,14 +41,14 @@ class Make_Random_Routes():
         self._random_amount = random.randint(1, self._railnet.get_max_trains())
 
         for _ in range(self._random_amount):
-            train = self.create_train()
-            self.run_one_train(train)
+            self.run_one_train()
 
     def run_one_train(self, train):
         """
         Run a single train.
         """
-
+        train = self.create_train()
+        
         # Keep going until the max time is achieved
         while train.is_running():
 

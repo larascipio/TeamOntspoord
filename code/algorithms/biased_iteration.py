@@ -1,3 +1,16 @@
+"""
+biased_iteration.py
+
+Programmeertheorie - minor programmeren
+Lara, Tim, Eva
+
+- Make a route then go over every train and
+    try to find a superior replacement.
+- No connection used more than once in the result.
+- Uses the Railnet structure.
+- Uses the random algorithm to create routes.
+"""
+
 import random
 
 class Make_Biased_Routes():
@@ -31,16 +44,16 @@ class Make_Biased_Routes():
         """
         for _ in range(self._railnet.get_max_trains()):
             weighted_chance_list = self.precise_starter_locations()
-            self.run_one_train(weighted_chance_list)
+            train = self.create_weighted_train(weighted_chance_list)
+            self.run_one_train(train)
 
         # No significant improvement beyond 200 iterations
         self.change_tracks(200)
 
-    def run_one_train(self, weighted_chance_list):
+    def run_one_train(self, train):
         """
         Create and run one train
         """
-        train = self.create_weighted_train(weighted_chance_list)
 
         if not train:
             return
@@ -66,7 +79,8 @@ class Make_Biased_Routes():
 
         # Choose random starting point
         while not start:
-            start = random.choices(self._possible_stations, weights=weighted_chance_list, k=1)
+            start = random.choices(list(self._railnet.get_stations().values()),
+                                    weights=weighted_chance_list, k=1)
             start = start[0]
         
         train = self._railnet.create_train(start)
@@ -92,7 +106,8 @@ class Make_Biased_Routes():
         weighted_chance_list = self.precise_starter_locations()
 
         for _ in range(iterations):
-            self.run_one_train(weighted_chance_list)
+            train = self.create_weighted_train(weighted_chance_list)
+            self.run_one_train(train)
             new_quality = self._railnet.quality()
             new_train = self._railnet.get_trains()[-1]
             self._railnet.remove_train(new_train)

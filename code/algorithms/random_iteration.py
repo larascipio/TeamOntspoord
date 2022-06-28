@@ -1,3 +1,15 @@
+"""
+random_iteration.py
+
+Programmeertheorie - minor programmeren
+Lara, Tim, Eva
+
+- Make a random route, then go over every train and
+    try to find a superior replacement.
+- Uses the Railnet structure.
+- Uses the random algorithm to create routes.
+"""
+
 from code.algorithms.random_algorithm import Make_Random_Routes
 
 class Make_Iterated_Routes():

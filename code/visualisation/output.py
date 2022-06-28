@@ -1,3 +1,12 @@
+"""
+output.py
+
+Programmeertheorie - minor programmeren
+Lara, Tim, Eva
+
+- Puts the result into a csv file.
+"""
+
 import csv
 
 def output(quality: float, trains: list, outputfile: str):

@@ -1,3 +1,12 @@
+"""
+quality_hist.py
+
+Programmeertheorie - minor programmeren
+Lara, Tim, Eva
+
+- Creates the histogram for the results.
+"""
+
 import matplotlib.pyplot as plt
 from statistics import mean
 
@@ -6,8 +15,10 @@ def quality_hist(qualityroutes):
     Create a histogram for the routes.
     """
     plt.figure(figsize=(80, 15))
+
     font = {'weight' : 'bold',
             'size'   : 50}
+
     plt.rc('font', **font)
     plt.hist(qualityroutes, range=[0, 10000], color='g', bins=100)
     plt.xlim([0, 10000])

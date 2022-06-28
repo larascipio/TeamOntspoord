@@ -4,7 +4,7 @@ train.py
 Programmeertheorie - minor programmeren
 Lara, Tim, Eva
 
-- Contains the Train class
+- Contains the Train class.
 """
 
 # --------------------------------- Imports ------------------------------------
