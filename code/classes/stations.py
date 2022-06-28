@@ -4,7 +4,7 @@ stations.py
 Programmeertheorie - minor programmeren
 Lara, Tim, Eva
 
-- Houses the classes for the stations and the connections
+- Houses the classes for the stations and the connections.
 """
 
 # ------------------------------- Station --------------------------------------

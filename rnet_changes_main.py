@@ -7,6 +7,8 @@ Lara, Tim, Eva
 - Can be used to run any of the algorithms created for the RailNL case.
 - Uses command line arguments for choosing the dataset, the algorithm and 
     amount of runs, failed station and amount of changed connections
+- Saves best result in a csv file, visualises it as a plotly animation and
+    makes a matplotlib histogram of all the results
 """
 
 from code.algorithms.bad_algorithm import Make_Greedy_Routes
@@ -17,7 +19,7 @@ from code.algorithms.biased_iteration import Make_Biased_Routes
 from code.classes.structure import Railnet
 from code.visualisation.output import output
 from code.visualisation.plotly_animation import create_animation
-from tim_quality_hist import quality_hist
+from code.visualisation.quality_hist import quality_hist
 import argparse
 
 # ------------------------------- Imports --------------------------------------
@@ -37,14 +39,15 @@ if __name__ == '__main__':
         "algorithm", 
         choices=[
             'random',
-            'bad',
+            'greedy',
             'hillclimber', 
             'iteration', 
             'annealing', 
-            'bias'], 
-            default='random', 
-            help="Choose algrorithm"
-            )
+            'bias'
+        ], 
+        default='random', 
+        help="Choose algrorithm"
+        )
     parser.add_argument(
         "runs", 
         type=int, 
@@ -54,7 +57,8 @@ if __name__ == '__main__':
         )
     parser.add_argument(
         "changeconnection", 
-        type=int, nargs="?", 
+        type=int, 
+        nargs="?", 
         default=0, 
         help="Amount of changed connections"
         )
@@ -90,6 +94,8 @@ if __name__ == '__main__':
     for _ in range(args.changeconnection):
         old_connection, new_connection, removed_station_list = rails.change_connection()
         print(f'{old_connection.get_stations()} to {new_connection.get_stations()}')
+
+    # --------------------------- Run algorithm ---------------------------------
     
     # Choose the algorithm
     if args.algorithm == 'random':

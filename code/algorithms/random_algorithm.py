@@ -1,3 +1,14 @@
+"""
+random_algorithm.py
+
+Programmeertheorie - minor programmeren
+Lara, Tim, Eva
+
+- Houses the random algorithm that is used by random iteration,
+    hillclimber, simultaneous annealing and reheating.
+- Uses the Railnet structure.
+"""
+
 import random
 
 class Make_Random_Routes():
