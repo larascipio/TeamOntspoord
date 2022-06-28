@@ -24,6 +24,7 @@ from code.visualisation.plotly_live import Live_Plot
 from code.visualisation.output import output
 from code.visualisation.quality_hist import quality_hist
 # from code.visualisation.simple_visualization import simple_visualization
+import plotly.express as px
 
 from code.classes.structure import Railnet
 
@@ -189,24 +190,27 @@ if __name__ == '__main__':
             Simulated_Annealing,
             Reheating,
             Make_Iterated_Routes,
-            Make_Biased_Routes,
-            Depth_First
+            Make_Biased_Routes
+            # Depth_First
         ]
         
         df = pd.DataFrame(columns=[a.__name__ for a in algorithms], index = [i for i in range(args.runs)])
-        print(df)
 
         for Algorithm in algorithms:
             for i in range(args.runs):
                 rails.reset()
                 route = Algorithm(rails)
                 route.run()
-                df.loc[Algorithm.__name__, i] = rails.quality()
+                df.loc[i, Algorithm.__name__] = rails.quality()
             # run iterations
             # save in dataframe
             print(Algorithm.__name__)
         
-        # print(df)
+        print(df)
+        fig = px.box(df, y=[a.__name__ for a in algorithms], title=f'Quality for {args.runs} iterations on the {args.type} map')
+        fig.update_xaxes(title='Algorithm')
+        fig.update_yaxes(title='Quality')
+        fig.show()
     
     else:
         parser.print_help()
