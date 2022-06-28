@@ -134,5 +134,5 @@ if __name__ == '__main__':
     if args.runs > 1:
         quality_hist(qualityroutes)
 
-    # rails.restore_routes(best_route)
-    # create_animation(rails)
+    rails.add_route(best_route)
+    create_animation(rails)
