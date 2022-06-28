@@ -24,7 +24,6 @@ def create_animation(railnet, save_as_png=False, num=0):
 
     # create the colours for the trains
     route = railnet.get_trains()
-    print(route)
 
     # ----------------------------- Create the start of the animation ---------
 
@@ -126,24 +125,27 @@ def create_animation(railnet, save_as_png=False, num=0):
         x_routes = []
         y_routes = []
 
-        for station in train.get_stations():
-            station_x, station_y = station.get_position()
-            # if (station_x, station_y) not in b:
-            #     station_x -= 0.001
-            #     station_y -= 0.001
-            x_routes.append(station_x)
-            y_routes.append(station_y)
+        # for station in train.get_stations():
+        #     station_x, station_y = station.get_position()
+        #     # if (station_x, station_y) not in b:
+        #     #     station_x -= 0.001
+        #     #     station_y -= 0.001
+        #     x_routes.append(station_x)
+        #     y_routes.append(station_y)
 
-        # last_station = train.get_stations()[0]
-        # for connection in train.get_connections():
-        #     times_passed = connection.get_times_passed()
-        #     last_x, last_y = last_station.get_position()
-        #     if times_passed > 1:
-        #         # move the connection
-        #         pass
-        #     x_routes.append(last_x)
-        #     y_routes.append(last_y)
-        #     last_station = connection.get_destination(last_station)
+        last_station = train.get_stations()[0]
+        for connection in train.get_connections():
+            times_passed = connection.get_times_passed()
+            last_x, last_y = last_station.get_position()
+            if times_passed > 1:
+                # move the connection
+                pass
+            x_routes.append(last_x)
+            y_routes.append(last_y)
+            last_station = connection.get_destination(last_station)
+        last_x, last_y = last_station.get_position()
+        x_routes.append(last_x)
+        y_routes.append(last_y)
 
         data += [go.Scattermapbox(
             lon=x_routes,
