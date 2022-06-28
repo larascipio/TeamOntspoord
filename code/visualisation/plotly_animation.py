@@ -46,7 +46,8 @@ def create_animation(railnet, save_as_png=False, num=0):
     else:
         data = []
 
-    # ----------------------------- Create the connections --------------------
+    # ----------------------------- Create the connections ---------------------
+
     distances = []
     for connection in connectionlist:
         x = []
@@ -65,7 +66,8 @@ def create_animation(railnet, save_as_png=False, num=0):
 
         distances.append(connection._distance)
 
-    # ----------------------------- Create the stations -----------------------
+    # ----------------------------- Create the stations ------------------------
+
     x_stations = []
     y_stations = []
     name = []
@@ -82,7 +84,7 @@ def create_animation(railnet, save_as_png=False, num=0):
         hovertext=name, 
         hoverinfo='text'))
 
-    # ----------------------------- Create moving trains ----------------------
+    # ----------------------------- Create moving trains -----------------------
 
     if moving:
 
@@ -119,19 +121,9 @@ def create_animation(railnet, save_as_png=False, num=0):
     # ----------------------------- Create the routes -------------------------
 
     i = 0
-    # b = set()
     for train in route:
         x_routes = []
         y_routes = []
-        # a = set(train.get_connections())
-        # passed_connections = a - b
-        # print(passed_connections)
-        # for connection in passed_connections:
-        #     for station in connection._stations:
-        #         station_x, station_y = station.get_position()
-        #         b.add((station_x, station_y))
-        #         pass
-
 
         # for station in train.get_stations():
         #     station_x, station_y = station.get_position()
@@ -148,11 +140,12 @@ def create_animation(railnet, save_as_png=False, num=0):
             if times_passed > 1:
                 # move the connection
                 pass
-            
-            
             x_routes.append(last_x)
             y_routes.append(last_y)
             last_station = connection.get_destination(last_station)
+        last_x, last_y = last_station.get_position()
+        x_routes.append(last_x)
+        y_routes.append(last_y)
 
         data += [go.Scattermapbox(
             lon=x_routes,

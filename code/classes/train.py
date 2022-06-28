@@ -4,7 +4,7 @@ train.py
 Programmeertheorie - minor programmeren
 Lara, Tim, Eva
 
-- Contains the Train class
+- Contains the Train class.
 """
 
 # --------------------------------- Imports ------------------------------------
@@ -61,6 +61,7 @@ class Train():
     def choose_next_connection(self):
         """
         Choose a random connection that has not been passed yet.
+        Used by the greedy algorithm.
         """
         possible_connections = []
         for connection in self._current_station.get_connections():

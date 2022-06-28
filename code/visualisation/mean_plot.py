@@ -1,3 +1,12 @@
+"""
+mean_plot.py
+
+Programmeertheorie - minor programmeren
+Lara, Tim, Eva
+
+- Make a boxplot of the mean of the quality.
+"""
+
 import plotly.graph_objects as go
 import plotly.express as px
 from plotly.subplots import make_subplots
