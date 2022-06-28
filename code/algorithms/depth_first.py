@@ -1,8 +1,4 @@
-import random
 from code.algorithms.random_algorithm import Make_Random_Routes
-from code.classes.structure import Railnet
-from code.classes.train import Train
-import random
 import copy 
 
 class Depth_First():
@@ -15,7 +11,6 @@ class Depth_First():
         Use network of routes to initialize the algorithm.
         """
         self._railnet = railnet
-        #self._possible_stations = list(self._railnet.get_stations().values())
         self.get_random_routes()
         self._quality = self._railnet.quality()
         self._best_quality = self._quality
@@ -34,16 +29,14 @@ class Depth_First():
         if len(self._copy_railnet_trains) > 0:
             return self._copy_railnet_trains.pop()
   
-    
     def build_trains(self):
         """
         Creates all possible trajects from a single start station and returns them in a list.
         """
-        # get start station
-        #start_station = self._current_train._current_station
+
         route_current_train = self._current_train.get_stations()
         start_station = route_current_train[0]
-        path = []
+        # path = []
         list_of_trains = []
         stack = [start_station]
         print(f'Start {stack}')
@@ -80,7 +73,7 @@ class Depth_First():
         for train in self._trains:
             # Add new train to the railnet 
             new_train = self._copy_railnet.restore_train(train)
-            
+            print(self._copy_railnet)
             # Replace current train with better quality train
             if self.compare_quality():
                 self._best_train = new_train
@@ -101,10 +94,10 @@ class Depth_First():
         """
         Run the algorithm.
         """
-        # Keep initial quality of the railnet
+        # Keep initial quality of the train network
         self._old_quality = self._quality
 
-        # Copy the random train network to calculate net qualities
+        # Copy train network to delete and change trains
         self._copy_railnet = copy.deepcopy(self._railnet)
         print(f'Old {self._copy_railnet}')
 
@@ -117,24 +110,19 @@ class Depth_First():
             # Take a train apart to search depth first 
             self._current_train = self.get_next_train()
 
-            # Delete the train from copy railnet
+            # Delete the train from train network 
             self._copy_railnet.remove_train(self._current_train)
-
+  
             # Return all possible trains from same start station 
             self._trains = self.build_trains()
             print(f'TRAINS {self._trains}')
 
-            # Find and replace by best train 
-            # if self._trains: 
+            # Find and replace by best train  
             self.find_and_replace_best_train()
             
+            # Add best train to railnet 
             self._copy_railnet.add_train(self._best_train)
 
             print(f'New {self._copy_railnet}')
-
-
-                
-                
-
-
-
+            print(self._best_quality)
+            exit()
