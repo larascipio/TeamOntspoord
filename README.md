@@ -13,7 +13,11 @@ Des te hoger de kwaliteit, des te beter de lijnvoering. Het doel van dit project
 
 # Gebruikshandleiding
 
-UITLEG COMMANDLINE MAIN.PY
+Het eerste wat aangegeven moet worden bij het runnen van main.py is welk spoornetwerk gebruikt gaat worden. In de data-map staan vier csv bestanden, waarop respectievelijk de stations en connections voor respectievelijk Holland en heel Nederland staan. In de commandline kan de gebruiker kiezen tussen 'holland' en 'national' om te kiezen tussen deze twee spoornetwerken. 
+
+Vervolgens kan de gebruiker kiezen voor welk algoritme gebruikt gaat worden om de lijnvoering te maken. Er kan gekozen worden uit 'random','random_iteration','biased_iteration','greedy','depth_first', 'hillclimber','annealing' en 'reheating'. Deze algoritmes worden onder het volgende kopje in volgorde uitgelegd. 
+
+UITLEG COMMANDLINE MAIN.PY EN VISUALISATIE
 
 ## De algoritmes
 
@@ -34,3 +38,7 @@ Het hillclimber algoritme (simulated_annealing.py) maakt steeds kleine stapjes o
 De simulated annealing en reheating algoritmes zijn extensies van het hillclimber algoritme en staan in hetzelfde bestand (simulated_annealing.py). Een groot probleem met een hillclimber algoritme is dat het makkelijk vast komt te zitten in lokale maxima. Dit zijn in dit geval zijn dat kwaliteitsscores die niet met één stap van het hillclimber algoritme verbeterd kunnen worden - ook al is de lijnvoering dan niet het meest efficiënt. Met simulated annealing worden stappen van het hillclimber algoritme die de kwaliteit verslechteren tot op zekere hoogte toegelaten. Hoe hoog deze zekere hoogte is hangt af van de temperatuur.
 
 TODO leg reheating en simulated annealing uit
+
+## Experimenten
+
+Als in de commandline van main.py 'experiment' wordt aangeroepen, kunnen experimenten met alle algoritmes worden uitgevoerd. Hierbij wordt elk algoritme gerund en wordt een boxplot van de resultaten gemaakt. Hiermee is goed de verschillen tussen de algoritmes af te zien - zowel het gemiddelde van het aantal runs (dat de gebruiker zelf kan aangeven in de commandline) als de standaarddeviatie staan aangegeven. 
