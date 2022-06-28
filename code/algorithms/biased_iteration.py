@@ -7,16 +7,6 @@ class Make_Biased_Routes():
         """
         self._railnet = railnet
         self._possible_stations = list(self._railnet.get_stations().values())
-        
-
-    # def starter_locations(self):
-    #     weighted_chance_list = []
-    #     for station in self._railnet.get_stations():
-    #         weighted_chance = len(station.get_connections())
-    #         if weighted_chance > 0:
-    #             weighted_chance = 1 / weighted_chance
-    #         weighted_chance_list.append(weighted_chance)
-    #     return weighted_chance_list
 
     def precise_starter_locations(self):
         """
@@ -42,8 +32,9 @@ class Make_Biased_Routes():
         for _ in range(self._railnet.get_max_trains()):
             weighted_chance_list = self.precise_starter_locations()
             self.run_one_train(weighted_chance_list)
+
+        # No significant improvement beyond 200 iterations
         self.change_tracks(200)
-        # self.change_worst_train(iterations)
 
     def run_one_train(self, weighted_chance_list):
         """
@@ -72,22 +63,14 @@ class Make_Biased_Routes():
         Create a new train at a random start station.
         """
         start = None
-        # weighted_chance_list = self.precise_starter_locations()
-        # choose random starting point
+
+        # Choose random starting point
         while not start:
             start = random.choices(self._possible_stations, weights=weighted_chance_list, k=1)
             start = start[0]
         
         train = self._railnet.create_train(start)
         return train
-
-    # def change_worst_train(self, iterations):
-        
-    #     iterated_train_list, quality_list = self._railnet.check_trains_quality()
-    #     worst_train_index = quality_list.index(max(quality_list))
-    #     worst_train = iterated_train_list[worst_train_index]
-
-    #     self.change_one_track(worst_train, iterations)
 
     def change_one_track(self, removed_train, iterations):
         """
@@ -126,11 +109,6 @@ class Make_Biased_Routes():
         Iterate over every single train and possibly replace them.
         """
 
-        # the_very_first_quality = self._railnet.quality()
-
         for _ in range(self._railnet.get_max_trains()):
             removed_train = self._railnet.get_trains()[0]
             self.change_one_track(removed_train, iterations)
-            
-        # print(f'From {the_very_first_quality} to {self._railnet.quality()}')
-        # print(f'{len(self._railnet.get_passed_connections())} connections passed out of {self._railnet.get_total_connections()}')
