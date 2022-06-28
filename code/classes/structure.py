@@ -383,7 +383,10 @@ class Railnet(): # TODO misschien is het logischer als de load ook in de init wo
         while train_stations:
             station = new_train.get_stations()[-1]
             connection = station.get_connection_by_station(train_stations.pop(0))
-            new_train.move(connection)
+            if connection:
+                new_train.move(connection)
+                
+        return new_train
 
     # --------------------------- Archived methods -----------------------------
 

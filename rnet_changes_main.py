@@ -6,9 +6,9 @@ Lara, Tim, Eva
 
 - Can be used to run any of the algorithms created for the RailNL case.
 - Uses command line arguments for choosing the dataset, the algorithm and 
-    amount of runs, failed station and amount of changed connections
+    amount of runs, failed station and amount of changed connections.
 - Saves best result in a csv file, visualises it as a plotly animation and
-    makes a matplotlib histogram of all the results
+    makes a matplotlib histogram of all the results.
 """
 
 from code.algorithms.bad_algorithm import Make_Greedy_Routes
