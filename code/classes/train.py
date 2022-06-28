@@ -61,6 +61,7 @@ class Train():
     def choose_next_connection(self):
         """
         Choose a random connection that has not been passed yet.
+        Used by the greedy algorithm.
         """
         possible_connections = []
         for connection in self._current_station.get_connections():
@@ -70,6 +71,7 @@ class Train():
             return random.choice(list(possible_connections))
 
         # no more possible connections
+        print('no more connections')
         self.stop()
         return None
 
