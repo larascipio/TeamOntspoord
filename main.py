@@ -30,6 +30,7 @@ from code.classes.structure import Railnet
 
 import pandas as pd
 import argparse
+import time
 
 if __name__ == '__main__':
 
@@ -42,13 +43,15 @@ if __name__ == '__main__':
         choices=['holland','national'],
         help="Choose between the dataset for hollands or national railways."
         )
+
+    # create subparsers
     subparsers = parser.add_subparsers(dest='subparser_name')
 
-    subparser_algorithm = subparsers.add_parser(
+    subparsers_algorithm = subparsers.add_parser(
         'algorithm',
         help='Run a specific algorithm.'
     )
-    subparser_algorithm.add_argument(
+    subparsers_algorithm.add_argument(
         "algorithm", 
         choices=[
             'random',
@@ -63,7 +66,7 @@ if __name__ == '__main__':
         default='random',
         help="Choose what algorithm you would like to run."
         )
-    subparser_algorithm.add_argument(
+    subparsers_algorithm.add_argument(
         "make",
         choices=['once', 'hist', 'best'],
         help="Choose what you would like to see from the chosen algorithm."
@@ -74,10 +77,15 @@ if __name__ == '__main__':
         help='Perform an experiment on all agorithms.'
     )
     subparsers_experiment.add_argument(
+        'basis',
+        choices=['iterations', 'time'],
+        help='Choose on basis of what you would like to run the experiment.'
+    )
+    subparsers_experiment.add_argument(
         'runs', 
         default=1, 
         type=int,
-        help='Provide the number of runs to perform for each algorithm.'
+        help='Provide the number of runs or the number of minutes to perform for each algorithm.'
     )
 
     args = parser.parse_args()
@@ -134,7 +142,7 @@ if __name__ == '__main__':
             output(route_quality, rails.get_trains(), './code/output/output.csv')
             create_animation(rails)
 
-    #--------------------------- Create histogram -----------------------------
+    #--------------------------- Create histogram ------------------------------
 
         elif args.make == 'hist':
             qualities = []
@@ -169,7 +177,11 @@ if __name__ == '__main__':
                     best_qual = rails.quality()
                     best_route = rails.get_trains()
                     print(best_qual)
-                    output(best_qual,rails.get_trains(),'./code/output/output.csv')
+                    output(
+                        best_qual,
+                        rails.get_trains(),
+                        './code/output/output.csv'
+                    )
                     create_animation(rails)
 
             # # show the best route again
@@ -193,24 +205,50 @@ if __name__ == '__main__':
             Make_Biased_Routes
             # Depth_First
         ]
+        names = []
+        for a in algorithms:
+            name = a.__name__
+            name.replace('_', ' ')
+            names.append(name)
         
-        df = pd.DataFrame(columns=[a.__name__ for a in algorithms], index = [i for i in range(args.runs)])
+        if args.basis == 'iterations':
+            df = pd.DataFrame(columns=names, index = [i for i in range(args.runs)])
 
-        for Algorithm in algorithms:
-            for i in range(args.runs):
-                rails.reset()
-                route = Algorithm(rails)
-                route.run()
-                df.loc[i, Algorithm.__name__] = rails.quality()
-            # run iterations
-            # save in dataframe
-            print(Algorithm.__name__)
+            for Algorithm in algorithms:
+                for i in range(args.runs):
+                    rails.reset()
+                    route = Algorithm(rails)
+                    route.run()
+                    df.loc[i, Algorithm.__name__.replace('_', ' ')] = rails.quality()
+                print(Algorithm.__name__)
+            
+            print(df)
+            fig = px.box(df, y=names, title=f'Quality for {args.runs} iterations on the {args.type} map')
+            fig.update_xaxes(title='Algorithm')
+            fig.update_yaxes(title='Quality')
+            fig.show()
         
-        print(df)
-        fig = px.box(df, y=[a.__name__ for a in algorithms], title=f'Quality for {args.runs} iterations on the {args.type} map')
-        fig.update_xaxes(title='Algorithm')
-        fig.update_yaxes(title='Quality')
-        fig.show()
+        elif args.basis == 'time':
+            df = pd.DataFrame(columns=names)
+
+            for Algorithm in algorithms:
+                print(Algorithm.__name__)
+                start = time.time()
+                n_runs = 0
+
+                while time.time() - start < 10:
+                    # run the algorithm    
+                    rails.reset()
+                    route = Algorithm(rails)
+                    route.run()
+                    df.loc[n_runs, Algorithm.__name__.replace('_', ' ')] = rails.quality()
+                    n_runs += 1
+            
+            print(df)
+            fig = px.box(df, y=names, title=f'Quality for {args.runs} minutes on the {args.type} map')
+            fig.update_xaxes(title='Algorithm')
+            fig.update_yaxes(title='Quality')
+            fig.show()
     
     else:
         parser.print_help()

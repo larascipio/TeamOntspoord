@@ -48,11 +48,10 @@ def create_animation(railnet, save_as_png=False, num=0):
 
     # ----------------------------- Create the connections ---------------------
 
-    distances = []
     for connection in connectionlist:
         x = []
         y = []
-        for station in connection._stations:
+        for station in connection.get_stations():
             x.append(station._x)
             y.append(station._y)
         # data.append(go.Scatter(x=x,y=y, marker=dict(color='blue', size=1), hoverinfo='skip'))
@@ -64,7 +63,15 @@ def create_animation(railnet, save_as_png=False, num=0):
             hoverinfo='skip'
         ))
 
-        distances.append(connection._distance)
+        if connection.get_times_passed() > 1:
+            data.append(go.Scattermapbox(
+                lon=[(x[0]+x[1])/2],
+                lat=[(y[0]+y[1])/2],
+                mode='text',
+                hovertext=connection.get_times_passed(),
+                hoverinfo='text',
+                textfont=dict(size=16, color='black')
+            ))
 
     # ----------------------------- Create the stations ------------------------
 
@@ -125,33 +132,43 @@ def create_animation(railnet, save_as_png=False, num=0):
         x_routes = []
         y_routes = []
 
-        # for station in train.get_stations():
-        #     station_x, station_y = station.get_position()
-        #     # if (station_x, station_y) not in b:
-        #     #     station_x -= 0.001
-        #     #     station_y -= 0.001
-        #     x_routes.append(station_x)
-        #     y_routes.append(station_y)
+        for station in train.get_stations():
+            station_x, station_y = station.get_position()
+            x_routes.append(station_x)
+            y_routes.append(station_y)
 
-        last_station = train.get_stations()[0]
-        for connection in train.get_connections():
-            times_passed = connection.get_times_passed()
-            last_x, last_y = last_station.get_position()
-            if times_passed > 1:
-                # move the connection
-                pass
-            x_routes.append(last_x)
-            y_routes.append(last_y)
-            last_station = connection.get_destination(last_station)
-        last_x, last_y = last_station.get_position()
-        x_routes.append(last_x)
-        y_routes.append(last_y)
+        # last_station = train.get_stations()[0]
+        # last_x, last_y = last_station.get_position()
+        # for connection in train.get_connections():
+        #     # create every connection
+        #     new_station = connection.get_destination(last_station)
+        #     new_x, new_y = new_station.get_position()
+
+        #     # times_passed = connection.get_times_passed()
+        #     # if times_passed > 1:
+        #     #     # remove the connection
+        #     #     connection.remove()
+        #     #     helling = (last_y-new_y)/(last_x-new_x)
+        #     #     print(helling)
+        #     #     change = 0.005
+        #     #     last_y += -1*change
+        #     #     new_y += -1*change
+        #     #     last_x += change*helling
+        #     #     new_x += change*helling
+                
+        #     x_routes.append(last_x)
+        #     y_routes.append(last_y)
+        #     last_station = new_station
+        #     last_x, last_y = (new_x, new_y)
+        # last_x, last_y = last_station.get_position()
+        # x_routes.append(last_x)
+        # y_routes.append(last_y)
 
         data += [go.Scattermapbox(
             lon=x_routes,
             lat=y_routes,
-            mode = 'markers+lines',
-            marker=dict(color=train.get_color(), opacity=0.5),
+            mode = 'lines',
+            line=dict(color=train.get_color(), width=2),
             # width=i,
             hoverinfo='skip'
             

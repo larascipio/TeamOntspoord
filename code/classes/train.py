@@ -74,18 +74,6 @@ class Train():
         self.stop()
         return None
 
-        # possible_connections = []
-        # weights = []
-        # for connection in self._current_station.get_connections():
-        #     if connection not in self._routes.all_connections_passed() and self._distance + connection.get_distance() <= self._max_dist:
-                
-        #         # this connections is possible
-        #         possible_connections.append(connection)
-        #         if connection.get_destination(self._current_station) in self._routes.all_connections_passed():
-        #             weights.append(1)
-        #         else:
-        #             weights.append(2)
-
     def choose_shortest_connection(self):
         """
         Choose the shortest connection that has not been passed yet.
@@ -179,7 +167,6 @@ class Train():
         """
         Move to a next station from the front of the train.
         """
-        # print(self._current_station)
 
         # increase the distance of the route
         self._distance += connection.get_distance()
@@ -188,42 +175,68 @@ class Train():
         next_station = connection.get_destination(self._stations_traveled[-1])
         self._current_station = next_station
 
-        # add the station and connection to the route
+        # add the station to the route
         self._station_names.append(next_station.get_name())
         self._stations_traveled.append(next_station)
+
+        # add the connection to the route
         self._connections_traveled.append(connection)
         connection.travel()
-        # print(self.get_connections())
-        # print(self._distance)
-        # print()
 
     def remove_last_connection(self):
+        """
+        Move a station back and remove the last station from the route.
+        """
+
+        # remove the last connection
         last_connection = self._connections_traveled.pop()
-        self._distance -= last_connection.get_distance()
         last_connection.remove()
 
+        # remove the connections distance from the route
+        self._distance -= last_connection.get_distance()
+        
+        # remove the station from the route
         self._stations_traveled.pop()
         self._current_station = self._stations_traveled[-1]
         self._station_names.pop()
+
+        # return the removed connection
+        return last_connection
 
     def movestart(self, connection):
         """
         Move to a next station from the end of the train.
         """
+
+        # add the distance of this connection
         self._distance += connection.get_distance()
 
+        # find the next station
         new_station = connection.get_destination(self._stations_traveled[0])
 
+        # add the station to the route
         self._station_names.insert(0, new_station.get_name())
         self._stations_traveled.insert(0, new_station)
+
+        # add the connection to the route
         self._connections_traveled.insert(0, connection)
         connection.travel()
     
     def remove_first_connection(self):
+        """
+        Remove the first station from the route.
+        """
+
+        # remove the first connection
         first_connection = self._connections_traveled.pop(0)
-        self._distance -= first_connection.get_distance()
         first_connection.remove()
+
+        # remove this connections distance from the route
+        self._distance -= first_connection.get_distance()
         
+        # remove the station from the route
         self._stations_traveled.pop(0)
         self._station_names.pop(0)
+
+        # return the removed connection
         return first_connection
