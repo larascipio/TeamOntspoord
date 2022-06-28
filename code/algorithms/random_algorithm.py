@@ -41,14 +41,14 @@ class Make_Random_Routes():
         self._random_amount = random.randint(1, self._railnet.get_max_trains())
 
         for _ in range(self._random_amount):
-            train = self.create_train()
-            self.run_one_train(train)
+            self.run_one_train()
 
     def run_one_train(self, train):
         """
         Run a single train.
         """
-
+        train = self.create_train()
+        
         # Keep going until the max time is achieved
         while train.is_running():
 
