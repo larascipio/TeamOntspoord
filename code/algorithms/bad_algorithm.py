@@ -5,6 +5,7 @@ This algorithm creates routes for trains in which all connections of the provide
 There will never be more trains than the number provided and the trains will never exceed the distance provided.
 """
 
+
 class Make_Greedy_Routes():
     def __init__(self, railnet):
         """
@@ -77,7 +78,6 @@ class Make_Greedy_Routes():
 
         # there are no stations left for new trains.
         return None
-
 
     def __repr__(self):
         representation = 'Route:\n'

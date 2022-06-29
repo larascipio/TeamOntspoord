@@ -18,7 +18,8 @@ import random
 
 # ------------------------------- Railnet --------------------------------------
 
-class Railnet(): # TODO misschien is het logischer als de load ook in de init wordt aangeroepen
+
+class Railnet():  # TODO misschien is het logischer als de load ook in de init wordt aangeroepen
     def __init__(self, num_trains: int, max_distance: int):
         """Create a railnet with files given."""
         self._stations = {}
@@ -29,7 +30,7 @@ class Railnet(): # TODO misschien is het logischer als de load ook in de init wo
 
         # create the colors for the trains
         self._colorset = {
-            'fuchsia', 'red', 'cyan', 'blue', 'darkorange', 'green', 
+            'fuchsia', 'red', 'cyan', 'blue', 'darkorange', 'green',
             'darkviolet', 'black', 'gold', 'deeppink', 'lime', 'darkred'
         }
 
@@ -38,15 +39,15 @@ class Railnet(): # TODO misschien is het logischer als de load ook in de init wo
         Load the stations and its connections from the provided files.
         """
 
-        with open(file_locations, newline = '') as csvfile:
+        with open(file_locations, newline='') as csvfile:
             reader = csv.DictReader(csvfile)
-            for row in reader: 
+            for row in reader:
                 new_station = Station(row['station'], row['x'], row['y'])
                 self._stations[row['station']] = new_station
 
-        with open(file_connections, newline = '') as csvfile:
+        with open(file_connections, newline='') as csvfile:
             reader = csv.DictReader(csvfile)
-            for row in reader: 
+            for row in reader:
                 connection = Connection(
                     self._stations[row['station1']],
                     self._stations[row['station2']],
@@ -64,7 +65,7 @@ class Railnet(): # TODO misschien is het logischer als de load ook in de init wo
 
     def get_trains(self) -> list:
         return self._trains
-    
+
     def get_total_connections(self) -> int:
         return len(self._connections)
 
@@ -109,7 +110,7 @@ class Railnet(): # TODO misschien is het logischer als de load ook in de init wo
             color = random.sample(available_colors, 1)[0]
         else:
             color = random.sample(self._colorset, 1)[0]
-        
+
         train = Train(self, start, color)
 
         self._trains.append(train)
@@ -120,7 +121,7 @@ class Railnet(): # TODO misschien is het logischer als de load ook in de init wo
         """
         Remove the given train from the railnet.
         """
-        if not train in self._trains:
+        if train not in self._trains:
             raise Exception('This train does not exist.')
 
         for connection in train.get_connections():
@@ -136,20 +137,20 @@ class Railnet(): # TODO misschien is het logischer als de load ook in de init wo
         """
         # calculate points for the ratio of connections passed
         qual = (len(self.get_passed_connections())
-            /self.get_total_connections())*10000
-        
+                / self.get_total_connections())*10000
+
         # remove 100 points and the distance traveled per train
         for train in self._trains:
             qual -= 100
             qual -= train.get_distance()
-        
+
         return qual
 
     def get_max_quality(self) -> float:
         """
         Get the theoretical maximum quality for the railroad.
         """
-        
+
         # calculate the total distance of all connections
         total_distance = 0
         for connection in self.get_connections():
@@ -173,19 +174,19 @@ class Railnet(): # TODO misschien is het logischer als de load ook in de init wo
         if failed_station not in self._stations:
             raise Exception('This station does not exist.')
 
-        # Make a list of removed stations for restoration
+        # make a list of removed stations for restoration
         removed_station_list = []
 
-        # Copy the removed connections, so they can be restored later
+        # copy the removed connections, so they can be restored later
         failed_connections = self._stations[failed_station].get_connections().copy()
 
-        # Remove the connections, save removed stations in the list
+        # remove the connections, save removed stations in the list
         for connection in failed_connections:
 
             removed_stations = self.remove_connection(connection)
             removed_station_list.extend(removed_stations)
 
-        # Return list of connections and stations for possible restoration
+        # return list of connections and stations for possible restoration
         return failed_connections, removed_station_list
 
     def remove_connection(self, connection) -> list:
@@ -199,17 +200,16 @@ class Railnet(): # TODO misschien is het logischer als de load ook in de init wo
 
             station.remove_connection(connection)
 
-            # If a station has no more connections
+            # if a station has no more connections
             if len(station.get_connections()) == 0:
-                
-                # Delete the station and save it for restoration
+
+                # delete the station and save it for restoration
                 removed_station_list.append(station)
                 del self._stations[station.get_name()]
 
         self._connections.remove(connection)
 
         return removed_station_list
-
 
     def restore_connection(self, connection):
         """
@@ -282,7 +282,7 @@ class Railnet(): # TODO misschien is het logischer als de load ook in de init wo
         added_connection = self.add_connection(start, end)
 
         return removed_connection, added_connection, removed_station_list
-    
+
     # --------------------------- Changing routes ------------------------------
 
     def reset(self):
@@ -334,7 +334,7 @@ class Railnet(): # TODO misschien is het logischer als de load ook in de init wo
         # Pass the connections
         for connection in train.get_connections():
             connection.travel()
-    
+
     # --------------------------- Changing routes without trains ---------------
 
     def get_route_names(self) -> list:
@@ -364,11 +364,11 @@ class Railnet(): # TODO misschien is het logischer als de load ook in de init wo
         """
         if self._trains != []:
             raise Exception('This railnet was not yet reset.')
-        
+
         # restore each train
         for train in route_names:
             self.restore_train(train)
-    
+
     def restore_train(self, train_stations: list):
         """
         Restores the given route.
@@ -385,5 +385,5 @@ class Railnet(): # TODO misschien is het logischer als de load ook in de init wo
             connection = station.get_connection_by_station(train_stations.pop(0))
             if connection:
                 new_train.move(connection)
-                
+
         return new_train

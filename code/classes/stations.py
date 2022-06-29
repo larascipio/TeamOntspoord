@@ -9,6 +9,7 @@ Lara, Tim, Eva
 
 # ------------------------------- Station --------------------------------------
 
+
 class Station():
     def __init__(self, station: str, x_coordinate: float, y_coordinate: float):
         """Create a station at the given coordinates."""
@@ -35,7 +36,7 @@ class Station():
     def remove_connection(self, connection):
         """
         Removes a connection from this station.
-        Used by 
+        Used by Railnet.remove_connection.
         """
         station = connection.get_destination(self)
         self._connections.pop(station.get_name())
@@ -45,13 +46,13 @@ class Station():
         Returns the connections that belongs to this station.
         Used by Railnet.restore_routes.
         """
-        if not station_name in self._connections:
+        if station_name not in self._connections:
             return None
         return self._connections[station_name]
 
     def travel(self):
         self._passed = True
-    
+
     def passed(self):
         return self._passed
 
@@ -71,6 +72,7 @@ class Station():
         return f'Station {self._name}'
 
 # ------------------------------- Connections ----------------------------------
+
 
 class Connection():
     def __init__(self, station1, station2, distance: int):
@@ -95,13 +97,13 @@ class Connection():
         if self._passed > 0:
             return True
         return False
-    
+
     def remove(self):
         if self._passed > 0:
             self._passed -= 1
         else:
             raise Exception('You cannot remove this connection, as it is not passed.')
-        
+
     def reset(self):
         self._passed = 0
 
