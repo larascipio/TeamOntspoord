@@ -1,6 +1,7 @@
 from multiprocessing import connection
 from opcode import stack_effect
 from code.algorithms.random_algorithm import Make_Random_Routes
+from code.algorithms.bad_algorithm import Make_Bad_Routes
 import copy 
 from code.visualisation.plotly_animation import create_animation
 
@@ -22,7 +23,8 @@ class Depth_First():
         """
         Use random algorithm to make a first train network.
         """
-        route = Make_Random_Routes(self._railnet)
+        # route = Make_Random_Routes(self._railnet)
+        route = Make_Bad_Routes(self._railnet)
         route.run()
 
     def get_next_train(self):
@@ -42,16 +44,12 @@ class Depth_First():
         start_station = self._current_train.get_station_names()[0]
         # aangepast naar current train
         stack = [[start_station]]
-        print(f'Start {stack}')
         
         while stack:
-            print(f'stack {stack}')
             # take the last added station names
             stations = stack.pop()
-            print(f'stations {stations}')
             # create a train from station names
             train = self._copy_railnet.restore_train(stations)
-            print(f'train {train}')
             quality = self._copy_railnet.quality()
             # check if this train is the best train 
             if quality >= best_quality:
@@ -59,20 +57,17 @@ class Depth_First():
                 best_train = stations
             
             last_station = train.get_stations()[-1]
-            print(f'last_station {last_station}')
             
             connections = last_station.get_connections()
-            print(f'connections {connections}')
             for connection in connections: 
                 if connection.get_distance() + train.get_distance() <= self._copy_railnet.get_max_distance():
                     station = connection.get_destination(last_station)
-                    print(stations)
-                    stations.append(station)
-                    print(stations)
-                    stack.append(stations)
+                    stations.append(station.get_name())
+                    stack.append(stations.copy())
                     stations.pop()
 
             self._copy_railnet.remove_train(train)
+
             
         return best_train 
 
@@ -111,14 +106,14 @@ class Depth_First():
         Run the algorithm.
         """
 
-        create_animation(self._railnet)
+        #create_animation(self._railnet)
 
         # save initial quality of the train network
         self._old_quality = self._quality
 
         # Copy train network to delete and change trains
         self._copy_railnet = copy.deepcopy(self._railnet)
-        # print(f'Old {self._copy_railnet}')
+        print(f'Old {self._copy_railnet}')
 
         self._copy_railnet_trains = list(self._copy_railnet.get_trains())
         # print(f'copy_railnet_trains: {self._copy_railnet_trains}')
@@ -136,15 +131,7 @@ class Depth_First():
 
             self._copy_railnet.restore_train(best_train)
 
-            print(f'New {self._copy_railnet}')
+            print(f'New {self._copy_railnet}') 
 
-            break 
 
-            # Find and replace the best train found 
-            self._best_train = self.find_and_replace_best_train(possible_trains)
-            #print(f'best {self._best_train}')
-            
-            # Add best train to railnet 
-            self._copy_railnet.add_train(self._best_train)
 
-        print(f'New {self._copy_railnet}')
