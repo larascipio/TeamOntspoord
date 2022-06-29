@@ -84,7 +84,7 @@ class Railnet():  # TODO misschien is het logischer als de load ook in de init w
 
     def all_colors_used(self) -> set:
         """
-        Returns a set with all colors used by the trains in the railnet.
+        Return a set with all colors used by the trains in the railnet.
         Used by self.create_train to determine the color for a next train.
         """
         colors = set()
@@ -168,7 +168,7 @@ class Railnet():  # TODO misschien is het logischer als de load ook in de init w
 
     def station_failure(self, failed_station) -> list:
         """
-        Removes all connections to and from a failed station.
+        Remove all connections to and from a failed station.
         Return a list of removed connections for possible restoration.
         """
         if failed_station not in self._stations:
@@ -191,8 +191,8 @@ class Railnet():  # TODO misschien is het logischer als de load ook in de init w
 
     def remove_connection(self, connection) -> list:
         """
-        Removes connection.
-        Removes stations without connections.
+        Remove connection.
+        Remove stations without connections.
         """
         removed_station_list = []
 
@@ -229,8 +229,8 @@ class Railnet():  # TODO misschien is het logischer als de load ook in de init w
 
     def add_connection(self, start, end):
         """
-        Adds new connection with start and end point.
-        Returns connection.
+        Add new connection with start and end point.
+        Return connection.
         """
 
         # calculate new distance from the coordinates
@@ -258,7 +258,7 @@ class Railnet():  # TODO misschien is het logischer als de load ook in de init w
         """
         Change connection from random start point to random end point.
         Only where the connection did not exist before.
-        Returns the removed and added connection.
+        Return the removed and added connection.
         """
 
         # get one of the stations from which connection will be changed
@@ -287,7 +287,7 @@ class Railnet():  # TODO misschien is het logischer als de load ook in de init w
 
     def reset(self):
         """
-        Completely resets the railnet.
+        Completely reset the railnet.
         Used for a loop where algorithms are run multiple times.
         """
         # reset the stations
@@ -317,7 +317,7 @@ class Railnet():  # TODO misschien is het logischer als de load ook in de init w
 
     def follow_track(self):
         """
-        Passes all connections and stations.
+        Pass all connections and stations.
         Used by restore_routes().
         """
         for train in self._trains:
@@ -325,7 +325,7 @@ class Railnet():  # TODO misschien is het logischer als de load ook in de init w
 
     def follow_train(self, train):
         """
-        Passes all connections and stations of a given train.
+        Pass all connections and stations of a given train.
         """
         # pass the stations
         for station in train.get_stations():
@@ -339,7 +339,7 @@ class Railnet():  # TODO misschien is het logischer als de load ook in de init w
 
     def get_route_names(self) -> list:
         """
-        Returns a list of lists with names of all stations passed.
+        Return a list of lists with names of all stations passed.
         Used by Reheating (simulated_annealing.py).
         """
         route = []
@@ -358,7 +358,7 @@ class Railnet():  # TODO misschien is het logischer als de load ook in de init w
 
     def restore_routes(self, route_names: list):
         """
-        Restores the given route if the railnet was reset.
+        Restore the given route if the railnet was reset.
         The given list contains lists with the names of the stations.
         Used by Reheating (simulated_annealing.py).
         """
@@ -371,7 +371,7 @@ class Railnet():  # TODO misschien is het logischer als de load ook in de init w
 
     def restore_train(self, train_stations: list):
         """
-        Restores the given route.
+        Restore the given route.
         The given list contains the names of the stations.
         Used by restore_routes.
         """

@@ -86,11 +86,11 @@ if __name__ == '__main__':
     rails = Railnet(max_trains, max_time)
     rails.load(file_stations, file_connections)
 
-    # Failed station if desired
+    # failed station if desired
     if args.stationfailure:
         rails.station_failure(args.stationfailure)
 
-    # Change a number of random connections of choice
+    # change a number of random connections of choice
     for _ in range(args.changeconnection):
         old_connection, new_connection, removed_station_list = rails.change_connection()
         print(f'{old_connection.get_stations()} to {new_connection.get_stations()}')

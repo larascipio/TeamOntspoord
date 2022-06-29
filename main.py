@@ -67,9 +67,21 @@ if __name__ == '__main__':
         )
     subparsers_algorithm.add_argument(
         "make",
-        choices=['once', 'hist', 'best'],
+        choices=['once', 'hist', 'best', 'all'],
         help="Choose what you would like to see from the chosen algorithm."
-    )
+        )
+    subparsers_algorithm.add_argument(
+        "changeconnection",
+        type=int,
+        nargs="?",
+        default=0,
+        help="Amount of changed connections"
+        )
+    subparsers_algorithm.add_argument(
+        "stationfailure",
+        nargs="?",
+        help="Give failed station"
+        )
 
     subparsers_experiment = subparsers.add_parser(
         'experiment',
@@ -129,6 +141,17 @@ if __name__ == '__main__':
         elif args.algorithm == 'depth_first':
             Algorithm = Depth_First
 
+    # --------------------------- Alter railnet ----------------------------------
+
+        # failed station if desired
+        if args.stationfailure:
+            rails.station_failure(args.stationfailure)
+
+        # change a number of random connections of choice
+        for _ in range(args.changeconnection):
+            old_connection, new_connection, removed_station_list = rails.change_connection()
+            print(f'{old_connection.get_stations()} to {new_connection.get_stations()}')
+
     # --------------------------- Run once -------------------------------------
 
         if args.make == 'once':
@@ -148,11 +171,13 @@ if __name__ == '__main__':
             for i in range(100):
 
                 # run the algorithm multiple times
-                print(i)
                 rails.reset()
                 route = Algorithm(rails)
                 route.run()
                 qualities.append(rails.quality())
+                print(f'{i + 1}/{100}', end="\r")
+
+            print('Finished running')
 
             # create hist for the qualities of all runs
             quality_hist(qualities)
@@ -193,6 +218,43 @@ if __name__ == '__main__':
             # rails.reset()
             # rails.restore_routes(best_route)
             # create_animation(rails)
+
+    # --------------------------- Do everything  --------------------------------
+
+        elif args.make == 'all':
+
+            # The variables used for the loop
+            qualities = []
+            best_quality = 0
+
+            # Run the algorithm for the given amount of runs
+            for i in range(100):
+
+                route = Algorithm(rails)
+                route.run()
+                route_quality = rails.quality()
+
+                # store the best route
+                if route_quality > best_quality:
+                    best_quality = route_quality
+                    best_route = rails.get_trains()
+
+                qualities.append(route_quality)
+                rails.reset()
+                print(f'{i + 1}/{100}', end="\r")
+
+            print("Finished running")
+
+            # save the best run
+            if best_quality > 0:
+                output(best_quality, best_route, 'output.csv')
+
+            # create hist for the qualities of all runs
+            quality_hist(qualities)
+
+            # visualize the best run
+            rails.add_route(best_route)
+            create_animation(rails)
 
     # --------------------------- Perform experiment ---------------------------
 

@@ -11,19 +11,47 @@ Voordat een treinnetwerk in gebruik genomen kan worden, is het de bedoeling dat 
 
 Des te hoger de kwaliteit, des te beter de lijnvoering. Het doel van dit project is om de beste lijnvoering te vinden. Met dit doel hebben wij meerdere algoritmes geschreven. Al deze algoritmes zijn aan te roepen in de commandline via main.py. 
 
-# Gebruikshandleiding
+## Gebruikshandleiding
 
 Het eerste wat aangegeven moet worden bij het runnen van main.py is welk spoornetwerk gebruikt gaat worden. In de data-map staan vier csv bestanden, waarop respectievelijk de stations en connections voor respectievelijk Holland en heel Nederland staan. In de commandline kan de gebruiker kiezen tussen 'holland' en 'national' om te kiezen tussen deze twee spoornetwerken.
 
 Vervolgens kan de gebruiker kiezen om een algoritme uit te voeren of om een experiment met alle algoritmes uit te voeren met respectievelijk 'algorithm' of 'experiment'.
 
-Bij de keuze voor een algoritme, moet de keuze gemaakt worden welk algoritme gebruikt gaat worden. Er kan gekozen worden uit 'random','random_iteration','biased_iteration','greedy','depth_first', 'hillclimber','annealing' en 'reheating'. Deze algoritmes worden onder het volgende kopje in volgorde uitgelegd. Verder moet er gekozen worden of het algoritme 1 keer wordt gerund met 'once', of er een histogram wordt gemaakt met 'hist' of dat er voor bepaalde tijd naar de beste lijnvoering wordt gezocht met 'best'.
+### Gebruik bij 'algorithm'
+
+Bij de keuze voor een algoritme, moet de keuze gemaakt worden welk algoritme gebruikt gaat worden. Er kan gekozen worden uit 'random','random_iteration','biased_iteration','greedy','depth_first', 'hillclimber','annealing' en 'reheating'. Deze algoritmes worden onder het kopje 'Algoritmes' in volgorde uitgelegd. Verder moet er gekozen worden of het algoritme 1 keer wordt gerund met 'once', of er een histogram wordt gemaakt met 'hist' of dat er voor bepaalde tijd naar de beste lijnvoering wordt gezocht met 'best'.
 
 Een voorbeeld van de commandline waarin de hillclimber 1 keer wordt gerund voor de kaart van heel Nederland is: main.py national algorithm hillclimber once
+
+**TODO afbeelding van hillclimber kaart**
+
+
+Als gekozen wordt voor 'hist', dan wordt er een histogram gemaakt met matplotlib van 100 runs van het aangegeven algoritme. Een voorbeeld van hoe dit aan te roepen is voor heel Nederland, met het random algoritme: main.py national algorithm random hist.
+
+Hieronder staan twee voorbeelden van histogrammen:
+![Histogram van Random](docs/random_long_hist.png "Random_Hist")
+*Een histogram waarin de kwaliteit van 1000 runs met het random algoritme staan afgebeeld.*
+![Histogram van Random Iteration](docs/random_iteration_1000.png "Random_Iteration_Hist")
+*Een histogram waarin de kwaliteit van 100 runs met het random iteration algoritme staan afgebeeld.*
+
+Het is mogelijk om zowel een histogram te maken als de beste lijnvoering te vinden en te visualiseren met 'all'. Een voorbeeld van hoe dit wordt aangeroepen is: main.py national algorithm random all.
+
+### Aanpassingen van het spoornetwerk
+
+Wie ervoor kiest om één bepaald algoritme te runnen, kan ook de structuur van de kaart aanpassen! Zo kunnen meerdere willekeurig gekozen connecties verlegd worden. Dit kan door de hoeveelheid verlegde connecties aan te geven aan het eind, bijvoorbeeld met main.py national algorithm random all 3. De verlegde connecties worden uitgeprint.
+
+De gebruiker kan ook een station aangeven dat uitvalt. Dit houdt in dat alle connecties van en naar dit stations komen te vervallen. Als de gebruiker bijvoorbeeld station Amsterdam Centraal wil laten uitvallen kan dit bijvoorbeeld op deze manier: main.py national algorithm random all 0 "Amsterdam Centraal". De gebruiker moet eerst aangeven hoeveel routes verlegd moeten worden voordat een station aangegeven kan worden. In dit voorbeeld is er 0 ingetypt, en worden er dus geen routes verlegd - alleen Amsterdam Centraal zal uitvallen.
+
+Het is ook mogelijk om verlegde connecties, verwijderde routes en uitgevallen stations terug te stoppen in de kaart! Een voorbeeld van hoe dit werkt staat in rnet_changes_example.py. 
+
+### Experiment
 
 Als er wordt gekozen voor een experiment, kan er een bepaald aantal iteraties gerund worden voor elk algoritme met 'iterations' of elk algoritme wordt voor dezelfde tijd gerund met 'time'. Daarna moet een integer komen die aangeeft hoeveel iterations of seconden er gebruikt moeten worden.
 
 Een voorbeeld voor een experiment met 100 iterations voor elk algoritme op de kaart van alleen Holland is: main.py holland experiment iterations 100
+
+**TODO: Boxplot afbeelding**
+
 
 ## De algoritmes
 
@@ -42,7 +70,3 @@ Het depth-first algoritme is een variatie op de iteration-algoritmes. In plaats 
 Het hillclimber algoritme (simulated_annealing.py) maakt steeds kleine veranderingen in een bestaant trajects op zoek naar het beste resultaat. Eerst wordt een lijnvoering gemaakt met het random algoritme, wat vervolgens wordt verbeterd. De trajecten kunnen met één connectie verlengd of verkort worden, in tweeën gesplit worden of er wordt een nieuw traject van één connectie lang gemaakt - zolang het maar de kwaliteit van de lijnvoering ten goede komt.
 
 De simulated annealing en reheating algoritmes zijn extensies van het hillclimber algoritme en staan in hetzelfde bestand (simulated_annealing.py). Een groot probleem met een hillclimber algoritme is dat het makkelijk vast komt te zitten in lokale maxima. Dit zijn in dit geval zijn dat kwaliteitsscores die niet met één stap van het hillclimber algoritme verbeterd kunnen worden - ook al is de lijnvoering dan niet het meest efficiënt. Bij deze nieuwe algoritmes worden de stappen van het hillclimber algoritme die de kwaliteit verslechteren tot op zekere hoogte toegelaten. De kans hangt deels af van de temperatuur. Bij simulated annealing begint deze standard bij 20 en daalt langzaam tot 0. Bij reheating begint deze bij 100 en daalt exponentieel tot er lang genoeg geen veranderingen zijn geweest, waardoor de temperatuur zal verdubbelen.
-
-## Experimenten
-
-Als in de commandline van main.py 'experiment' wordt aangeroepen, kunnen experimenten met alle algoritmes worden uitgevoerd. Hierbij wordt elk algoritme gerund en wordt een boxplot van de resultaten gemaakt. Hiermee zijn goed de verschillen tussen de algoritmes af te zien - zowel het gemiddelde van het aantal runs (dat de gebruiker zelf kan aangeven in de commandline) als de standaarddeviatie staan aangegeven. 
