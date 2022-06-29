@@ -40,55 +40,59 @@ class Depth_First():
         best_quality = 0 
         best_train = None
         start_station = self._current_train.get_station_names()[0]
-        # aangepast naar current train
+        
+        # first station is the first parent node
         stack = [[start_station]]
         
+        # find all child nodes to create possible trains
         while stack:
             # take the last added station names
             stations = stack.pop()
             # create a train from station names
             train = self._railnet.restore_train(stations)
+
             quality = self._railnet.quality()
             # check if this train is the best train 
             if quality >= best_quality:
                 best_quality = quality
                 best_train = stations
             
+            # get last station to find possible connections
             last_station = train.get_stations()[-1]
             
+            # add every connecting station to the current station in the stack
             connections = last_station.get_connections()
             for connection in connections: 
+                # check if train is not too long 
                 if connection.get_distance() + train.get_distance() <= self._railnet.get_max_distance():
                     station = connection.get_destination(last_station)
                     stations.append(station.get_name())
                     stack.append(stations.copy())
                     stations.pop()
 
+            # remove current train to add new train again 
             self._railnet.remove_train(train)
-     
+
         return best_train 
         
     def run(self):
         """
         Run the algorithm.
         """
-        # Copy train network to delete and change trains
-        # self._copy_railnet = copy.deepcopy(self._railnet)
-
         self._copy_railnet_trains = list(self._railnet.get_trains())
 
-        # Go through every train of the railnet
+        # go through every train of the railnet
         for _ in range(len(self._copy_railnet_trains)):
-            
-            # Take a train apart to search depth first 
+
+            # take a train apart to search for better train 
             self._current_train = self.get_next_train()
 
-            # Delete the train from train network 
+            self._best_train = self.find_best_train()
+
+            # delete old train  
             self._railnet.remove_train(self._current_train)
 
-            # TODO name function
-            best_train = self.find_best_train()
-
-            self._railnet.restore_train(best_train) 
+            # add new better train 
+            self._railnet.restore_train(self._best_train) 
 
 
