@@ -1,5 +1,8 @@
 """
-bad_algorithm.py
+greedy_algorithm.py
+
+Programmeertheorie - minor programmeren
+Lara, Tim, Eva
 
 This algorithm creates routes for trains in which all connections of the provided railnetwork are passed.
 There will never be more trains than the number provided and the trains will never exceed the distance provided.

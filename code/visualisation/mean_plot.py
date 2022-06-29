@@ -11,9 +11,10 @@ import plotly.graph_objects as go
 import plotly.express as px
 from plotly.subplots import make_subplots
 
+
 def plot_analysis(temps, mean: list, std: list, colors: tuple, name: str, xaxis: str, yaxis: str, title: str):
     """Plot the mean with the standard deviation."""
-    
+
     # create the data for the plots
     x = temps
     x_rev = x[::-1]
@@ -42,8 +43,6 @@ def plot_analysis(temps, mean: list, std: list, colors: tuple, name: str, xaxis:
     #     name=name
     # ))
 
-
-
     fig.add_trace(go.Scatter(
         x=temps,
         y=mean,
@@ -65,10 +64,11 @@ def plot_analysis(temps, mean: list, std: list, colors: tuple, name: str, xaxis:
 
     fig.show()
 
-def simple_plot(y1,name1,y2,name2,y3,name3):
+
+def simple_plot(y1, name1, y2, name2, y3, name3):
     x = [i for i in range(len(y1))]
     # fig = go.Figure()
-    fig = make_subplots(specs=[[{'secondary_y':True}]])
+    fig = make_subplots(specs=[[{'secondary_y': True}]])
     fig.add_trace(go.Scatter(
         x=x, y=y1, name=name1), secondary_y=False
     )
@@ -80,8 +80,9 @@ def simple_plot(y1,name1,y2,name2,y3,name3):
     )
     fig.show()
 
-def plot_3d(df, xname:str, yname:str, zname:str):
+
+def plot_3d(df, xname: str, yname: str, zname: str):
     fig = px.scatter_3d(df, x=xname, y=yname, z=zname,
-        color=zname)
+                        color=zname)
     fig.update_layout(scene=dict(xaxis=dict(type='log')))
     fig.show()
