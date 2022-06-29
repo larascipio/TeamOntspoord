@@ -108,7 +108,7 @@ def create_animation(railnet, save_as_png=False, num=0):
 
     fig.show()
 
-def create_boxplot(df, title):
+def create_boxplot(df, title: str):
     """
     Create a boxplot of the different algorithms.
     """

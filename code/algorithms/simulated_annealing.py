@@ -298,8 +298,6 @@ class Reheating(Hillclimber):
         """Run the algorithm"""
         super().run(iterations)
 
-        print(self._bestroute)
-
         # reset the best route after running the algorithm
         self._railnet.reset()
         self._railnet.restore_routes(self._bestroute)
