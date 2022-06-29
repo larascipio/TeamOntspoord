@@ -57,8 +57,10 @@ def create_animation(railnet, save_as_png=False, num=0):
         lon=x_stations,
         lat=y_stations,
         mode='markers',
+        marker=dict(color='pink'),
         hovertext=name,
-        hoverinfo='text'))
+        hoverinfo='text',
+    ))
 
     # ----------------------------- Create the routes -------------------------
 
@@ -129,19 +131,27 @@ def create_animation(railnet, save_as_png=False, num=0):
             'center': {'lon': 5.2, 'lat': 52.2},
             'style': 'carto-positron',
             'zoom': 7
+            # 'acces_token':
         }
     )
 
-    if save_as_png:
-        pio.write_image(fig, f'code/output/create_gif/fig{num}.svg', width=1.5*300, height=0.75*300, scale=1)
-    else:
-        fig.show()
+    fig.show()
+
+    # if save_as_png:
+    #     fig.write_image('code/output/fig.svg')
+    #     pio.write_image(fig, f'code/output/fig1.svg')
+    
 
 
 def create_boxplot(df, title):
+    """
+    Create a boxplot of the different algorithms.
+    """
 
     fig = px.box(df, y=df.columns, title=title)
     fig.update_xaxes(title='Algorithm')
     fig.update_yaxes(title='Quality')
-    pio.write_image(fig, 'new_fig.png', width=1.5*300, height=0.75*300, scale=1)
+
+    # write the image to a 
+    pio.write_image(fig, 'output/new_fig.png', width=1*300, height=1*300)
     fig.show()

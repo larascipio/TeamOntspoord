@@ -60,6 +60,7 @@ if __name__ == '__main__':
     # create subparsers
     subparsers = parser.add_subparsers(dest='subparser_name')
 
+    # subparser for running one algorithm
     subparsers_algorithm = subparsers.add_parser(
         'algorithm',
         help='Run a specific algorithm.'
@@ -93,6 +94,7 @@ if __name__ == '__main__':
         )
     
 
+    # subparser for an experiment with all algorithms
     subparsers_experiment = subparsers.add_parser(
         'experiment',
         help='Perform an experiment on all agorithms.'
@@ -175,8 +177,8 @@ if __name__ == '__main__':
             route_quality = rails.quality()
 
             print(route_quality)
-            output(route_quality, rails.get_trains(), './code/output/output.csv')
-            create_animation(rails)
+            output(route_quality, rails.get_trains(), './output/output.csv')
+            create_animation(rails, save_as_png=True)
 
     # --------------------------- Create histogram -----------------------------
 
@@ -221,17 +223,9 @@ if __name__ == '__main__':
                     output(
                         best_qual,
                         rails.get_trains(),
-                        './code/output/output.csv'
+                        './output/output.csv'
                     )
                     create_animation(rails)
-
-            # # show the best route again
-            # print(best_route)
-            # print(best_qual)
-            # output(best_qual,best_route,'./code/output/output.csv')
-            # rails.reset()
-            # rails.restore_routes(best_route)
-            # create_animation(rails)
 
     # --------------------------- Do everything  --------------------------------
 
@@ -283,6 +277,7 @@ if __name__ == '__main__':
             Make_Biased_Routes
             # Depth_First
         ]
+
         names = []
         for a in algorithms:
             name = str(a.__name__)
@@ -323,7 +318,7 @@ if __name__ == '__main__':
                         output(
                             best_qual,
                             rails.get_trains(),
-                            './code/output/output.csv'
+                            './output/output.csv'
                         )
                         create_animation(rails)
                     df.loc[n_runs, Algorithm.__name__.replace('_', ' ')] = qual

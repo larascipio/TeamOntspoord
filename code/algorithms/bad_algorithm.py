@@ -83,10 +83,3 @@ class Make_Greedy_Routes():
 
         # there are no stations left for new trains
         return None
-
-    def __repr__(self):
-        representation = 'Route:\n'
-        for train in self._trains:
-            representation += f'{train}' + '\n'
-        representation += f'quality = {self._railnet.quality()}'
-        return representation
