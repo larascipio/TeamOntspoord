@@ -37,10 +37,10 @@ class Make_Random_Routes():
         """
         Run the algorithm.
         """
-
-        # Create a random amount of trains (at least 1) within the constraint
+        # create a random amount of trains (at least 1) within the constraint
         self._random_amount = random.randint(1, self._railnet.get_max_trains())
 
+        # make a train network 
         for _ in range(self._random_amount):
             self.run_one_train()
 
@@ -51,14 +51,14 @@ class Make_Random_Routes():
 
         train = self.create_train()
 
-        # Keep going until the max time is achieved
+        # keep adding stations until the max time is reached
         while train.is_running():
 
             connection = train.choose_random_connection()
-
             if not connection:
                 break
-
+            
+            # check if a move is possible 
             if connection.get_distance() + train.get_distance() < self._railnet.get_max_distance():
                 train.move(connection)
             else:

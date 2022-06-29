@@ -15,13 +15,14 @@ Des te hoger de kwaliteit, des te beter de lijnvoering. Het doel van dit project
 
 Het eerste wat aangegeven moet worden bij het runnen van main.py is welk spoornetwerk gebruikt gaat worden. In de data-map staan vier csv bestanden, waarop respectievelijk de stations en connections voor respectievelijk Holland en heel Nederland staan. In de commandline kan de gebruiker kiezen tussen 'holland' en 'national' om te kiezen tussen deze twee spoornetwerken.
 
-Vervolgens kan de gebruiker kiezen om een algoritme uit te voeren of om een experiment met alle algoritmes uit te voeren met respectievelijk 'algorithm' of 'experiment'.
+Vervolgens kan de gebruiker kiezen om een algoritme uit te voeren of om een experiment met alle algoritmes uit te voeren met respectievelijk `algorithm` of `experiment`.
 
-### Gebruik bij 'algorithm'
+Bij de keuze voor een algoritme, moet de keuze gemaakt worden welk algoritme gebruikt gaat worden. Er kan gekozen worden uit `random`, `random_iteration`, `biased_iteration`, `greedy`, `depth_first`, `hillclimber`, `annealing` en `reheating`. Deze algoritmes worden onder het volgende kopje in volgorde uitgelegd. Verder moet er gekozen worden of het algoritme 1 keer wordt gerund met `once`, of er een histogram wordt gemaakt met `hist` of dat er voor bepaalde tijd naar de beste lijnvoering wordt gezocht met `best`.
 
-Bij de keuze voor een algoritme, moet de keuze gemaakt worden welk algoritme gebruikt gaat worden. Er kan gekozen worden uit 'random','random_iteration','biased_iteration','greedy','depth_first', 'hillclimber','annealing' en 'reheating'. Deze algoritmes worden onder het kopje 'Algoritmes' in volgorde uitgelegd. Verder moet er gekozen worden of het algoritme 1 keer wordt gerund met 'once', of er een histogram wordt gemaakt met 'hist' of dat er voor bepaalde tijd naar de beste lijnvoering wordt gezocht met 'best'.
-
-Een voorbeeld van de commandline waarin de hillclimber 1 keer wordt gerund voor de kaart van heel Nederland is: main.py national algorithm hillclimber once
+Een voorbeeld van de commandline waarin de hillclimber 1 keer wordt gerund voor de kaart van heel Nederland is: 
+```
+main.py national algorithm hillclimber once
+```
 
 **TODO afbeelding van hillclimber kaart**
 
@@ -46,9 +47,12 @@ Het is ook mogelijk om verlegde connecties, verwijderde routes en uitgevallen st
 
 ### Experiment
 
-Als er wordt gekozen voor een experiment, kan er een bepaald aantal iteraties gerund worden voor elk algoritme met 'iterations' of elk algoritme wordt voor dezelfde tijd gerund met 'time'. Daarna moet een integer komen die aangeeft hoeveel iterations of seconden er gebruikt moeten worden.
+Als er wordt gekozen voor een experiment, kan er een bepaald aantal iteraties gerund worden voor elk algoritme met `iterations` of elk algoritme wordt voor dezelfde tijd gerund met `time`. Daarna moet een integer komen die aangeeft hoeveel iterations of seconden er gebruikt moeten worden.
 
-Een voorbeeld voor een experiment met 100 iterations voor elk algoritme op de kaart van alleen Holland is: main.py holland experiment iterations 100
+Een voorbeeld voor een experiment met 100 iterations voor elk algoritme op de kaart van alleen Holland is: 
+```
+main.py holland experiment iterations 100
+```
 
 **TODO: Boxplot afbeelding**
 
