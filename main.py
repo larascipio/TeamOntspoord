@@ -15,8 +15,8 @@ from code.algorithms.bad_algorithm import Make_Greedy_Routes
 from code.algorithms.random_algorithm import Make_Random_Routes
 from code.algorithms.simulated_annealing import Hillclimber, Simulated_Annealing
 from code.algorithms.simulated_annealing import Reheating
-from TeamOntspoord.code.algorithms.random_replace import Make_Replaced_Routes
-from TeamOntspoord.code.algorithms.biased_replace import Make_Biased_Routes
+from code.algorithms.random_replace import Make_Replaced_Routes
+from code.algorithms.biased_replace import Make_Biased_Routes
 from code.algorithms.depth_first import Depth_First
 
 from code.visualisation.plotly_animation import create_animation, create_boxplot
@@ -40,6 +40,17 @@ if __name__ == '__main__':
         "type",
         choices=['holland', 'national'],
         help="Choose between the dataset for hollands or national railways."
+        )
+    # optional arguments to alter railnet
+    parser.add_argument(
+        "--shift",
+        type=int,
+        default=0,
+        help="Amount of changed connections"
+        )
+    parser.add_argument(
+        "--fail",
+        help="Give failed station"
         )
 
     # create subparsers
@@ -68,18 +79,6 @@ if __name__ == '__main__':
         "make",
         choices=['once', 'hist', 'best', 'all'],
         help="Choose what you would like to see from the chosen algorithm."
-        )
-    subparsers_algorithm.add_argument(
-        "changeconnection",
-        type=int,
-        nargs="?",
-        default=0,
-        help="Amount of changed connections"
-        )
-    subparsers_algorithm.add_argument(
-        "stationfailure",
-        nargs="?",
-        help="Give failed station"
         )
 
     subparsers_experiment = subparsers.add_parser(
@@ -119,6 +118,19 @@ if __name__ == '__main__':
     rails = Railnet(max_trains, max_time)
     rails.load(file_stations, file_connections)
 
+    # --------------------------- Alter railnet ---------------------------------
+
+    # failed station if desired
+    if args.fail:
+        print('succes')
+        rails.station_failure(args.fail)
+
+    # change a number of random connections of choice
+    for _ in range(args.shift):
+        old_connection, new_connection, removed_station_list = rails.change_connection()
+        print(f'{old_connection.get_stations()} to {new_connection.get_stations()}')
+
+
     # --------------------------- Choose algorithm -----------------------------
 
     if args.subparser_name == 'algorithm':
@@ -140,16 +152,16 @@ if __name__ == '__main__':
         elif args.algorithm == 'depth_first':
             Algorithm = Depth_First
 
-    # --------------------------- Alter railnet ---------------------------------
+    # # --------------------------- Alter railnet ---------------------------------
 
-        # failed station if desired
-        if args.stationfailure:
-            rails.station_failure(args.stationfailure)
+    #     # failed station if desired
+    #     if args.stationfailure:
+    #         rails.station_failure(args.stationfailure)
 
-        # change a number of random connections of choice
-        for _ in range(args.changeconnection):
-            old_connection, new_connection, removed_station_list = rails.change_connection()
-            print(f'{old_connection.get_stations()} to {new_connection.get_stations()}')
+    #     # change a number of random connections of choice
+    #     for _ in range(args.changeconnection):
+    #         old_connection, new_connection, removed_station_list = rails.change_connection()
+    #         print(f'{old_connection.get_stations()} to {new_connection.get_stations()}')
 
     # --------------------------- Run once -------------------------------------
 
