@@ -98,7 +98,7 @@ class Railnet(): # TODO misschien is het logischer als de load ook in de init wo
         representation += f'quality = {self.quality()}'
         return representation
 
-    # --------------------------- trains ---------------------------------------
+    # --------------------------- Trains ---------------------------------------
 
     def create_train(self, start):
         """
@@ -376,6 +376,10 @@ class Railnet(): # TODO misschien is het logischer als de load ook in de init wo
         Used by restore_routes.
         """
 
+        # check if the list has names
+        if not train_stations:
+            raise Exception('This is an empty list')
+        
         # create new train
         new_train = self.create_train(self._stations[train_stations.pop(0)])
 

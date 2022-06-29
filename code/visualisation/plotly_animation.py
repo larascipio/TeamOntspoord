@@ -141,5 +141,5 @@ def create_boxplot(df, title):
     fig = px.box(df, y=df.columns, title=title)
     fig.update_xaxes(title='Algorithm')
     fig.update_yaxes(title='Quality')
-    pio.write_image(fig, 'new_fig.png', width=15*300, height=7.5*300, scale=1)
+    pio.write_image(fig, 'new_fig.png', width=1.5*300, height=0.75*300, scale=1)
     fig.show()

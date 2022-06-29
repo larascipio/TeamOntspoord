@@ -1,5 +1,6 @@
 from code.algorithms.random_algorithm import Make_Random_Routes
 import copy 
+from code.visualisation.plotly_animation import create_animation
 
 class Depth_First():
     """
@@ -38,9 +39,10 @@ class Depth_First():
         # path = []
         list_of_trains = []
         stack = [start_station]
-        #print(f'Start {stack}')
+        print(f'Start {stack}')
         
         while stack:
+            print(f'Stack: {stack}')
             station = stack.pop()
             # new_train = self._copy_railnet.create_train(station)
             
@@ -67,7 +69,10 @@ class Depth_First():
         """
         Checks and accepts better solutions than the current solution.
         """
+        # print(possible_trains)
+        # TODO waarom geef je possible trains mee?
         self._possible_trains = possible_trains
+
         best_train = self._current_train
         for train in self._possible_trains:
             # Add new train to the railnet 
@@ -94,17 +99,21 @@ class Depth_First():
         """
         Run the algorithm.
         """
-        # Keep initial quality of the train network
+
+        create_animation(self._railnet)
+
+        # save initial quality of the train network
         self._old_quality = self._quality
 
         # Copy train network to delete and change trains
         self._copy_railnet = copy.deepcopy(self._railnet)
-        print(f'Old {self._copy_railnet}')
+        # print(f'Old {self._copy_railnet}')
 
         self._copy_railnet_trains = list(self._copy_railnet.get_trains())
+        # print(f'copy_railnet_trains: {self._copy_railnet_trains}')
 
         # Go through every train of the railnet
-        while self._copy_railnet_trains:
+        while self._copy_railnet_trains: # TODO waarom maak je hier niet gewoon een for-loop van?
 
             # Take a train apart to search depth first 
             self._current_train = self.get_next_train()
@@ -125,4 +134,6 @@ class Depth_First():
             # Add best train to railnet 
             self._copy_railnet.add_train(self._best_train)
 
-        print(f'New {self._copy_railnet}')
+            break # TODO weghalen voor meer treinen
+
+        # print(f'New {self._copy_railnet}')
