@@ -25,8 +25,11 @@ class Make_Replaced_Routes(Make_Random_Routes):
         self.change_tracks(iterations=iterations)
 
     def change_tracks(self, iterations):
+        """
+        Change the tracks.
+        """
         for _ in range(self._railnet.get_max_trains()):
-            self.change_track(iterations)
+            self.change_one_track(iterations)
 
     def change_one_track(self, iterations):
         """
