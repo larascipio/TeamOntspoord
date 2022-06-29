@@ -22,7 +22,6 @@ from code.algorithms.depth_first import Depth_First
 from code.visualisation.plotly_animation import create_animation, create_boxplot
 from code.visualisation.output import output
 from code.visualisation.quality_hist import quality_hist
-# from code.visualisation.simple_visualization import simple_visualization
 import plotly.express as px
 
 from code.classes.structure import Railnet
@@ -58,8 +57,8 @@ if __name__ == '__main__':
             'hillclimber',
             'annealing',
             'reheating',
-            'random_iteration',
-            'biased_iteration',
+            'replace',
+            'biased_replace',
             'depth_first'
         ],
         default='random',
@@ -134,9 +133,9 @@ if __name__ == '__main__':
             Algorithm = Simulated_Annealing
         elif args.algorithm == 'reheating':
             Algorithm = Reheating
-        elif args.algorithm == 'random_iteration':
+        elif args.algorithm == 'replace':
             Algorithm = Make_Replaced_Routes
-        elif args.algorithm == 'biased_iteration':
+        elif args.algorithm == 'biased_replace':
             Algorithm = Make_Biased_Routes
         elif args.algorithm == 'depth_first':
             Algorithm = Depth_First
@@ -265,7 +264,7 @@ if __name__ == '__main__':
             Hillclimber,
             Simulated_Annealing,
             Reheating,
-            Make_Iterated_Routes,
+            Make_Replaced_Routes,
             Make_Biased_Routes
             # Depth_First
         ]
