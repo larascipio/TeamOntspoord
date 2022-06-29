@@ -33,7 +33,9 @@ Een voorbeeld voor een experiment met 100 iterations voor elk algoritme op de ka
 main.py holland experiment iterations 10
 ```
 
-**TODO plaatje van het experiment**
+![Boxplot van experiment](docs/boxplot_10.png "Experiment boxplot")
+
+*Resultaat van het experiment.*
 
 Hieronder staan twee voorbeelden van histogrammen die gemaakt kunnen worden met `hist`. De histogrammen zijn gemaakt op een schaal van 0 tot 10.000, zodat ze makkelijk met elkaar te vergelijken zijn. De hoeveelheid runs is standaard 100, maar is aan te passen door een hoeveelheid aan te geven in de terminal aan het eind van de commandline. Dit werkt ook voor `all`. 
 
