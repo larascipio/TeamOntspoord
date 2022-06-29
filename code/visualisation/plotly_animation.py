@@ -144,9 +144,14 @@ def create_animation(railnet, save_as_png=False, num=0):
 
 
 def create_boxplot(df, title):
+    """
+    Create a boxplot of the different algorithms.
+    """
 
     fig = px.box(df, y=df.columns, title=title)
     fig.update_xaxes(title='Algorithm')
     fig.update_yaxes(title='Quality')
-    pio.write_image(fig, 'new_fig.png', width=1*300, height=0.5*300)
+
+    # write the image to a 
+    pio.write_image(fig, 'output/new_fig.png', width=1*300, height=1*300)
     fig.show()

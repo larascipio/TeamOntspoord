@@ -247,12 +247,11 @@ class Hillclimber():
 
 
 class Simulated_Annealing(Hillclimber):
-    def __init__(self, railnet, start_temp: int = 20, base: float = 0.999):
+    def __init__(self, railnet, start_temp: int = 20):
         """Initialize the simulated annealing algorithm."""
         super().__init__(railnet)
         self._starttemp = start_temp
         self.temps = []
-        self._base = base
 
         # check if a valid starting temperature is provided
         if self._starttemp <= 0:

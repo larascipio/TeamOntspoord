@@ -11,9 +11,9 @@ Lara, Tim, Eva
 
 import random
 
-from code.algorithms.random_iteration import Make_Iterated_Routes
+from code.algorithms.random_replace import Make_Replaced_Routes
 
-class Make_Biased_Routes(Make_Iterated_Routes):
+class Make_Biased_Routes(Make_Replaced_Routes):
     def __init__(self, railnet):
         super().__init__(railnet)
         self._random = False

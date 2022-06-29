@@ -161,7 +161,7 @@ if __name__ == '__main__':
             route_quality = rails.quality()
 
             print(route_quality)
-            output(route_quality, rails.get_trains(), './code/output/output.csv')
+            output(route_quality, rails.get_trains(), './output/output.csv')
             create_animation(rails, save_as_png=True)
 
     # --------------------------- Create histogram -----------------------------
@@ -207,17 +207,9 @@ if __name__ == '__main__':
                     output(
                         best_qual,
                         rails.get_trains(),
-                        './code/output/output.csv'
+                        './output/output.csv'
                     )
                     create_animation(rails)
-
-            # # show the best route again
-            # print(best_route)
-            # print(best_qual)
-            # output(best_qual,best_route,'./code/output/output.csv')
-            # rails.reset()
-            # rails.restore_routes(best_route)
-            # create_animation(rails)
 
     # --------------------------- Do everything  --------------------------------
 
@@ -269,6 +261,7 @@ if __name__ == '__main__':
             Make_Biased_Routes
             # Depth_First
         ]
+
         names = []
         for a in algorithms:
             name = str(a.__name__)
@@ -309,7 +302,7 @@ if __name__ == '__main__':
                         output(
                             best_qual,
                             rails.get_trains(),
-                            './code/output/output.csv'
+                            './output/output.csv'
                         )
                         create_animation(rails)
                     df.loc[n_runs, Algorithm.__name__.replace('_', ' ')] = qual
