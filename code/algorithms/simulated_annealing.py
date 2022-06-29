@@ -12,10 +12,9 @@ Lara, Tim, Eva
 # ------------------------------- Imports --------------------------------------
 
 from code.algorithms.random_algorithm import Make_Random_Routes
-from code.visualisation.plotly_animation import create_animation, create_gif
-from code.visualisation.plotly_live import Live_Plot
+# from code.visualisation.plotly_animation import create_animation, create_gif
+# from code.visualisation.plotly_live import Live_Plot
 import random
-import sys
 
 # ------------------------------- Hillclimber ----------------------------------
 
@@ -33,17 +32,14 @@ class Hillclimber():
             self.split_train,
             self.remove_train
         ]
+
+        self._bestqual = 0
+        self._bestroute = None
     
     def get_random_routes(self):
         """Use the random algorithm to get routes to start with."""
         route = Make_Random_Routes(self._railnet)
         route.run()
-
-        # # check
-        # for train in route.get_trains():
-            # if not len(train.get_stations()) == len(train.get_connections()) + 1:
-            #     print('RANDOM ROUTES')
-        # return self._railnet.get_trains()
 
     def run(self, iterations=100000):
         """
@@ -55,9 +51,7 @@ class Hillclimber():
         # keep trying a random change and see if the score increases
         for self._iter in range(self._max_iter):
 
-            # sys.stdout.write(f'\r{self._iter}')
-            # sys.stdout.flush()
-
+            # if there are no trains, make one
             while len(self._railnet.get_trains()) == 0:
                 self.make_new_train(p=1)
 
@@ -71,6 +65,11 @@ class Hillclimber():
                 change()
             else:
                 change(train_to_change)
+
+            # check if this route is better than the best route till now
+            if self._railnet.quality() > self._bestqual:
+                self._bestqual = self._railnet.quality()
+                self._bestroute = self._railnet.get_route_names()
 
             # # check
             # for train in self._railnet.get_trains():
@@ -346,34 +345,33 @@ class Reheating(Hillclimber):
 
         super().__init__(railnet)
 
-        self._heat = 0
-        self._bestqual = 0
-        self._bestroute = None
-        self._currentbest = 0
-        
+        self._heat = 0        
         self._temp = start_temp
         self._base = base
         self._stuck = 0
         
-        # # lists used for plots.
-        # self.temps = []
-        # self.best = []
-        # self.current = []
+        # lists used for plots.
+        self.temps = []
+        self.best = []
+        self.current = []
     
     def run(self, iterations=50000):
         """Run the algorithm"""
         super().run(iterations)
 
+        # print('end of run')
+        # print(self._bestqual)
+        # print(self._bestroute)
         # reset the best route after running the algorithm
         self._railnet.reset()
         self._railnet.restore_routes(self._bestroute)
 
     def keep_change(self, qual_before, qual_now) -> bool:
 
-        # # lists used for plots
-        # self.temps.append(self._temp)
-        # self.best.append(self._bestqual)
-        # self.current.append(qual_before)
+        # lists used for plots
+        self.temps.append(self._temp)
+        self.best.append(self._bestqual)
+        self.current.append(qual_before)
 
         # reheat after the algorithm has not changed for a while
         if self._stuck > 50 and self._iter < 0.9*self._max_iter:
@@ -385,10 +383,6 @@ class Reheating(Hillclimber):
         qual_change = qual_now - qual_before
         if qual_change > 0:
             # positive changes are always accepted
-            if qual_now > self._bestqual:
-                # check if this is a new best quality
-                self._bestqual = qual_now
-                self._bestroute = self._railnet.get_route_names()
             keep_change = True
         elif self._temp == 0:
             # if the temperature is zero, the change is always rejected

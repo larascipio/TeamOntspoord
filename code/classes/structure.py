@@ -343,8 +343,17 @@ class Railnet(): # TODO misschien is het logischer als de load ook in de init wo
         Used by Reheating (simulated_annealing.py).
         """
         route = []
+
+        # loop through all trains to create the route
         for train in self._trains:
-            route.append(train.get_station_names())
+
+            # create a list with all stationnames
+            stations = []
+            for station in train.get_stations():
+                stations.append(station.get_name())
+
+            # add this list to the total route
+            route.append(stations)
         return route
 
     def restore_routes(self, route_names: list):
@@ -356,20 +365,16 @@ class Railnet(): # TODO misschien is het logischer als de load ook in de init wo
         if self._trains != []:
             raise Exception('This railnet was not yet reset.')
         
+        # restore each train
         for train in route_names:
-
             self.restore_train(train)
-
-            # # create new train
-            # new_train = self.create_train(self._stations[train.pop(0)])
-
-            # # move the train over the stations
-            # while train:
-            #     station = new_train.get_stations()[-1]
-            #     connection = station.get_connection_by_station(train.pop(0))
-            #     new_train.move(connection)
     
     def restore_train(self, train_stations: list):
+        """
+        Restores the given route.
+        The given list contains the names of the stations.
+        Used by restore_routes.
+        """
 
         # create new train
         new_train = self.create_train(self._stations[train_stations.pop(0)])
