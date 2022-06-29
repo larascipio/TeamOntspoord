@@ -12,7 +12,6 @@ Lara, Tim, Eva
 
 from code.classes.stations_and_connections import Station, Connection
 from code.classes.train import Train
-# import plotly.express as px
 import csv
 import random
 
