@@ -130,7 +130,6 @@ if __name__ == '__main__':
         old_connection, new_connection, removed_station_list = rails.change_connection()
         print(f'{old_connection.get_stations()} to {new_connection.get_stations()}')
 
-
     # --------------------------- Choose algorithm -----------------------------
 
     if args.subparser_name == 'algorithm':

@@ -8,6 +8,7 @@ This algorithm creates routes for trains in which all connections of the provide
 There will never be more trains than the number provided and the trains will never exceed the distance provided.
 """
 
+
 class Make_Greedy_Routes():
     def __init__(self, railnet):
         """
@@ -17,7 +18,7 @@ class Make_Greedy_Routes():
         self._railnet = railnet
 
         # TODO maybe add why you only use end stations
-        # find the endstations 
+        # find the endstations
         self._end_stations = []
         for station in self._railnet.get_stations().values():
             if len(station.get_connections()) % 2 == 1:
