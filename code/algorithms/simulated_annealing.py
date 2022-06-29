@@ -294,25 +294,17 @@ class Reheating(Hillclimber):
         self._stuck = 0
         self._threshold = 50
 
-        # lists used for plots TODO weghalen
-        self.temps = []
-        self.best = []
-        self.current = []
-
     def run(self, iterations=50000):
         """Run the algorithm"""
         super().run(iterations)
+
+        print(self._bestroute)
 
         # reset the best route after running the algorithm
         self._railnet.reset()
         self._railnet.restore_routes(self._bestroute)
 
     def keep_change(self, qual_before, qual_now) -> bool:
-
-        # lists used for plots TODO weghalen
-        self.temps.append(self._temp)
-        self.best.append(self._bestqual)
-        self.current.append(qual_before)
 
         # reheat after the algorithm has not changed for a while
         if self._stuck > self._threshold:

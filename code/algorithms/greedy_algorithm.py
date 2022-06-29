@@ -17,7 +17,7 @@ class Make_Greedy_Routes():
 
         self._railnet = railnet
 
-        # find the endstations
+        # find the stations with a uneven amount of connections
         self._end_stations = []
         for station in self._railnet.get_stations().values():
             if len(station.get_connections()) % 2 == 1:
