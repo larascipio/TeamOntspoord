@@ -68,7 +68,7 @@ class Railnet():
 
     def get_total_connections(self) -> int:
         return len(self._connections)
-    
+
     def get_total_stations(self) -> int:
         return len(self._stations)
 
@@ -384,7 +384,6 @@ class Railnet():
             raise Exception('This is an empty list')
 
         # create new train
-        train_copy = train_stations.copy()
         new_train = self.create_train(self._stations[train_stations[0]])
 
         # move the train over the stations

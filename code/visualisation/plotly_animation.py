@@ -140,7 +140,6 @@ def create_animation(railnet, save_as_png=False, num=0):
     # if save_as_png:
     #     fig.write_image('code/output/fig.svg')
     #     pio.write_image(fig, f'code/output/fig1.svg')
-    
 
 
 def create_boxplot(df, title):
@@ -152,6 +151,6 @@ def create_boxplot(df, title):
     fig.update_xaxes(title='Algorithm')
     fig.update_yaxes(title='Quality')
 
-    # write the image to a 
+    # write the image to a .png
     pio.write_image(fig, 'output/new_fig.png', width=1*300, height=1*300)
     fig.show()

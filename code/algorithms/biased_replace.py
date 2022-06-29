@@ -13,6 +13,7 @@ import random
 
 from code.algorithms.random_replace import Make_Replaced_Routes
 
+
 class Make_Biased_Routes(Make_Replaced_Routes):
     def __init__(self, railnet):
         super().__init__(railnet)
@@ -32,7 +33,7 @@ class Make_Biased_Routes(Make_Replaced_Routes):
 
         # choose random starting point
         start = random.choices(list(self._railnet.get_stations().values()),
-                                weights=self._current_station_weights)[0]
+                               weights=self._current_station_weights)[0]
 
         train = self._railnet.create_train(start)
 
@@ -63,5 +64,3 @@ class Make_Biased_Routes(Make_Replaced_Routes):
                 weighted_chance = 1 / weighted_chance
             weighted_chance_list.append(weighted_chance)
         self._current_station_weights = weighted_chance_list
-
-

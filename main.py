@@ -92,7 +92,6 @@ if __name__ == '__main__':
         default=100,
         help="Amount of runs."
         )
-    
 
     # subparser for an experiment with all algorithms
     subparsers_experiment = subparsers.add_parser(
