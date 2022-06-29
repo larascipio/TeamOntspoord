@@ -21,7 +21,7 @@ class Make_Biased_Routes():
         self._railnet = railnet
         self._possible_stations = list(self._railnet.get_stations().values())
 
-    def precise_starter_locations(self):
+    def get_starter_locations(self):
         """
         Get starter locations with connections that haven't been passed through.
         """
@@ -43,7 +43,7 @@ class Make_Biased_Routes():
         Run the algorithm.
         """
         for _ in range(self._railnet.get_max_trains()):
-            weighted_chance_list = self.precise_starter_locations()
+            weighted_chance_list = self.get_starter_locations()
             train = self.create_weighted_train(weighted_chance_list)
             self.run_one_train(train)
 
@@ -75,15 +75,12 @@ class Make_Biased_Routes():
         """
         Create a new train at a random start station.
         """
-        start = None
-
-        # choose random starting point
-        while not start:
-            start = random.choices(list(self._railnet.get_stations().values()),
-                                   weights=weighted_chance_list, k=1)
-            start = start[0]
+        start = random.choices(list(self._railnet.get_stations().values()),
+                            weights=weighted_chance_list, k=1)
+        start = start[0]
 
         train = self._railnet.create_train(start)
+
         return train
 
     def change_one_track(self, removed_train, iterations):
@@ -107,7 +104,7 @@ class Make_Biased_Routes():
             best_replacement = removed_train
 
         # get starter positions for the trains
-        weighted_chance_list = self.precise_starter_locations()
+        weighted_chance_list = self.get_starter_locations()
 
         # create the new trains and save the best one
         for _ in range(iterations):
