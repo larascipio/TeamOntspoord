@@ -384,16 +384,15 @@ class Railnet():
             raise Exception('This is an empty list')
 
         # create new train
-        train_copy = train_stations.copy()
         new_train = self.create_train(self._stations[train_stations[0]])
 
         # move the train over the stations
-        for next_station in train_stations:
+        for next_station in train_stations[1:]:
             station = new_train.get_stations()[-1]
             connection = station.get_connection_by_station(next_station)
             if connection:
                 new_train.move(connection)
             else:
-                raise Exception('This combination of station is not possible.')
+                raise Exception('This combination of stations is not possible.')
 
         return new_train
