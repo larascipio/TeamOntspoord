@@ -54,6 +54,7 @@ if __name__ == '__main__':
         )
     parser.add_argument(
         "--optimum",
+        action='store_true',
         help="Gives theoretical optimum"
         )
 
@@ -202,7 +203,6 @@ if __name__ == '__main__':
         elif args.make == 'best':
             best_qual = 0
             best_route = None
-            # plot = Live_Plot(rails)
 
             start = time.time()
 
@@ -230,11 +230,11 @@ if __name__ == '__main__':
 
         elif args.make == 'all':
 
-            # The variables used for the loop
+            # the variables used for the loop
             qualities = []
             best_quality = 0
 
-            # Run the algorithm for the given amount of runs
+            # run the algorithm for the given amount of runs
             for i in range(args.runs):
 
                 route = Algorithm(rails)
@@ -274,8 +274,6 @@ if __name__ == '__main__':
             Reheating,
             Make_Replaced_Routes,
             Make_Biased_Routes
-            # TODO depth first?
-            # Depth_First
         ]
 
         names = []

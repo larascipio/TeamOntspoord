@@ -26,4 +26,4 @@ def quality_hist(qualityroutes):
     plt.xlabel('Quality')
     plt.ylabel('Number of runs')
     plt.title(f'Quality for {len(qualityroutes)} runs - Mean quality: {mean(qualityroutes)}')
-    plt.savefig('./output/railnet_quality_histogram.png')
+    plt.savefig('railnet_quality_histogram.png')
