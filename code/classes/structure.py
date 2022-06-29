@@ -10,7 +10,7 @@ Lara, Tim, Eva
 
 # ------------------------------- Imports --------------------------------------
 
-from code.classes.stations import Station, Connection
+from code.classes.stations_and_connections import Station, Connection
 from code.classes.train import Train
 # import plotly.express as px
 import csv
