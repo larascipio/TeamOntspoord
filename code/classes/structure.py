@@ -381,12 +381,13 @@ class Railnet():  # TODO misschien is het logischer als de load ook in de init w
             raise Exception('This is an empty list')
         
         # create new train
-        new_train = self.create_train(self._stations[train_stations.pop(0)])
+        train_copy = train_stations.copy()
+        new_train = self.create_train(self._stations[train_copy.pop(0)])
 
         # move the train over the stations
         while train_stations:
             station = new_train.get_stations()[-1]
-            connection = station.get_connection_by_station(train_stations.pop(0))
+            connection = station.get_connection_by_station(train_copy.pop(0))
             if connection:
                 new_train.move(connection)
 
