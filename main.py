@@ -15,8 +15,8 @@ from code.algorithms.bad_algorithm import Make_Greedy_Routes
 from code.algorithms.random_algorithm import Make_Random_Routes
 from code.algorithms.simulated_annealing import Hillclimber, Simulated_Annealing
 from code.algorithms.simulated_annealing import Reheating
-from code.algorithms.random_iteration import Make_Iterated_Routes
-from code.algorithms.biased_iteration import Make_Biased_Routes
+from TeamOntspoord.code.algorithms.random_replace import Make_Replaced_Routes
+from TeamOntspoord.code.algorithms.biased_replace import Make_Biased_Routes
 from code.algorithms.depth_first import Depth_First
 
 from code.visualisation.plotly_animation import create_animation, create_boxplot
@@ -135,13 +135,13 @@ if __name__ == '__main__':
         elif args.algorithm == 'reheating':
             Algorithm = Reheating
         elif args.algorithm == 'random_iteration':
-            Algorithm = Make_Iterated_Routes
+            Algorithm = Make_Replaced_Routes
         elif args.algorithm == 'biased_iteration':
             Algorithm = Make_Biased_Routes
         elif args.algorithm == 'depth_first':
             Algorithm = Depth_First
 
-    # --------------------------- Alter railnet ----------------------------------
+    # --------------------------- Alter railnet ---------------------------------
 
         # failed station if desired
         if args.stationfailure:

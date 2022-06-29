@@ -13,7 +13,7 @@ Lara, Tim, Eva
 from code.algorithms.random_algorithm import Make_Random_Routes
 
 
-class Make_Iterated_Routes():
+class Make_Replaced_Routes():
 
     def __init__(self, railnet):
         """

@@ -15,7 +15,7 @@ from code.algorithms.bad_algorithm import Make_Greedy_Routes
 from code.algorithms.random_algorithm import Make_Random_Routes
 from code.algorithms.simulated_annealing import Hillclimber, Simulated_Annealing
 from code.algorithms.random_iteration import Make_Iterated_Routes
-from code.algorithms.biased_iteration import Make_Biased_Routes
+from TeamOntspoord.code.algorithms.biased_replace import Make_Biased_Routes
 from code.classes.structure import Railnet
 from code.visualisation.output import output
 from code.visualisation.plotly_animation import create_animation

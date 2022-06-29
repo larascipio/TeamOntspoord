@@ -1,8 +1,6 @@
 # TeamOntspoord
 Project RailNL voor Programmeer Theorie
 
-TODO: Plaatjes toevoegen
-
 ## RailNL
 
 Voordat een treinnetwerk in gebruik genomen kan worden, is het de bedoeling dat zo efficiënt mogelijk treintrajecten worden uitgestippeld. Het is niet de bedoeling dat er heel veel korte trajecten zijn, waardoor passagiers veel over zouden moeten stappen en er veel treinen in gebruik zijn. Het is ook niet de bedoeling dat de trajecten te lang zijn of dat teveel spoor onbereden blijft. Om de kwaliteit van de collectie treintrajecten, ook wel de lijnvoering genoemd, te toetsen is gebruik gemaakt van deze formule:
@@ -17,35 +15,12 @@ Het eerste wat aangegeven moet worden bij het runnen van main.py is welk spoorne
 
 Vervolgens kan de gebruiker kiezen om een algoritme uit te voeren of om een experiment met alle algoritmes uit te voeren met respectievelijk `algorithm` of `experiment`.
 
-Bij de keuze voor een algoritme, moet de keuze gemaakt worden welk algoritme gebruikt gaat worden. Er kan gekozen worden uit `random`, `random_iteration`, `biased_iteration`, `greedy`, `depth_first`, `hillclimber`, `annealing` en `reheating`. Deze algoritmes worden onder het volgende kopje in volgorde uitgelegd. Verder moet er gekozen worden of het algoritme 1 keer wordt gerund met `once`, of er een histogram wordt gemaakt met `hist` of dat er voor bepaalde tijd naar de beste lijnvoering wordt gezocht met `best`.
+Bij de keuze voor een algoritme, moet de keuze gemaakt worden welk algoritme gebruikt gaat worden. Er kan gekozen worden uit `random`, `random_iteration`, `biased_iteration`, `greedy`, `depth_first`, `hillclimber`, `annealing` en `reheating`. Deze algoritmes worden onder het kopje 'De algoritmes' in volgorde uitgelegd. Verder moet er gekozen worden of het algoritme 1 keer wordt gerund met `once`, of er een histogram wordt gemaakt met `hist` of dat er voor bepaalde tijd naar de beste lijnvoering wordt gezocht met `best`. Het is ook mogelijk om zowel een histogram te maken als de beste lijnvoering te vinden en te visualiseren met `all`. 
 
 Een voorbeeld van de commandline waarin de hillclimber 1 keer wordt gerund voor de kaart van heel Nederland is: 
 ```
 main.py national algorithm hillclimber once
 ```
-
-**TODO afbeelding van hillclimber kaart**
-
-
-Als gekozen wordt voor 'hist', dan wordt er een histogram gemaakt met matplotlib van 100 runs van het aangegeven algoritme. Een voorbeeld van hoe dit aan te roepen is voor heel Nederland, met het random algoritme: main.py national algorithm random hist.
-
-Hieronder staan twee voorbeelden van histogrammen:
-![Histogram van Random](docs/random_long_hist.png "Random_Hist")
-*Een histogram waarin de kwaliteit van 1000 runs met het random algoritme staan afgebeeld.*
-![Histogram van Random Iteration](docs/random_iteration_1000.png "Random_Iteration_Hist")
-*Een histogram waarin de kwaliteit van 100 runs met het random iteration algoritme staan afgebeeld.*
-
-Het is mogelijk om zowel een histogram te maken als de beste lijnvoering te vinden en te visualiseren met 'all'. Een voorbeeld van hoe dit wordt aangeroepen is: main.py national algorithm random all.
-
-### Aanpassingen van het spoornetwerk
-
-Wie ervoor kiest om één bepaald algoritme te runnen, kan ook de structuur van de kaart aanpassen! Zo kunnen meerdere willekeurig gekozen connecties verlegd worden. Dit kan door de hoeveelheid verlegde connecties aan te geven aan het eind, bijvoorbeeld met main.py national algorithm random all 3. De verlegde connecties worden uitgeprint.
-
-De gebruiker kan ook een station aangeven dat uitvalt. Dit houdt in dat alle connecties van en naar dit stations komen te vervallen. Als de gebruiker bijvoorbeeld station Amsterdam Centraal wil laten uitvallen kan dit bijvoorbeeld op deze manier: main.py national algorithm random all 0 "Amsterdam Centraal". De gebruiker moet eerst aangeven hoeveel routes verlegd moeten worden voordat een station aangegeven kan worden. In dit voorbeeld is er 0 ingetypt, en worden er dus geen routes verlegd - alleen Amsterdam Centraal zal uitvallen.
-
-Het is ook mogelijk om verlegde connecties, verwijderde routes en uitgevallen stations terug te stoppen in de kaart! Een voorbeeld van hoe dit werkt staat in rnet_changes_example.py. 
-
-### Experiment
 
 Als er wordt gekozen voor een experiment, kan er een bepaald aantal iteraties gerund worden voor elk algoritme met `iterations` of elk algoritme wordt voor dezelfde tijd gerund met `time`. Daarna moet een integer komen die aangeeft hoeveel iterations of seconden er gebruikt moeten worden.
 
@@ -54,8 +29,33 @@ Een voorbeeld voor een experiment met 100 iterations voor elk algoritme op de ka
 main.py holland experiment iterations 100
 ```
 
-**TODO: Boxplot afbeelding**
+**TODO afbeelding van hillclimber kaart**
 
+Hieronder staan twee voorbeelden van histogrammen die gemaakt kunnen worden met `hist`:
+
+![Histogram van Random](docs/random_long_hist.png "Random_Hist")
+
+*Een histogram waarin de kwaliteit van 1000 runs met het random algoritme staan afgebeeld.*
+![Histogram van Random Iteration](docs/random_iteration_1000.png "Random_Iteration_Hist")
+
+*Een histogram waarin de kwaliteit van 100 runs met het random iteration algoritme staan afgebeeld.*
+
+
+### Aanpassingen van het spoornetwerk
+
+Wie ervoor kiest om één bepaald algoritme te runnen, kan ook de structuur van de kaart aanpassen! Zo kunnen meerdere willekeurig gekozen connecties verlegd worden. Welke connecties verlegd worden, wordt uitgeprint. Connecties verleggen kan door de hoeveelheid verlegde connecties aan te geven aan het eind, bijvoorbeeld met 
+```
+main.py national algorithm random all 3
+```
+
+De gebruiker kan ook een station aangeven dat uitvalt. Dit houdt in dat alle connecties van en naar dit stations komen te vervallen. Als de gebruiker bijvoorbeeld station Amsterdam Centraal wil laten uitvallen kan dit bijvoorbeeld op deze manier: 
+```
+main.py national algorithm random all 0 "Amsterdam Centraal"
+``` 
+
+De gebruiker moet eerst aangeven hoeveel routes verlegd moeten worden voordat een station aangegeven kan worden. In dit voorbeeld is er 0 ingetypt, en worden er dus geen routes verlegd - alleen Amsterdam Centraal zal uitvallen.
+
+Het is ook mogelijk om verlegde connecties, verwijderde routes en uitgevallen stations terug te stoppen in de kaart! Een voorbeeld van hoe dit werkt staat in `rnet_changes_example.py`. 
 
 ## De algoritmes
 
