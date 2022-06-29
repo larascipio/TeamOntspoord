@@ -18,6 +18,7 @@ import random
 
 # ------------------------------- Hillclimber ----------------------------------
 
+
 class Hillclimber():
     def __init__(self, railnet):
         """
@@ -26,16 +27,16 @@ class Hillclimber():
         self._railnet = railnet
         self.get_random_routes()
         self._changes = [
-            self.extend_train, 
-            self.decrease_train, 
-            self.make_new_train, 
+            self.extend_train,
+            self.decrease_train,
+            self.make_new_train,
             self.split_train,
             self.remove_train
         ]
 
         self._bestqual = 0
         self._bestroute = None
-    
+
     def get_random_routes(self):
         """Use the random algorithm to get routes to start with."""
         route = Make_Random_Routes(self._railnet)
@@ -46,7 +47,7 @@ class Hillclimber():
         Run the algorithm for the provided amount of iterations.
         If no amount is provided, the algorithm will run for 100000 iterations.
         """
-        self._max_iter=iterations
+        self._max_iter = iterations
 
         # keep trying a random change and see if the score increases
         for self._iter in range(self._max_iter):
@@ -86,7 +87,7 @@ class Hillclimber():
         if qual_now < qual_before:
             return False
         return True
-    
+
     def extend_train(self, train):
         """Extend the train at one of the ends."""
 
@@ -94,7 +95,7 @@ class Hillclimber():
         qual_before = self._railnet.quality()
 
         # pick which end to extend over which connection
-        index = random.choice([0,-1])
+        index = random.choice([0, -1])
         station = train.get_stations()[index]
         next_connection = random.choice(station.get_connections())
 
@@ -107,7 +108,7 @@ class Hillclimber():
             train.movestart(next_connection)
         else:
             train.move(next_connection)
-        
+
         # save the quality after the change
         qual_now = self._railnet.quality()
 
@@ -135,13 +136,13 @@ class Hillclimber():
         qual_before = self._railnet.quality()
 
         # decrease the train at one of the ends
-        index = random.choice([0,-1])
+        index = random.choice([0, -1])
         connection_to_remove = train.get_connections()[index]
         if index == 0:
             train.remove_first_connection()
         else:
             train.remove_last_connection()
-        
+
         # determine the new quality
         qual_now = self._railnet.quality()
 
@@ -167,7 +168,7 @@ class Hillclimber():
         #         print(train)
         #         raise Exception('it was decrease_train')
 
-    def make_new_train(self,p=0):
+    def make_new_train(self, p=0):
         """Make a new train at a random connection."""
 
         if len(self._railnet.get_trains()) == self._railnet.get_max_trains():
@@ -216,7 +217,7 @@ class Hillclimber():
         # check if the train can be split
         if len(train.get_stations()) < 4:
             return
-        
+
         # choose at which connection to split the train
         connections = train.get_connections()
         index_to_split = random.randint(1, len(connections)-2)
@@ -246,7 +247,7 @@ class Hillclimber():
 
             # move the new train
             new_train.move(connection)
-        
+
         # remove the chosen connection from the original train
         train.remove_first_connection()
 
@@ -267,7 +268,7 @@ class Hillclimber():
         #         raise Exception('SPLIT INCORRECTLY')
         #     old_station = new_station
         #     i += 1
-        
+
         # for connection_to_split in train.get_connections():
         #     if not connection_to_split.passed():
         #         print('split_train')
@@ -284,7 +285,7 @@ class Hillclimber():
         # remove all connections
         for connection in train.get_connections():
             connection.remove()
-        
+
         # save the quality now
         qual_now = self._railnet.quality() + train.get_distance() + 100
 
@@ -293,7 +294,7 @@ class Hillclimber():
             connection.travel()
 
         # check if the quality is better or worse
-        if self.keep_change(qual_now=qual_now,qual_before=qual_before):
+        if self.keep_change(qual_now=qual_now, qual_before=qual_before):
             self._railnet.remove_train(train)
 
         # # check
@@ -304,8 +305,9 @@ class Hillclimber():
         #         print(train)
         #         raise Exception('it was remove_train')
 
+
 class Simulated_Annealing(Hillclimber):
-    def __init__(self, railnet, start_temp:int = 20, base:float = 0.999):
+    def __init__(self, railnet, start_temp: int = 20, base: float = 0.999):
         """Initialize the simulated annealing algorithm."""
         super().__init__(railnet)
         self._starttemp = start_temp
@@ -321,7 +323,7 @@ class Simulated_Annealing(Hillclimber):
 
         # determine the temperature for this iteration
         temp = self._starttemp - (self._starttemp/self._max_iter) * self._iter
-        # temp = self._starttemp * pow(self._base, self._iter)     
+        # temp = self._starttemp * pow(self._base, self._iter)
 
         # determine whether this change is kept
         qual_change = qual_now - qual_before
@@ -335,6 +337,7 @@ class Simulated_Annealing(Hillclimber):
             return True
         return False
 
+
 class Reheating(Hillclimber):
     """
     The inspiration for this algorithm can be found at https://www.sciencedirect.com/science/article/pii/S0377221717300759?casa_token=JEj48ByZMJIAAAAA:bu5jvRf5EphHFiPSGWEodYny0K8gAqNqzpyHKZL93NKg_ysug9u30CTNJ2j7JndgfxkFmZIDVg
@@ -345,16 +348,16 @@ class Reheating(Hillclimber):
 
         super().__init__(railnet)
 
-        self._heat = 0        
+        self._heat = 0
         self._temp = start_temp
         self._base = base
         self._stuck = 0
-        
+
         # lists used for plots.
         self.temps = []
         self.best = []
         self.current = []
-    
+
     def run(self, iterations=50000):
         """Run the algorithm"""
         super().run(iterations)
