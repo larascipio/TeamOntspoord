@@ -1,5 +1,7 @@
+from multiprocessing import connection
 from opcode import stack_effect
 from code.algorithms.random_algorithm import Make_Random_Routes
+from code.algorithms.bad_algorithm import Make_Bad_Routes
 import copy 
 from code.visualisation.plotly_animation import create_animation
 
@@ -21,7 +23,8 @@ class Depth_First():
         """
         Use random algorithm to make a first train network.
         """
-        route = Make_Random_Routes(self._railnet)
+        # route = Make_Random_Routes(self._railnet)
+        route = Make_Bad_Routes(self._railnet)
         route.run()
 
     def get_next_train(self):
@@ -29,37 +32,44 @@ class Depth_First():
         Method that returns the first train station of traject.
         """
         if len(self._copy_railnet_trains) > 0:
-            return self._copy_railnet_trains.pop()
+            return self._copy_railnet_trains.pop(0)
   
     def build_trains(self):
         """
         Creates all possible trajects from a single start station and returns them in a list of stations.
         """
 
-        list_of_trains = []
+        best_quality = 0 
+        best_train = None
+        start_station = self._current_train.get_station_names()[0]
         # aangepast naar current train
-        stack = [self._current_train]
-        print(f'Start {stack}')
+        stack = [[start_station]]
         
         while stack:
-            train = stack.pop()
-             # Dit nog aanpassen, train.next_connection? 
-            for connection in station.get_connections():
-                station = connection._stations[1]
-                if not station._passed:
-                    stack.append(station)
-                    station._passed = True
-                print(f'possible {stack}')
-            train = copy.deepcopy(stack)
-            #print(f'possible {train}')
-            station_names = []
-            for station in train:
-                station_names.append(station._name)
-            if len(station_names) > 0:
-                list_of_trains.append(station_names)
-        print(list_of_trains)
-            #print(list_of_trains)
-        return list_of_trains
+            # take the last added station names
+            stations = stack.pop()
+            # create a train from station names
+            train = self._copy_railnet.restore_train(stations)
+            quality = self._copy_railnet.quality()
+            # check if this train is the best train 
+            if quality >= best_quality:
+                best_quality = quality
+                best_train = stations
+            
+            last_station = train.get_stations()[-1]
+            
+            connections = last_station.get_connections()
+            for connection in connections: 
+                if connection.get_distance() + train.get_distance() <= self._copy_railnet.get_max_distance():
+                    station = connection.get_destination(last_station)
+                    stations.append(station.get_name())
+                    stack.append(stations.copy())
+                    stations.pop()
+
+            self._copy_railnet.remove_train(train)
+
+            
+        return best_train 
 
     def find_and_replace_best_train(self, possible_trains):
         """
@@ -96,43 +106,32 @@ class Depth_First():
         Run the algorithm.
         """
 
-        create_animation(self._railnet)
+        #create_animation(self._railnet)
 
         # save initial quality of the train network
         self._old_quality = self._quality
 
         # Copy train network to delete and change trains
         self._copy_railnet = copy.deepcopy(self._railnet)
-        # print(f'Old {self._copy_railnet}')
+        print(f'Old {self._copy_railnet}')
 
         self._copy_railnet_trains = list(self._copy_railnet.get_trains())
         # print(f'copy_railnet_trains: {self._copy_railnet_trains}')
 
         # Go through every train of the railnet
-        while self._copy_railnet_trains: # TODO waarom maak je hier niet gewoon een for-loop van?
-
+        for _ in range(len(self._copy_railnet_trains)):
             # Take a train apart to search depth first 
             self._current_train = self.get_next_train()
-
-            # Return all possible trains from same start station 
-            possible_trains = self.build_trains()
 
             # Delete the train from train network 
             self._copy_railnet.remove_train(self._current_train)
 
-            # Select the start station to create all the routes from
-            #start_station = self._current_train.get_stations()[0]
-            
-            # Return all possible trains from same start station 
-            #possible_trains = self.build_trains(start_station)
-            #print(f'TRAINS {self._trains}')
-            #print(f'possible {possible_trains}')
+            # TODO name function
+            best_train = self.build_trains()
 
-            # Find and replace the best train found 
-            self._best_train = self.find_and_replace_best_train(possible_trains)
-            #print(f'best {self._best_train}')
-            
-            # Add best train to railnet 
-            self._copy_railnet.add_train(self._best_train)
+            self._copy_railnet.restore_train(best_train)
 
-        print(f'New {self._copy_railnet}')
+            print(f'New {self._copy_railnet}') 
+
+
+
