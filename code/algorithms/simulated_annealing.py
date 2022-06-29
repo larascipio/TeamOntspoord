@@ -12,8 +12,6 @@ Lara, Tim, Eva
 # ------------------------------- Imports --------------------------------------
 
 from code.algorithms.random_algorithm import Make_Random_Routes
-# from code.visualisation.plotly_animation import create_animation, create_gif
-# from code.visualisation.plotly_live import Live_Plot
 import random
 
 # ------------------------------- Hillclimber ----------------------------------
@@ -72,14 +70,6 @@ class Hillclimber():
                 self._bestqual = self._railnet.quality()
                 self._bestroute = self._railnet.get_route_names()
 
-            # # check
-            # for train in self._railnet.get_trains():
-            #     distance = 0
-            #     for connection in train.get_connections():
-            #         distance += connection.get_distance()
-            #     if train.get_distance() != distance:
-            #         raise Exception(f'The length of the train is {distance}, not {train.get_distance()}!')
-
     def keep_change(self, qual_before, qual_now) -> bool:
         """
         Returns true if the change made has increased the score.
@@ -121,14 +111,6 @@ class Hillclimber():
             else:
                 train.remove_last_connection()
 
-        # # check
-        # for connection in train.get_connections():
-        #     if not connection.passed():
-        #         print('extend_train')
-        #         print(connection)
-        #         print(train)
-        #         raise Exception('it was extend_train')
-
     def decrease_train(self, train):
         """Decrease the train at one of the ends."""
 
@@ -157,16 +139,6 @@ class Hillclimber():
         if len(train.get_stations()) == 1:
             # self.delete_train(train)
             self._railnet.remove_train(train)
-
-        # # check
-        # for connection in train.get_connections():
-        #     if not connection.passed():
-        #         print('decrease_train')
-        #         print(f'removed (or not) {connection_to_remove} at {index}')
-        #         print()
-        #         print(connection)
-        #         print(train)
-        #         raise Exception('it was decrease_train')
 
     def make_new_train(self, p=0):
         """Make a new train at a random connection."""
@@ -197,12 +169,6 @@ class Hillclimber():
         starting_station = connection.get_destination(None)
         new_train = self._railnet.create_train(starting_station)
         new_train.move(connection)
-
-        # # check
-        # for connection in new_train.get_connections():
-        #     if not connection.passed():
-        #         print(new_train)
-        #         raise Exception('it was make_new_train')
 
     def split_train(self, train):
         """Split the train at a random connection"""
@@ -258,24 +224,6 @@ class Hillclimber():
         if len(train.get_stations()) < 2:
             self._railnet.remove_train(train)
 
-        # check
-        # old_station = train.get_stations()[0]
-        # i = 0
-        # for new_station in train.get_stations()[1:]:
-        #     if train.get_connections()[i].get_destination(old_station) != new_station:
-        #         print(old_station, new_station)
-        #         print(i, train.get_connections()[i])
-        #         raise Exception('SPLIT INCORRECTLY')
-        #     old_station = new_station
-        #     i += 1
-
-        # for connection_to_split in train.get_connections():
-        #     if not connection_to_split.passed():
-        #         print('split_train')
-        #         print(connection_to_split)
-        #         print(train)
-        #         raise Exception('it was split_train')
-
     def remove_train(self, train):
         """Remove a train"""
 
@@ -296,14 +244,6 @@ class Hillclimber():
         # check if the quality is better or worse
         if self.keep_change(qual_now=qual_now, qual_before=qual_before):
             self._railnet.remove_train(train)
-
-        # # check
-        # for connection in train.get_connections():
-        #     if not connection.passed():
-        #         print('remove_train')
-        #         print(connection)
-        #         print(train)
-        #         raise Exception('it was remove_train')
 
 
 class Simulated_Annealing(Hillclimber):
@@ -340,7 +280,8 @@ class Simulated_Annealing(Hillclimber):
 
 class Reheating(Hillclimber):
     """
-    The inspiration for this algorithm can be found at https://www.sciencedirect.com/science/article/pii/S0377221717300759?casa_token=JEj48ByZMJIAAAAA:bu5jvRf5EphHFiPSGWEodYny0K8gAqNqzpyHKZL93NKg_ysug9u30CTNJ2j7JndgfxkFmZIDVg
+    The inspiration for this algorithm can be found at:
+    https://doi.org/10.1016/j.ejor.2017.01.040
     This algorithm was heavily simplified for this version of reheating.
     """
     def __init__(self, railnet, start_temp=100, base=0.9994):
@@ -352,8 +293,9 @@ class Reheating(Hillclimber):
         self._temp = start_temp
         self._base = base
         self._stuck = 0
+        self._threshold = 50
 
-        # lists used for plots.
+        # lists used for plots TODO weghalen
         self.temps = []
         self.best = []
         self.current = []
@@ -362,38 +304,45 @@ class Reheating(Hillclimber):
         """Run the algorithm"""
         super().run(iterations)
 
-        # print('end of run')
-        # print(self._bestqual)
-        # print(self._bestroute)
         # reset the best route after running the algorithm
         self._railnet.reset()
         self._railnet.restore_routes(self._bestroute)
 
     def keep_change(self, qual_before, qual_now) -> bool:
 
-        # lists used for plots
+        # lists used for plots TODO weghalen
         self.temps.append(self._temp)
         self.best.append(self._bestqual)
         self.current.append(qual_before)
 
         # reheat after the algorithm has not changed for a while
-        if self._stuck > 50 and self._iter < 0.9*self._max_iter:
+        if self._stuck > self._threshold:
+
+            # count the number of heats
             self._heat += 1
+
+            # increase the temperature
             self._temp *= 2
+
+            # reset the stuck-counter
             self._stuck = 0
 
         # determine whether this change is kept
         qual_change = qual_now - qual_before
         if qual_change > 0:
+
             # positive changes are always accepted
             keep_change = True
         elif self._temp == 0:
+
             # if the temperature is zero, the change is always rejected
             keep_change = False
         elif pow(2, qual_change/self._temp) > random.random():
+
             # a negative change is accepted
             keep_change = True
         else:
+
             # no change is made
             keep_change = False
 

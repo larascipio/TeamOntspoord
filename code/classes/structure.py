@@ -19,7 +19,7 @@ import random
 # ------------------------------- Railnet --------------------------------------
 
 
-class Railnet():  # TODO misschien is het logischer als de load ook in de init wordt aangeroepen
+class Railnet():
     def __init__(self, num_trains: int, max_distance: int):
         """Create a railnet with files given."""
         self._stations = {}
@@ -68,6 +68,9 @@ class Railnet():  # TODO misschien is het logischer als de load ook in de init w
 
     def get_total_connections(self) -> int:
         return len(self._connections)
+    
+    def get_total_stations(self) -> int:
+        return len(self._stations)
 
     def get_passed_connections(self) -> set:
         connections_passed = set()
@@ -382,10 +385,10 @@ class Railnet():  # TODO misschien is het logischer als de load ook in de init w
 
         # create new train
         train_copy = train_stations.copy()
-        new_train = self.create_train(self._stations[train_copy.pop(0)])
+        new_train = self.create_train(self._stations[train_stations[0]])
 
         # move the train over the stations
-        for next_station in train_copy:
+        for next_station in train_stations:
             station = new_train.get_stations()[-1]
             connection = station.get_connection_by_station(next_station)
             if connection:

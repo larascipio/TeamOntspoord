@@ -87,10 +87,13 @@ class Depth_First():
             # take a train apart to search for better train
             self._current_train = self.get_next_train()
 
-            self._best_train = self.find_best_train()
-
-            # delete old train
+            # delete old train  
             self._railnet.remove_train(self._current_train)
 
-            # add new better train
-            self._railnet.restore_train(self._best_train)
+            # find the best train
+            self._best_train = self.find_best_train()
+
+            # add new better train 
+            self._railnet.restore_train(self._best_train) 
+
+

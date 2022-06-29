@@ -22,16 +22,7 @@ class Make_Random_Routes():
         Use network of routes to initialize the algorithm.
         """
         self._railnet = railnet
-
-    def create_train(self):
-        """
-        Create a new train at a random start station.
-        """
-        start = random.choice(list(self._railnet.get_stations().values()))
-
-        train = self._railnet.create_train(start)
-
-        return train
+        self._random = True
 
     def run(self):
         """
@@ -44,6 +35,17 @@ class Make_Random_Routes():
         for _ in range(self._random_amount):
             self.run_one_train()
 
+    def create_train(self):
+        """
+        Create a new train at a random start station.
+        """
+        # choose a random station
+        start = random.choice(list(self._railnet.get_stations().values()))
+
+        train = self._railnet.create_train(start)
+
+        return train
+
     def run_one_train(self):
         """
         Run a single train.
@@ -54,7 +56,11 @@ class Make_Random_Routes():
         # keep adding stations until the max time is reached
         while train.is_running():
 
-            connection = train.choose_random_connection()
+            if self._random:
+                connection = train.choose_random_connection()
+            else:
+                connection = train.choose_next_connection()
+    
             if not connection:
                 break
 
