@@ -37,19 +37,6 @@ class Depth_First():
         """
 
         list_of_trains = []
-<<<<<<< HEAD
-        stack = [start_station]
-        print(f'Start {stack}')
-        
-        while stack:
-            print(f'Stack: {stack}')
-            station = stack.pop()
-            # new_train = self._copy_railnet.create_train(station)
-            
-            # if station not in path:
-            #     path.append(station)
-                
-=======
         # aangepast naar current train
         stack = [self._current_train]
         print(f'Start {stack}')
@@ -57,7 +44,6 @@ class Depth_First():
         while stack:
             train = stack.pop()
              # Dit nog aanpassen, train.next_connection? 
->>>>>>> 9ccaa12b818b01d5e7df30d2493a5dcc4c046d71
             for connection in station.get_connections():
                 station = connection._stations[1]
                 if not station._passed:
@@ -149,10 +135,4 @@ class Depth_First():
             # Add best train to railnet 
             self._copy_railnet.add_train(self._best_train)
 
-<<<<<<< HEAD
-            break # TODO weghalen voor meer treinen
-
-        # print(f'New {self._copy_railnet}')
-=======
         print(f'New {self._copy_railnet}')
->>>>>>> 9ccaa12b818b01d5e7df30d2493a5dcc4c046d71
