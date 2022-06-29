@@ -13,11 +13,17 @@ Des te hoger de kwaliteit, des te beter de lijnvoering. Het doel van dit project
 
 # Gebruikshandleiding
 
-Het eerste wat aangegeven moet worden bij het runnen van main.py is welk spoornetwerk gebruikt gaat worden. In de data-map staan vier csv bestanden, waarop respectievelijk de stations en connections voor respectievelijk Holland en heel Nederland staan. In de commandline kan de gebruiker kiezen tussen 'holland' en 'national' om te kiezen tussen deze twee spoornetwerken. 
+Het eerste wat aangegeven moet worden bij het runnen van main.py is welk spoornetwerk gebruikt gaat worden. In de data-map staan vier csv bestanden, waarop respectievelijk de stations en connections voor respectievelijk Holland en heel Nederland staan. In de commandline kan de gebruiker kiezen tussen 'holland' en 'national' om te kiezen tussen deze twee spoornetwerken.
 
-Vervolgens kan de gebruiker kiezen voor welk algoritme gebruikt gaat worden om de lijnvoering te maken. Er kan gekozen worden uit 'random','random_iteration','biased_iteration','greedy','depth_first', 'hillclimber','annealing' en 'reheating'. Deze algoritmes worden onder het volgende kopje in volgorde uitgelegd. 
+Vervolgens kan de gebruiker kiezen om een algoritme uit te voeren of om een experiment met alle algoritmes uit te voeren met respectievelijk 'algorithm' of 'experiment'.
 
-UITLEG COMMANDLINE MAIN.PY EN VISUALISATIE
+Bij de keuze voor een algoritme, moet de keuze gemaakt worden welk algoritme gebruikt gaat worden. Er kan gekozen worden uit 'random','random_iteration','biased_iteration','greedy','depth_first', 'hillclimber','annealing' en 'reheating'. Deze algoritmes worden onder het volgende kopje in volgorde uitgelegd. Verder moet er gekozen worden of het algoritme 1 keer wordt gerund met 'once', of er een histogram wordt gemaakt met 'hist' of dat er voor bepaalde tijd naar de beste lijnvoering wordt gezocht met 'best'.
+
+Een voorbeeld van de commandline waarin de hillclimber 1 keer wordt gerund voor de kaart van heel Nederland is: main.py national algorithm hillclimber once
+
+Als er wordt gekozen voor een experiment, kan er een bepaald aantal iteraties gerund worden voor elk algoritme met 'iterations' of elk algoritme wordt voor dezelfde tijd gerund met 'time'. Daarna moet een integer komen die aangeeft hoeveel iterations of seconden er gebruikt moeten worden.
+
+Een voorbeeld voor een experiment met 100 iterations voor elk algoritme op de kaart van alleen Holland is: main.py holland experiment iterations 100
 
 ## De algoritmes
 
@@ -29,16 +35,14 @@ Random iteration (random_iteration.py) maakt gebruik van het random algoritme ma
 
 Biased iteration (biased_iteration.py) volgt hetzelfde principe als random iteration - meerdere treintrajecten worden getoetst en de beste wordt gekozen - maar de trajecten worden niet meer willekeurig bepaald. Elke connectie in het spoornetwerk mag maar één keer gebruikt worden en het traject begint altijd bij een station waar nog één of meer ongebruikte connecties beschikbaar zijn. Een ander verschil is dat er minder nieuwe trajecten worden aangemaakt - voor elk treintraject zijn dat er hier 200. Er is geen betekenisvol verschil zichtbaar bij het eindresultaat voor hogere getallen na 200.
 
-Het greedy algoritme (bad_algorithm.py) maakt gebruik van dezelfde vooringenomen trajecten als biased iteration. Connecties worden ook hier maar één keer gebruikt. Het verschil is dat het greedy algoritme doorgaat totdat alle connecties bereden zijn en niet de trajecten op kwaliteit toetst.
+Het greedy algoritme (bad_algorithm.py) maakt gebruik van dezelfde vooringenomen trajecten als biased iteration. Connecties worden ook hier maar één keer gebruikt. De verschillen bestaan uit het feit dat het greedy algoritme doorgaat totdat alle connecties bereden zijn, dat de trajecten niet op kwaliteit worden getoetst en bovenal dat het greedy algoritme een constructief algorimte is en met een lege lijnvoering begint.
 
-TODO DEPTH FIRST
+Het depth-first algoritme is een variatie op de iteration-algoritmes. In plaats van random treinroutes proberen of zelf treinroutes maken, zoekt dit algoritme voor een trein vanaf een bepaald station het beste traject depth-first. Dit betekent dat het algoritme alle mogelijke treinen afgaat en altijd de best mogelijke trein vindt.
 
-Het hillclimber algoritme (simulated_annealing.py) maakt steeds kleine stapjes op zoek naar het beste resultaat. Eerst wordt een lijnvoering gemaakt met het random algoritme, wat vervolgens wordt verbeterd. De trajecten kunnen met één connectie verlengd of verkort worden, in tweeën gesplit worden en er kunnen ook geheel nieuwe trajecten aangemaakt worden - zolang het maar de kwaliteit van de lijnvoering ten goede komt.
+Het hillclimber algoritme (simulated_annealing.py) maakt steeds kleine veranderingen in een bestaant trajects op zoek naar het beste resultaat. Eerst wordt een lijnvoering gemaakt met het random algoritme, wat vervolgens wordt verbeterd. De trajecten kunnen met één connectie verlengd of verkort worden, in tweeën gesplit worden of er wordt een nieuw traject van één connectie lang gemaakt - zolang het maar de kwaliteit van de lijnvoering ten goede komt.
 
-De simulated annealing en reheating algoritmes zijn extensies van het hillclimber algoritme en staan in hetzelfde bestand (simulated_annealing.py). Een groot probleem met een hillclimber algoritme is dat het makkelijk vast komt te zitten in lokale maxima. Dit zijn in dit geval zijn dat kwaliteitsscores die niet met één stap van het hillclimber algoritme verbeterd kunnen worden - ook al is de lijnvoering dan niet het meest efficiënt. Met simulated annealing worden stappen van het hillclimber algoritme die de kwaliteit verslechteren tot op zekere hoogte toegelaten. Hoe hoog deze zekere hoogte is hangt af van de temperatuur.
-
-TODO leg reheating en simulated annealing uit
+De simulated annealing en reheating algoritmes zijn extensies van het hillclimber algoritme en staan in hetzelfde bestand (simulated_annealing.py). Een groot probleem met een hillclimber algoritme is dat het makkelijk vast komt te zitten in lokale maxima. Dit zijn in dit geval zijn dat kwaliteitsscores die niet met één stap van het hillclimber algoritme verbeterd kunnen worden - ook al is de lijnvoering dan niet het meest efficiënt. Bij deze nieuwe algoritmes worden de stappen van het hillclimber algoritme die de kwaliteit verslechteren tot op zekere hoogte toegelaten. De kans hangt deels af van de temperatuur. Bij simulated annealing begint deze standard bij 20 en daalt langzaam tot 0. Bij reheating begint deze bij 100 en daalt exponentieel tot er lang genoeg geen veranderingen zijn geweest, waardoor de temperatuur zal verdubbelen.
 
 ## Experimenten
 
-Als in de commandline van main.py 'experiment' wordt aangeroepen, kunnen experimenten met alle algoritmes worden uitgevoerd. Hierbij wordt elk algoritme gerund en wordt een boxplot van de resultaten gemaakt. Hiermee is goed de verschillen tussen de algoritmes af te zien - zowel het gemiddelde van het aantal runs (dat de gebruiker zelf kan aangeven in de commandline) als de standaarddeviatie staan aangegeven. 
+Als in de commandline van main.py 'experiment' wordt aangeroepen, kunnen experimenten met alle algoritmes worden uitgevoerd. Hierbij wordt elk algoritme gerund en wordt een boxplot van de resultaten gemaakt. Hiermee zijn goed de verschillen tussen de algoritmes af te zien - zowel het gemiddelde van het aantal runs (dat de gebruiker zelf kan aangeven in de commandline) als de standaarddeviatie staan aangegeven. 
