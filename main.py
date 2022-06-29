@@ -164,7 +164,10 @@ if __name__ == '__main__':
             best_route = None
             # plot = Live_Plot(rails)
 
-            for _ in range(10000):
+            start = time.time()
+
+            # run for 10 minutes
+            while time.time() - start < 600:
 
                 # run the algorithm multiple times
                 rails.reset()
@@ -224,6 +227,7 @@ if __name__ == '__main__':
             create_boxplot(df, title=f'Quality for {args.runs} iterations on the {args.type} map')
 
         elif args.basis == 'time':
+            best_qual = 0
             df = pd.DataFrame(columns=names)
 
             for Algorithm in algorithms:
@@ -236,7 +240,17 @@ if __name__ == '__main__':
                     rails.reset()
                     route = Algorithm(rails)
                     route.run()
-                    df.loc[n_runs, Algorithm.__name__.replace('_', ' ')] = rails.quality()
+                    qual = rails.quality()
+                    if qual > best_qual:
+                        best_qual = qual
+                        print(best_qual)
+                        output(
+                            best_qual,
+                            rails.get_trains(),
+                            './code/output/output.csv'
+                        )
+                        create_animation(rails)
+                    df.loc[n_runs, Algorithm.__name__.replace('_', ' ')] = qual
                     n_runs += 1
 
             print(df)
