@@ -16,7 +16,7 @@ import random
 class Make_Biased_Routes():
     def __init__(self, railnet):
         """
-        Create a train at the given station.
+        Use network of routes to initialize the algorithm.
         """
         self._railnet = railnet
         self._possible_stations = list(self._railnet.get_stations().values())
@@ -52,7 +52,7 @@ class Make_Biased_Routes():
 
     def run_one_train(self, train):
         """
-        Create and run one train
+        Create and run one train.
         """
 
         if not train:
