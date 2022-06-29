@@ -385,10 +385,12 @@ class Railnet():  # TODO misschien is het logischer als de load ook in de init w
         new_train = self.create_train(self._stations[train_copy.pop(0)])
 
         # move the train over the stations
-        while train_copy:
+        for next_station in train_copy:
             station = new_train.get_stations()[-1]
-            connection = station.get_connection_by_station(train_copy.pop(0))
+            connection = station.get_connection_by_station(next_station)
             if connection:
                 new_train.move(connection)
+            else:
+                raise Exception('This combination of station is not possible.')
 
         return new_train
