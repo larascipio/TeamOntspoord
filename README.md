@@ -22,6 +22,10 @@ Een voorbeeld van de commandline waarin de hillclimber 1 keer wordt gerund voor 
 main.py national algorithm hillclimber once
 ```
 
+![Hillclimber result](docs/hillclimber_result.png "Hillclimber map")
+
+*Het resultaat: Een kaart waarin de routes zijn aangegeven met kleuren. Kwaliteitsscore: 5492.044943820225.*
+
 Als er wordt gekozen voor een experiment, kan er een bepaald aantal iteraties gerund worden voor elk algoritme met `iterations` of elk algoritme wordt voor dezelfde tijd gerund met `time`. Daarna moet een integer komen die aangeeft hoeveel iterations of seconden er gebruikt moeten worden.
 
 Een voorbeeld voor een experiment met 100 iterations voor elk algoritme op de kaart van alleen Holland is: 
@@ -29,7 +33,7 @@ Een voorbeeld voor een experiment met 100 iterations voor elk algoritme op de ka
 main.py holland experiment iterations 100
 ```
 
-**TODO afbeelding van hillclimber kaart**
+**TODO plaatje van het experiment**
 
 Hieronder staan twee voorbeelden van histogrammen die gemaakt kunnen worden met `hist`. De histogrammen zijn gemaakt op een schaal van 0 tot 10.000, zodat ze makkelijk met elkaar te vergelijken zijn.
 
@@ -39,7 +43,7 @@ Hieronder staan twee voorbeelden van histogrammen die gemaakt kunnen worden met 
 
 ![Histogram van Random Replace](docs/random_iteration_1000.png "Random_Replace_Hist")
 
-*Een histogram waarin de kwaliteit van 100 runs met het random iteration algoritme staan afgebeeld.*
+*Een histogram waarin de kwaliteit van 100 runs met het replace algoritme staan afgebeeld.*
 
 
 ### Aanpassingen van het spoornetwerk
@@ -55,6 +59,10 @@ main.py national --fail "Amsterdam Centraal" algorithm random all
 ``` 
 
 Het is ook mogelijk om verlegde connecties, verwijderde routes en uitgevallen stations terug te stoppen in de kaart. Een voorbeeld van hoe dit werkt staat in `rnet_changes_example.py`. 
+
+![Kaart waarin Railnet is aangepast](docs/altered_railnet.png "Altered railnet")
+
+*Kaart waarin Amsterdam Centraal is uitgevallen en drie connecties zijn verlegd.*
 
 ## De algoritmes
 
