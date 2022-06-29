@@ -1,9 +1,9 @@
 plotly==5.8.2
-argparse 
+argparse
 random 
 csv
 kaleido #for creating gifs
-matplotlib
-Pillow
-pandas
+matplotlib==3.5.1
+Pillow==9.0.1
+pandas==1.4.0
 time
