@@ -6,3 +6,4 @@ kaleido #for creating gifs
 matplotlib
 Pillow
 pandas
+time
