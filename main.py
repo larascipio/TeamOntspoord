@@ -5,7 +5,7 @@ Programmeertheorie - minor programmeren
 Lara, Tim, Eva
 
 - Can be used to run any of the algorithms created for the RailNL case.
-- Uses command line arguments for choosing the dataset, the algorithm and 
+- Uses command line arguments for choosing the dataset, the algorithm and
     how the algorithm should be used.
 """
 
@@ -38,8 +38,8 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(
         description='Use different algorithms to find solutions for the RailNL case.')
     parser.add_argument(
-        "type", 
-        choices=['holland','national'],
+        "type",
+        choices=['holland', 'national'],
         help="Choose between the dataset for hollands or national railways."
         )
 
@@ -51,7 +51,7 @@ if __name__ == '__main__':
         help='Run a specific algorithm.'
     )
     subparsers_algorithm.add_argument(
-        "algorithm", 
+        "algorithm",
         choices=[
             'random',
             'greedy',
@@ -81,8 +81,8 @@ if __name__ == '__main__':
         help='Choose on basis of what you would like to run the experiment.'
     )
     subparsers_experiment.add_argument(
-        'runs', 
-        default=1, 
+        'runs',
+        default=1,
         type=int,
         help='Provide the number of runs or the number of minutes to perform for each algorithm.'
     )
@@ -109,7 +109,7 @@ if __name__ == '__main__':
     rails.load(file_stations, file_connections)
 
     # --------------------------- Choose algorithm -----------------------------
-    
+
     if args.subparser_name == 'algorithm':
 
         if args.algorithm == 'random':
@@ -141,7 +141,7 @@ if __name__ == '__main__':
             output(route_quality, rails.get_trains(), './code/output/output.csv')
             create_animation(rails)
 
-    #--------------------------- Create histogram ------------------------------
+    # --------------------------- Create histogram -----------------------------
 
         elif args.make == 'hist':
             qualities = []
@@ -154,16 +154,16 @@ if __name__ == '__main__':
                 route.run()
                 qualities.append(rails.quality())
 
-            # Create hist for the qualities of all runs 
+            # create hist for the qualities of all runs
             quality_hist(qualities)
-    
+
     # --------------------------- Find best value ------------------------------
 
         elif args.make == 'best':
             best_qual = 0
             best_route = None
             # plot = Live_Plot(rails)
-            
+
             for _ in range(10000):
 
                 # run the algorithm multiple times
@@ -195,9 +195,9 @@ if __name__ == '__main__':
 
     elif args.subparser_name == 'experiment':
         algorithms = [
-            Make_Random_Routes, 
-            Make_Greedy_Routes, 
-            Hillclimber, 
+            Make_Random_Routes,
+            Make_Greedy_Routes,
+            Hillclimber,
             Simulated_Annealing,
             Reheating,
             Make_Iterated_Routes,
@@ -209,9 +209,9 @@ if __name__ == '__main__':
             name = str(a.__name__)
             name = name.replace('_', ' ')
             names.append(name)
-        
+
         if args.basis == 'iterations':
-            df = pd.DataFrame(columns=names, index = [i for i in range(args.runs)])
+            df = pd.DataFrame(columns=names, index=[i for i in range(args.runs)])
 
             for Algorithm in algorithms:
                 print(Algorithm.__name__.replace('_', ' '))
@@ -220,9 +220,9 @@ if __name__ == '__main__':
                     route = Algorithm(rails)
                     route.run()
                     df.loc[i, Algorithm.__name__.replace('_', ' ')] = rails.quality()
-                
+
             create_boxplot(df, title=f'Quality for {args.runs} iterations on the {args.type} map')
-        
+
         elif args.basis == 'time':
             df = pd.DataFrame(columns=names)
 
@@ -232,20 +232,18 @@ if __name__ == '__main__':
                 n_runs = 0
 
                 while time.time() - start < args.runs:
-                    # run the algorithm    
+                    # run the algorithm
                     rails.reset()
                     route = Algorithm(rails)
                     route.run()
                     df.loc[n_runs, Algorithm.__name__.replace('_', ' ')] = rails.quality()
                     n_runs += 1
-            
+
             print(df)
             fig = px.box(df, y=names, title=f'Quality for {args.runs} seconds on the {args.type} map')
             fig.update_xaxes(title='Algorithm')
             fig.update_yaxes(title='Quality')
             fig.show()
-    
+
     else:
         parser.print_help()
-
-    

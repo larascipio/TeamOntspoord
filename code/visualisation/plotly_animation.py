@@ -2,6 +2,7 @@ import plotly.graph_objects as go
 import plotly.express as px
 import plotly.io as pio
 
+
 def create_animation(railnet, save_as_png=False, num=0):
 
     # get the stations and connections
@@ -24,9 +25,9 @@ def create_animation(railnet, save_as_png=False, num=0):
         # data.append(go.Scatter(x=x,y=y, marker=dict(color='blue', size=1), hoverinfo='skip'))
         data.append(go.Scattermapbox(
             lon=x,
-            lat=y, 
-            mode = 'markers+lines', 
-            marker=dict(color='lightgray', size=1), 
+            lat=y,
+            mode='markers+lines',
+            marker=dict(color='lightgray', size=1),
             hoverinfo='skip'
         ))
 
@@ -50,13 +51,13 @@ def create_animation(railnet, save_as_png=False, num=0):
         x_stations.append(station._x)
         y_stations.append(station._y)
         name.append(station._name)
-    
+
     # add the data to the map
     data.append(go.Scattermapbox(
-        lon=x_stations, 
-        lat=y_stations, 
-        mode='markers', 
-        hovertext=name, 
+        lon=x_stations,
+        lat=y_stations,
+        mode='markers',
+        hovertext=name,
         hoverinfo='text'))
 
     # ----------------------------- Create the routes -------------------------
@@ -90,7 +91,7 @@ def create_animation(railnet, save_as_png=False, num=0):
         #     #     new_y += -1*change
         #     #     last_x += change*helling
         #     #     new_x += change*helling
-                
+
         #     x_routes.append(last_x)
         #     y_routes.append(last_y)
         #     last_station = new_station
@@ -103,10 +104,10 @@ def create_animation(railnet, save_as_png=False, num=0):
         data += [go.Scattermapbox(
             lon=x_routes,
             lat=y_routes,
-            mode = 'lines',
+            mode='lines',
             line=dict(color=train.get_color(), width=2),
             hoverinfo='skip'
-            
+
         )]
 
     # ----------------------------- Create the figure -------------------------
@@ -115,7 +116,7 @@ def create_animation(railnet, save_as_png=False, num=0):
     fig = go.Figure(
         data=data,
         layout=go.Layout(
-            title_text='A map of all trainstations and connections', 
+            title_text='A map of all trainstations and connections',
             hovermode='closest',
             showlegend=False
         )
@@ -123,8 +124,8 @@ def create_animation(railnet, save_as_png=False, num=0):
 
     # include a map to the background
     fig.update_layout(
-        margin = {'l':0,'t':0, 'b':0, 'r':0},
-        mapbox = {
+        margin={'l': 0, 't': 0, 'b': 0, 'r': 0},
+        mapbox={
             'center': {'lon': 5.2, 'lat': 52.2},
             'style': 'carto-positron',
             'zoom': 7
@@ -136,8 +137,9 @@ def create_animation(railnet, save_as_png=False, num=0):
     else:
         fig.show()
 
+
 def create_boxplot(df, title):
-            
+
     fig = px.box(df, y=df.columns, title=title)
     fig.update_xaxes(title='Algorithm')
     fig.update_yaxes(title='Quality')

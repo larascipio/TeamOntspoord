@@ -22,7 +22,7 @@ class Live_Plot():
             self._railsdata.append(go.Scattermapbox(
                 lon=x,
                 lat=y,
-                mode = 'lines',
+                mode='lines',
                 marker=dict(color='black', size=1),
                 hoverinfo='skip'
             ))
@@ -40,30 +40,28 @@ class Live_Plot():
         # print(x, y)
         # data.append(go.Scatter(x=x_stations, y=y_stations, mode='markers', hovertext=name, hoverinfo='text'))
         self._railsdata.append(go.Scattermapbox(
-            lon=x_stations, 
-            lat=y_stations, 
-            mode='markers', 
-            hovertext=name, 
+            lon=x_stations,
+            lat=y_stations,
+            mode='markers',
+            hovertext=name,
             hoverinfo='text'))
-        
+
         # ----------------------------- create the colors -------------------------
         self._color = px.colors.qualitative.Plotly + px.colors.qualitative.Plotly
 
         self._layout = go.Layout(
-                title_text='A map of all trainstations and connections', 
+                title_text='A map of all trainstations and connections',
                 hovermode='closest',
                 showlegend=False
             )
-        
-        self.update_fig(None)
 
+        self.update_fig(None)
 
     def update_fig(self, num):
 
         # ----------------------------- Create the lines --------------------------
         data = self._railsdata
 
-        
         i = 0
         for train in self._rails.get_trains():
             x_routes = []
@@ -76,8 +74,8 @@ class Live_Plot():
             data += [go.Scattermapbox(
                 lon=x_routes,
                 lat=y_routes,
-                mode = 'lines',
-                marker=dict(color=self._color[i%len(self._color)]),
+                mode='lines',
+                marker=dict(color=self._color[i % len(self._color)]),
                 hoverinfo='skip'
             )]
             i += 1
@@ -90,8 +88,8 @@ class Live_Plot():
 
         # include a map
         fig.update_layout(
-            margin = {'l':0,'t':0, 'b':0, 'r':0},
-            mapbox = {
+            margin={'l': 0, 't': 0, 'b': 0, 'r': 0},
+            mapbox={
                 'center': {'lon': 5.2, 'lat': 52.1},
                 'style': 'open-street-map',
                 'zoom': 6.4
