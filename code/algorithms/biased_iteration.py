@@ -13,6 +13,7 @@ Lara, Tim, Eva
 
 import random
 
+
 class Make_Biased_Routes():
     def __init__(self, railnet):
         """
@@ -28,16 +29,16 @@ class Make_Biased_Routes():
         weighted_chance_list = []
         for station in self._railnet.get_stations().values():
             weighted_chance = 0
-            # Only use stations that have yet to be passed connections
+            # only use stations that have yet to be passed connections
             for connection in station.get_connections():
                 if connection.passed():
                     weighted_chance += 1
             if weighted_chance > 0:
-                # Give preference to stations with few connections
+                # give preference to stations with few connections
                 weighted_chance = 1 / weighted_chance
             weighted_chance_list.append(weighted_chance)
         return weighted_chance_list
-    
+
     def run(self):
         """
         Run the algorithm.
@@ -47,7 +48,7 @@ class Make_Biased_Routes():
             train = self.create_weighted_train(weighted_chance_list)
             self.run_one_train(train)
 
-        # No significant improvement beyond 200 iterations
+        # no significant improvement beyond 200 iterations
         self.change_tracks(200)
 
     def run_one_train(self, train):
@@ -70,52 +71,58 @@ class Make_Biased_Routes():
                 train.move(connection)
             else:
                 train.stop()
-    
+
     def create_weighted_train(self, weighted_chance_list):
         """
         Create a new train at a random start station.
         """
         start = None
 
-        # Choose random starting point
+        # choose random starting point
         while not start:
             start = random.choices(list(self._railnet.get_stations().values()),
-                                    weights=weighted_chance_list, k=1)
+                                   weights=weighted_chance_list, k=1)
             start = start[0]
-        
+
         train = self._railnet.create_train(start)
         return train
 
     def change_one_track(self, removed_train, iterations):
         """
-        Create trainroutes and replace 
+        Create trainroutes and replace
         the current train if preferable.
         """
 
+        # quality with the train
         start_quality = self._railnet.quality()
 
+        # quality without the train
         self._railnet.remove_train(removed_train)
         removed_quality = self._railnet.quality()
 
+        # save best quality as best quality
         if removed_quality > start_quality:
             best_quality = removed_quality
         else:
             best_quality = start_quality
             best_replacement = removed_train
 
+        # get starter positions for the trains
         weighted_chance_list = self.precise_starter_locations()
 
+        # create the new trains and save the best one
         for _ in range(iterations):
             train = self.create_weighted_train(weighted_chance_list)
             self.run_one_train(train)
             new_quality = self._railnet.quality()
             new_train = self._railnet.get_trains()[-1]
             self._railnet.remove_train(new_train)
-            
+
             if new_quality > best_quality:
                 best_quality = new_quality
                 best_replacement = new_train
 
+        # put the best train into the railnet
         if best_quality > removed_quality:
             self._railnet.add_train(best_replacement)
 

@@ -11,9 +11,10 @@ Lara, Tim, Eva
 
 import random
 
+
 class Make_Random_Routes():
     """
-    The random algorithm creates random connections with a random amount of trains, 
+    The random algorithm creates random connections with a random amount of trains,
     in which the end of a connection is depending on weights and random choice.
     """
     def __init__(self, railnet):
@@ -21,7 +22,7 @@ class Make_Random_Routes():
         Use network of routes to initialize the algorithm.
         """
         self._railnet = railnet
-    
+
     def create_train(self):
         """
         Create a new train at a random start station.
@@ -31,7 +32,7 @@ class Make_Random_Routes():
         train = self._railnet.create_train(start)
 
         return train
-    
+
     def run(self):
         """
         Run the algorithm.
@@ -47,7 +48,7 @@ class Make_Random_Routes():
         """
         Run a single train.
         """
-        
+
         train = self.create_train()
 
         # Keep going until the max time is achieved

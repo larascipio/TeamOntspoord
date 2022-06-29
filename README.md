@@ -7,7 +7,7 @@ TODO: Plaatjes toevoegen
 
 Voordat een treinnetwerk in gebruik genomen kan worden, is het de bedoeling dat zo efficiënt mogelijk treintrajecten worden uitgestippeld. Het is niet de bedoeling dat er heel veel korte trajecten zijn, waardoor passagiers veel over zouden moeten stappen en er veel treinen in gebruik zijn. Het is ook niet de bedoeling dat de trajecten te lang zijn of dat teveel spoor onbereden blijft. Om de kwaliteit van de collectie treintrajecten, ook wel de lijnvoering genoemd, te toetsen is gebruik gemaakt van deze formule:
 
-Kwaliteit = (Aantal bereden connecties / Totaal aantal connecties) * 10.000 - (Aantal trajecten * 100 + tijdsduur in minuten)
+**Kwaliteit = (Aantal bereden connecties / Totaal aantal connecties) * 10.000 - (Aantal trajecten * 100 + tijdsduur in minuten)**
 
 Des te hoger de kwaliteit, des te beter de lijnvoering. Het doel van dit project is om de beste lijnvoering te vinden. Met dit doel hebben wij meerdere algoritmes geschreven. Al deze algoritmes zijn aan te roepen in de commandline via main.py. 
 

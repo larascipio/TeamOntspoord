@@ -5,7 +5,7 @@ Programmeertheorie - minor programmeren
 Lara, Tim, Eva
 
 - Can be used to run any of the algorithms created for the RailNL case.
-- Uses command line arguments for choosing the dataset, the algorithm and 
+- Uses command line arguments for choosing the dataset, the algorithm and
     amount of runs, failed station and amount of changed connections.
 - Saves best result in a csv file, visualises it as a plotly animation and
     makes a matplotlib histogram of all the results.
@@ -30,41 +30,41 @@ if __name__ == '__main__':
     # Amount of runs, changing connections or having a failed station is optional
     parser = argparse.ArgumentParser(description='create routes')
     parser.add_argument(
-        "type", 
-        choices=['holland','national'], 
-        default='holland', 
+        "type",
+        choices=['holland', 'national'],
+        default='holland',
         help="Use the holland or national railroads"
         )
     parser.add_argument(
-        "algorithm", 
+        "algorithm",
         choices=[
             'random',
             'greedy',
-            'hillclimber', 
-            'iteration', 
-            'annealing', 
+            'hillclimber',
+            'iteration',
+            'annealing',
             'bias'
-        ], 
-        default='random', 
+        ],
+        default='random',
         help="Choose algrorithm"
         )
     parser.add_argument(
-        "runs", 
-        type=int, 
-        nargs="?", 
-        default=1, 
+        "runs",
+        type=int,
+        nargs="?",
+        default=1,
         help="Amount of runs"
         )
     parser.add_argument(
-        "changeconnection", 
-        type=int, 
-        nargs="?", 
-        default=0, 
+        "changeconnection",
+        type=int,
+        nargs="?",
+        default=0,
         help="Amount of changed connections"
         )
     parser.add_argument(
-        "stationfailure", 
-        nargs="?", 
+        "stationfailure",
+        nargs="?",
         help="Give failed station"
         )
     args = parser.parse_args()
@@ -81,7 +81,7 @@ if __name__ == '__main__':
         max_time = 180
 
     # --------------------------- Load in rails --------------------------------
-    
+
     # Loads the railnet
     rails = Railnet(max_trains, max_time)
     rails.load(file_stations, file_connections)
@@ -96,7 +96,7 @@ if __name__ == '__main__':
         print(f'{old_connection.get_stations()} to {new_connection.get_stations()}')
 
     # --------------------------- Run algorithm ---------------------------------
-    
+
     # Choose the algorithm
     if args.algorithm == 'random':
         Algorithm = Make_Random_Routes
@@ -128,10 +128,10 @@ if __name__ == '__main__':
 
         qualityroutes.append(route_quality)
         rails.reset()
-        print(f'{i + 1}/{args.runs}', end = "\r")
+        print(f'{i + 1}/{args.runs}', end="\r")
 
     print("Finished running")
-    
+
     if best_quality > 0:
         output(best_quality, best_route, 'output.csv')
 

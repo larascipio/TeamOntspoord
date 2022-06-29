@@ -13,6 +13,7 @@ import random
 
 # --------------------------------- Train --------------------------------------
 
+
 class Train():
     def __init__(self, routes, starting_station, color):
         """
@@ -27,7 +28,7 @@ class Train():
         # self._current_station.travel()
         self._running = True
         self._color = color
-    
+
     def is_running(self) -> bool:
         """ Check if this train is still running. """
         return self._running
@@ -43,13 +44,13 @@ class Train():
     def get_stations(self) -> list:
         """ Get all the stations in this trains route. """
         return self._stations_traveled
-    
+
     def get_color(self) -> tuple:
         return self._color
 
     def get_distance(self):
         return self._distance
-    
+
     def get_station_names(self):
         return self._station_names
 
@@ -57,7 +58,7 @@ class Train():
         return f'Train: {[station for station in self._stations_traveled]}'
 
     # --------------------------- Different choosing methods -------------------
-    
+
     def choose_next_connection(self):
         """
         Choose a random connection that has not been passed yet.
@@ -82,7 +83,7 @@ class Train():
         for connection in self._current_station.get_connections():
             if not connection.passed():
                 if connection._distance < distance:
-                    distance = connection._distance 
+                    distance = connection._distance
                     chosen_connection = connection
                 return chosen_connection
 
@@ -98,7 +99,7 @@ class Train():
         for connection in self._current_station.get_connections():
             if not connection.passed():
                 if connection._distance > distance:
-                    distance = connection._distance 
+                    distance = connection._distance
                     chosen_connection = connection
                 return chosen_connection
 
@@ -128,7 +129,7 @@ class Train():
 
         # the chance to stop gets higher if the route is longer
         weights = [self._distance/self._routes.get_max_distance()] + [1 for _ in range(len(possible_connections)-1)]
-        
+
         # choose the next move
         choice = random.choices(possible_connections, weights)[0]
         if not choice:
@@ -192,7 +193,7 @@ class Train():
 
         # remove the connections distance from the route
         self._distance -= last_connection.get_distance()
-        
+
         # remove the station from the route
         self._stations_traveled.pop()
         self._current_station = self._stations_traveled[-1]
@@ -219,7 +220,7 @@ class Train():
         # add the connection to the route
         self._connections_traveled.insert(0, connection)
         connection.travel()
-    
+
     def remove_first_connection(self):
         """
         Remove the first station from the route.
@@ -231,7 +232,7 @@ class Train():
 
         # remove this connections distance from the route
         self._distance -= first_connection.get_distance()
-        
+
         # remove the station from the route
         self._stations_traveled.pop(0)
         self._station_names.pop(0)
