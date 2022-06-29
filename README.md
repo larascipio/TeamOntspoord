@@ -24,7 +24,7 @@ main.py national algorithm hillclimber once
 
 ![Hillclimber result](docs/hillclimber_result.png "Hillclimber map")
 
-*Het resultaat: Een kaart waarin de routes zijn aangegeven met kleuren. Kwaliteitsscore: 5492.044943820225*
+*Het resultaat: Een kaart waarin de routes zijn aangegeven met kleuren. Kwaliteitsscore: 5492.044943820225.*
 
 Als er wordt gekozen voor een experiment, kan er een bepaald aantal iteraties gerund worden voor elk algoritme met `iterations` of elk algoritme wordt voor dezelfde tijd gerund met `time`. Daarna moet een integer komen die aangeeft hoeveel iterations of seconden er gebruikt moeten worden.
 
@@ -62,7 +62,7 @@ Het is ook mogelijk om verlegde connecties, verwijderde routes en uitgevallen st
 
 ![Kaart waarin Railnet is aangepast](docs/altered_railnet.png "Altered railnet")
 
-*Kaart waarin Amsterdam Centraal is uitgevallen en drie connecties zijn verlegd*
+*Kaart waarin Amsterdam Centraal is uitgevallen en drie connecties zijn verlegd.*
 
 ## De algoritmes
 

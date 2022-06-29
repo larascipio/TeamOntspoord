@@ -159,7 +159,7 @@ if __name__ == '__main__':
             route_quality = rails.quality()
 
             print(route_quality)
-            # output(route_quality, rails.get_trains(), './code/output/output.csv')
+            output(route_quality, rails.get_trains(), './code/output/output.csv')
             create_animation(rails)
 
     # --------------------------- Create histogram -----------------------------
