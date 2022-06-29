@@ -14,8 +14,8 @@ Lara, Tim, Eva
 from code.algorithms.bad_algorithm import Make_Greedy_Routes
 from code.algorithms.random_algorithm import Make_Random_Routes
 from code.algorithms.simulated_annealing import Hillclimber, Simulated_Annealing
-from code.algorithms.random_iteration import Make_Iterated_Routes
-from code.algorithms.biased_iteration import Make_Biased_Routes
+from code.algorithms.random_replace import Make_Iterated_Routes
+from code.algorithms.biased_replace import Make_Biased_Routes
 from code.classes.structure import Railnet
 from code.visualisation.output import output
 from code.visualisation.plotly_animation import create_animation
@@ -86,11 +86,11 @@ if __name__ == '__main__':
     rails = Railnet(max_trains, max_time)
     rails.load(file_stations, file_connections)
 
-    # Failed station if desired
+    # failed station if desired
     if args.stationfailure:
         rails.station_failure(args.stationfailure)
 
-    # Change a number of random connections of choice
+    # change a number of random connections of choice
     for _ in range(args.changeconnection):
         old_connection, new_connection, removed_station_list = rails.change_connection()
         print(f'{old_connection.get_stations()} to {new_connection.get_stations()}')

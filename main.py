@@ -15,14 +15,13 @@ from code.algorithms.bad_algorithm import Make_Greedy_Routes
 from code.algorithms.random_algorithm import Make_Random_Routes
 from code.algorithms.simulated_annealing import Hillclimber, Simulated_Annealing
 from code.algorithms.simulated_annealing import Reheating
-from code.algorithms.random_iteration import Make_Iterated_Routes
-from code.algorithms.biased_iteration import Make_Biased_Routes
+from code.algorithms.random_replace import Make_Replaced_Routes
+from code.algorithms.biased_replace import Make_Biased_Routes
 from code.algorithms.depth_first import Depth_First
 
 from code.visualisation.plotly_animation import create_animation, create_boxplot
 from code.visualisation.output import output
 from code.visualisation.quality_hist import quality_hist
-# from code.visualisation.simple_visualization import simple_visualization
 import plotly.express as px
 
 from code.classes.structure import Railnet
@@ -42,6 +41,17 @@ if __name__ == '__main__':
         choices=['holland', 'national'],
         help="Choose between the dataset for hollands or national railways."
         )
+    # optional arguments to alter railnet
+    parser.add_argument(
+        "--shift",
+        type=int,
+        default=0,
+        help="Amount of changed connections"
+        )
+    parser.add_argument(
+        "--fail",
+        help="Give failed station"
+        )
 
     # create subparsers
     subparsers = parser.add_subparsers(dest='subparser_name')
@@ -59,8 +69,8 @@ if __name__ == '__main__':
             'hillclimber',
             'annealing',
             'reheating',
-            'random_iteration',
-            'biased_iteration',
+            'replace',
+            'biased_replace',
             'depth_first'
         ],
         default='random',
@@ -68,9 +78,9 @@ if __name__ == '__main__':
         )
     subparsers_algorithm.add_argument(
         "make",
-        choices=['once', 'hist', 'best'],
+        choices=['once', 'hist', 'best', 'all'],
         help="Choose what you would like to see from the chosen algorithm."
-    )
+        )
 
     # subparser for an experiment with all algorithms
     subparsers_experiment = subparsers.add_parser(
@@ -110,6 +120,17 @@ if __name__ == '__main__':
     rails = Railnet(max_trains, max_time)
     rails.load(file_stations, file_connections)
 
+    # --------------------------- Alter railnet ---------------------------------
+
+    # failed station if desired
+    if args.fail:
+        rails.station_failure(args.fail)
+
+    # change a number of random connections of choice
+    for _ in range(args.shift):
+        old_connection, new_connection, removed_station_list = rails.change_connection()
+        print(f'{old_connection.get_stations()} to {new_connection.get_stations()}')
+
     # --------------------------- Choose algorithm -----------------------------
 
     if args.subparser_name == 'algorithm':
@@ -124,9 +145,9 @@ if __name__ == '__main__':
             Algorithm = Simulated_Annealing
         elif args.algorithm == 'reheating':
             Algorithm = Reheating
-        elif args.algorithm == 'random_iteration':
-            Algorithm = Make_Iterated_Routes
-        elif args.algorithm == 'biased_iteration':
+        elif args.algorithm == 'replace':
+            Algorithm = Make_Replaced_Routes
+        elif args.algorithm == 'biased_replace':
             Algorithm = Make_Biased_Routes
         elif args.algorithm == 'depth_first':
             Algorithm = Depth_First
@@ -150,11 +171,13 @@ if __name__ == '__main__':
             for i in range(100):
 
                 # run the algorithm multiple times
-                print(i)
                 rails.reset()
                 route = Algorithm(rails)
                 route.run()
                 qualities.append(rails.quality())
+                print(f'{i + 1}/{100}', end="\r")
+
+            print('Finished running')
 
             # create hist for the qualities of all runs
             quality_hist(qualities)
@@ -196,6 +219,43 @@ if __name__ == '__main__':
             # rails.restore_routes(best_route)
             # create_animation(rails)
 
+    # --------------------------- Do everything  --------------------------------
+
+        elif args.make == 'all':
+
+            # The variables used for the loop
+            qualities = []
+            best_quality = 0
+
+            # Run the algorithm for the given amount of runs
+            for i in range(100):
+
+                route = Algorithm(rails)
+                route.run()
+                route_quality = rails.quality()
+
+                # store the best route
+                if route_quality > best_quality:
+                    best_quality = route_quality
+                    best_route = rails.get_trains()
+
+                qualities.append(route_quality)
+                rails.reset()
+                print(f'{i + 1}/{100}', end="\r")
+
+            print("Finished running")
+
+            # save the best run
+            if best_quality > 0:
+                output(best_quality, best_route, 'output.csv')
+
+            # create hist for the qualities of all runs
+            quality_hist(qualities)
+
+            # visualize the best run
+            rails.add_route(best_route)
+            create_animation(rails)
+
     # --------------------------- Perform experiment ---------------------------
 
     elif args.subparser_name == 'experiment':
@@ -205,9 +265,9 @@ if __name__ == '__main__':
             Hillclimber,
             Simulated_Annealing,
             Reheating,
-            Make_Iterated_Routes,
-            Make_Biased_Routes,
-            Depth_First
+            Make_Replaced_Routes,
+            Make_Biased_Routes
+            # Depth_First
         ]
         names = []
         for a in algorithms:

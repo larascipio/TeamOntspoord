@@ -17,6 +17,7 @@ class Make_Greedy_Routes():
 
         self._railnet = railnet
 
+        # TODO maybe add why you only use end stations
         # find the endstations
         self._end_stations = []
         for station in self._railnet.get_stations().values():
@@ -28,7 +29,7 @@ class Make_Greedy_Routes():
         Run the algorithm.
         """
 
-        # keep creating trains untill all connections are passed
+        # keep creating trains until all connections are passed
         while len(self._railnet.get_passed_connections()) < len(self._railnet.get_connections()):
 
             # check if there can be another train
@@ -42,6 +43,7 @@ class Make_Greedy_Routes():
 
             # keep going until the route is 2 hours
             while train.is_running():
+                # TODO comment weghalen?
                 # connection = train.choose_connection()
                 connection = train.choose_next_connection()
 
@@ -79,5 +81,5 @@ class Make_Greedy_Routes():
                 if set(station.get_connections()) - self._railnet.get_passed_connections():
                     return self._railnet.create_train(station)
 
-        # there are no stations left for new trains.
+        # there are no stations left for new trains
         return None
