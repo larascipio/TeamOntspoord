@@ -122,7 +122,6 @@ if __name__ == '__main__':
 
     # failed station if desired
     if args.fail:
-        print('succes')
         rails.station_failure(args.fail)
 
     # change a number of random connections of choice
@@ -150,17 +149,6 @@ if __name__ == '__main__':
             Algorithm = Make_Biased_Routes
         elif args.algorithm == 'depth_first':
             Algorithm = Depth_First
-
-    # # --------------------------- Alter railnet ---------------------------------
-
-    #     # failed station if desired
-    #     if args.stationfailure:
-    #         rails.station_failure(args.stationfailure)
-
-    #     # change a number of random connections of choice
-    #     for _ in range(args.changeconnection):
-    #         old_connection, new_connection, removed_station_list = rails.change_connection()
-    #         print(f'{old_connection.get_stations()} to {new_connection.get_stations()}')
 
     # --------------------------- Run once -------------------------------------
 
