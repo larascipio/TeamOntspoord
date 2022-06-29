@@ -233,7 +233,7 @@ class Railnet():  # TODO misschien is het logischer als de load ook in de init w
         Returns connection.
         """
 
-        # calculate new distance from the coordinates
+        # Calculate new distance from the coordinates
         if start._x > end._x:
             a = start._x - end._x
         else:
@@ -261,22 +261,22 @@ class Railnet():  # TODO misschien is het logischer als de load ook in de init w
         Returns the removed and added connection.
         """
 
-        # get one of the stations from which connection will be changed
+        # Get one of the stations from which connection will be changed
         start_connections = []
         start = random.choice(list(self._stations.values()))
         while len(start.get_connections()) < 1:
             start = random.choice(list(self._stations.values()))
 
-        # get list of existing connecting stations
+        # Get list of existing connecting stations
         for connection in start.get_connections():
             start_connections.append(connection.get_destination(start))
 
-        # get new end station
+        # Get new end station
         end = random.choice(list(self._stations.values()))
         while end in start_connections:
             end = random.choice(list(self._stations.values()))
 
-        # remove an old connection and add the new connection
+        # Remove an old connection and add the new connection
         removed_connection = random.choice(start.get_connections())
         removed_station_list = self.remove_connection(removed_connection)
         added_connection = self.add_connection(start, end)
@@ -327,11 +327,11 @@ class Railnet():  # TODO misschien is het logischer als de load ook in de init w
         """
         Passes all connections and stations of a given train.
         """
-        # pass the stations
+        # Pass the stations
         for station in train.get_stations():
             station.travel()
 
-        # pass the connections
+        # Pass the connections
         for connection in train.get_connections():
             connection.travel()
 
@@ -385,7 +385,7 @@ class Railnet():  # TODO misschien is het logischer als de load ook in de init w
         new_train = self.create_train(self._stations[train_copy.pop(0)])
 
         # move the train over the stations
-        while train_stations:
+        while train_copy:
             station = new_train.get_stations()[-1]
             connection = station.get_connection_by_station(train_copy.pop(0))
             if connection:
