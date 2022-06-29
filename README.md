@@ -11,7 +11,7 @@ Des te hoger de kwaliteit, des te beter de lijnvoering. Het doel van dit project
 
 ## Gebruikshandleiding
 
-Het eerste wat aangegeven moet worden bij het runnen van main.py is welk spoornetwerk gebruikt gaat worden. In de data-map staan vier csv bestanden, waarop respectievelijk de stations en connections voor respectievelijk Holland en heel Nederland staan. In de commandline kan de gebruiker kiezen tussen 'holland' en 'national' om te kiezen tussen deze twee spoornetwerken.
+Het eerste wat aangegeven moet worden bij het runnen van `main.py` is welk spoornetwerk gebruikt gaat worden. In de data-map staan vier csv bestanden, waarop respectievelijk de stations en connections voor respectievelijk Holland en heel Nederland staan. In de commandline kan de gebruiker kiezen tussen 'holland' en 'national' om te kiezen tussen deze twee spoornetwerken.
 
 Vervolgens kan de gebruiker kiezen om een algoritme uit te voeren of om een experiment met alle algoritmes uit te voeren met respectievelijk `algorithm` of `experiment`.
 
@@ -35,7 +35,7 @@ main.py holland experiment iterations 100
 
 **TODO plaatje van het experiment**
 
-Hieronder staan twee voorbeelden van histogrammen die gemaakt kunnen worden met `hist`. De histogrammen zijn gemaakt op een schaal van 0 tot 10.000, zodat ze makkelijk met elkaar te vergelijken zijn.
+Hieronder staan twee voorbeelden van histogrammen die gemaakt kunnen worden met `hist`. De histogrammen zijn gemaakt op een schaal van 0 tot 10.000, zodat ze makkelijk met elkaar te vergelijken zijn. De hoeveelheid runs is standaard 100, maar is aan te passen door een hoeveelheid aan te geven in de terminal aan het eind van de commandline. Dit werkt ook voor `all`. 
 
 ![Histogram van Random](docs/random_long_hist.png "Random_Hist")
 
@@ -58,7 +58,7 @@ De gebruiker kan ook een station aangeven dat uitvalt. Dit houdt in dat alle con
 main.py national --fail "Amsterdam Centraal" algorithm random all
 ``` 
 
-Het is ook mogelijk om verlegde connecties, verwijderde routes en uitgevallen stations terug te stoppen in de kaart! Een voorbeeld van hoe dit werkt staat in `rnet_changes_example.py`. 
+Het is ook mogelijk om verlegde connecties, verwijderde routes en uitgevallen stations terug te stoppen in de kaart! Een voorbeeld van hoe dit werkt staat in `rnet_changes_example.py`. Er is trouwens ook nog één ander optioneel command-line argument in main.py: --optimum. Met --optimum wordt het theoretische optimum van het treinnetwerk na de optionele aanpassingen geprint.
 
 ![Kaart waarin Railnet is aangepast](docs/altered_railnet.png "Altered railnet")
 
@@ -66,7 +66,7 @@ Het is ook mogelijk om verlegde connecties, verwijderde routes en uitgevallen st
 
 ## De algoritmes
 
-Het treinnetwerk waar de algoritmes gebruik van maken is opgebouwd uit vier klasses die allemaal staan in het mapje 'classes'. Zo zijn de stations en de connecties tussen de stations aparte klassen, beide staan in `stations.py`. De treintrajecten zijn ook een aparte klas, onder de naam 'Train' in `train.py`. Deze drie klasses zijn ondergebracht in de Railnet, in `structure.py`. Elk algoritme maakt gebruik van Railnet om bij de stations, connecties en treintrajecten te komen.
+Het treinnetwerk waar de algoritmes gebruik van maken is opgebouwd uit vier klasses die allemaal staan in het mapje 'classes'. Zo zijn de stations en de connecties tussen de stations aparte klassen, beide staan in `stations_and_connections.py`. De treintrajecten zijn ook een aparte klas, onder de naam 'Train' in `train.py`. Deze drie klasses zijn ondergebracht in de Railnet, in `structure.py`. Elk algoritme maakt gebruik van Railnet om bij de stations, connecties en treintrajecten te komen.
 
 Het eerste algoritme is het random algoritme (`random_algorithm.py`). Hierin wordt een willekeurige hoeveelheid treintrajecten aangemaakt, van 1 tot het maximaal aantal toegestane treintrajecten. Elk treintraject is compleet willekeurig gekozen, met als enige limiet dat het traject niet langer mag zijn dan de maximale tijdsduur. 
 

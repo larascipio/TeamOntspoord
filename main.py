@@ -52,6 +52,10 @@ if __name__ == '__main__':
         "--fail",
         help="Give failed station"
         )
+    parser.add_argument(
+        "--optimum",
+        help="Gives theoretical optimum"
+        )
 
     # create subparsers
     subparsers = parser.add_subparsers(dest='subparser_name')
@@ -80,6 +84,14 @@ if __name__ == '__main__':
         choices=['once', 'hist', 'best', 'all'],
         help="Choose what you would like to see from the chosen algorithm."
         )
+    subparsers_algorithm.add_argument(
+        "runs",
+        type=int,
+        nargs="?",
+        default=100,
+        help="Amount of runs."
+        )
+    
 
     subparsers_experiment = subparsers.add_parser(
         'experiment',
@@ -129,6 +141,10 @@ if __name__ == '__main__':
         old_connection, new_connection, removed_station_list = rails.change_connection()
         print(f'{old_connection.get_stations()} to {new_connection.get_stations()}')
 
+    # get theoretical optimum
+    if args.optimum:
+        print(f'Theoretical optimum is {rails.get_max_quality()}')
+
     # --------------------------- Choose algorithm -----------------------------
 
     if args.subparser_name == 'algorithm':
@@ -166,14 +182,14 @@ if __name__ == '__main__':
 
         elif args.make == 'hist':
             qualities = []
-            for i in range(100):
+            for i in range(args.runs):
 
                 # run the algorithm multiple times
                 rails.reset()
                 route = Algorithm(rails)
                 route.run()
                 qualities.append(rails.quality())
-                print(f'{i + 1}/{100}', end="\r")
+                print(f'{i + 1}/{args.runs}', end="\r")
 
             print('Finished running')
 
@@ -226,7 +242,7 @@ if __name__ == '__main__':
             best_quality = 0
 
             # Run the algorithm for the given amount of runs
-            for i in range(100):
+            for i in range(args.runs):
 
                 route = Algorithm(rails)
                 route.run()
@@ -239,7 +255,7 @@ if __name__ == '__main__':
 
                 qualities.append(route_quality)
                 rails.reset()
-                print(f'{i + 1}/{100}', end="\r")
+                print(f'{i + 1}/{args.runs}', end="\r")
 
             print("Finished running")
 
