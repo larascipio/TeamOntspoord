@@ -81,7 +81,7 @@ if __name__ == '__main__':
         max_time = 180
 
     # --------------------------- Load in rails --------------------------------
-    
+
     # Loads the railnet
     rails = Railnet(max_trains, max_time)
     rails.load(file_stations, file_connections)
