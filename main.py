@@ -11,7 +11,7 @@ Lara, Tim, Eva
 
 # ------------------------------- Imports --------------------------------------
 
-from code.algorithms.bad_algorithm import Make_Greedy_Routes
+from code.algorithms.greedy_algorithm import Make_Greedy_Routes
 from code.algorithms.random_algorithm import Make_Random_Routes
 from code.algorithms.simulated_annealing import Hillclimber, Simulated_Annealing
 from code.algorithms.simulated_annealing import Reheating
@@ -275,6 +275,7 @@ if __name__ == '__main__':
             Reheating,
             Make_Replaced_Routes,
             Make_Biased_Routes
+            # TODO depth first?
             # Depth_First
         ]
 
