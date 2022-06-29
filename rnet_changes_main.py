@@ -100,7 +100,7 @@ if __name__ == '__main__':
     # Choose the algorithm
     if args.algorithm == 'random':
         Algorithm = Make_Random_Routes
-    elif args.algorithm == 'bad':
+    elif args.algorithm == 'greedy':
         Algorithm = Make_Greedy_Routes
     elif args.algorithm == 'hillclimber':
         Algorithm = Hillclimber

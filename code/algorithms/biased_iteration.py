@@ -8,7 +8,6 @@ Lara, Tim, Eva
     try to find a superior replacement.
 - No connection used more than once in the result.
 - Uses the Railnet structure.
-- Uses the random algorithm to create routes.
 """
 
 import random
