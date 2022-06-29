@@ -340,7 +340,8 @@ class Simulated_Annealing(Hillclimber):
 
 class Reheating(Hillclimber):
     """
-    The inspiration for this algorithm can be found at https://www.sciencedirect.com/science/article/pii/S0377221717300759?casa_token=JEj48ByZMJIAAAAA:bu5jvRf5EphHFiPSGWEodYny0K8gAqNqzpyHKZL93NKg_ysug9u30CTNJ2j7JndgfxkFmZIDVg
+    The inspiration for this algorithm can be found at:
+    https://doi.org/10.1016/j.ejor.2017.01.040
     This algorithm was heavily simplified for this version of reheating.
     """
     def __init__(self, railnet, start_temp=100, base=0.9994):

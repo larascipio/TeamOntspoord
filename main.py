@@ -46,6 +46,7 @@ if __name__ == '__main__':
     # create subparsers
     subparsers = parser.add_subparsers(dest='subparser_name')
 
+    # subparser for running one algorithm
     subparsers_algorithm = subparsers.add_parser(
         'algorithm',
         help='Run a specific algorithm.'
@@ -71,6 +72,7 @@ if __name__ == '__main__':
         help="Choose what you would like to see from the chosen algorithm."
     )
 
+    # subparser for an experiment with all algorithms
     subparsers_experiment = subparsers.add_parser(
         'experiment',
         help='Perform an experiment on all agorithms.'
@@ -139,7 +141,7 @@ if __name__ == '__main__':
 
             print(route_quality)
             output(route_quality, rails.get_trains(), './code/output/output.csv')
-            create_animation(rails)
+            create_animation(rails, save_as_png=True)
 
     # --------------------------- Create histogram -----------------------------
 
@@ -204,8 +206,8 @@ if __name__ == '__main__':
             Simulated_Annealing,
             Reheating,
             Make_Iterated_Routes,
-            Make_Biased_Routes
-            # Depth_First
+            Make_Biased_Routes,
+            Depth_First
         ]
         names = []
         for a in algorithms:

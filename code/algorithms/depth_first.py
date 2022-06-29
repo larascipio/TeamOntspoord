@@ -1,7 +1,7 @@
 from multiprocessing import connection
 from opcode import stack_effect
 from code.algorithms.random_algorithm import Make_Random_Routes
-from code.algorithms.bad_algorithm import Make_Bad_Routes
+from code.algorithms.bad_algorithm import Make_Greedy_Routes
 import copy 
 from code.visualisation.plotly_animation import create_animation
 
@@ -23,8 +23,8 @@ class Depth_First():
         """
         Use random algorithm to make a first train network.
         """
-        # route = Make_Random_Routes(self._railnet)
-        route = Make_Bad_Routes(self._railnet)
+        route = Make_Random_Routes(self._railnet)
+        # route = Make_Greedy_Routes(self._railnet)
         route.run()
 
     def get_next_train(self):
@@ -113,7 +113,7 @@ class Depth_First():
 
         # Copy train network to delete and change trains
         self._copy_railnet = copy.deepcopy(self._railnet)
-        print(f'Old {self._copy_railnet}')
+        # print(f'Old {self._copy_railnet}')
 
         self._copy_railnet_trains = list(self._copy_railnet.get_trains())
         # print(f'copy_railnet_trains: {self._copy_railnet_trains}')
@@ -131,7 +131,7 @@ class Depth_First():
 
             self._copy_railnet.restore_train(best_train)
 
-            print(f'New {self._copy_railnet}') 
+            print(f'New {self._copy_railnet}')
 
 
 
