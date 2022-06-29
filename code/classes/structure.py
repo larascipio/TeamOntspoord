@@ -68,7 +68,7 @@ class Railnet():
 
     def get_total_connections(self) -> int:
         return len(self._connections)
-    
+
     def get_total_stations(self) -> int:
         return len(self._stations)
 

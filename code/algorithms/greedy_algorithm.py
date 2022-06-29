@@ -17,7 +17,6 @@ class Make_Greedy_Routes():
 
         self._railnet = railnet
 
-        # TODO maybe add why you only use end stations
         # find the stations with a uneven amount of connections
         self._end_stations = []
         for station in self._railnet.get_stations().values():
@@ -43,8 +42,7 @@ class Make_Greedy_Routes():
 
             # keep going until the route is 2 hours
             while train.is_running():
-                # TODO comment weghalen?
-                # connection = train.choose_connection()
+
                 connection = train.choose_next_connection()
 
                 # stop this train if there are no more connections

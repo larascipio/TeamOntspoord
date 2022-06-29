@@ -117,6 +117,6 @@ def create_boxplot(df, title):
     fig.update_xaxes(title='Algorithm')
     fig.update_yaxes(title='Quality')
 
-    # write the image to a 
+    # write the image to a .png
     pio.write_image(fig, 'output/new_fig.png', width=1*300, height=1*300)
     fig.show()

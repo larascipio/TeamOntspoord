@@ -60,7 +60,7 @@ class Make_Random_Routes():
                 connection = train.choose_random_connection()
             else:
                 connection = train.choose_next_connection()
-    
+
             if not connection:
                 break
 
